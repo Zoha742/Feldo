@@ -316,11 +316,18 @@
 
         function completeTask(taskName, points) {
             userRef.once('value').then((snapshot) => {
-                let currentPoints = snapshot.val() ? (snapshot.val().points || 0) : 12540;
+                let data = snapshot.val() || { points: 0, tasksDone: 0 };
+                let currentPoints = data.points || 0;
+                let currentTasksDone = data.tasksDone || 0;
+
                 let newPoints = currentPoints + points;
+                let newTasksDone = currentTasksDone + 1;
                 
-                userRef.update({ points: newPoints }).then(() => {
-                    tg.showAlert(`Task "${taskName}" completed! +${points} points added.`);
+                userRef.update({ 
+                    points: newPoints,
+                    tasksDone: newTasksDone
+                }).then(() => {
+                    tg.showAlert(`Task "${taskName}" completed! +${points} GP added.`);
                 });
             });
         }
