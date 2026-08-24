@@ -129,7 +129,7 @@
 
         <div class="card">
             <h3>GP Sale & Qualification</h3>
-            <p>Your Telegram details are auto-detected. Exactly 10,000 GP will be deducted from your wallet to submit this qualification request.</p>
+            <p>Your Telegram details are auto-detected. Exactly 10,000 GP will be deducted from your wallet to submit this qualification request[cite: 7].</p>
             
             <div class="form-group">
                 <label>Your Telegram Name & ID (Auto)</label>
@@ -144,7 +144,6 @@
                 <input type="text" id="user-balance" class="form-control" value="0 GP" disabled>
             </div>
             
-            <!-- ইউজার যাতে নিজের ইচ্ছামতো টাইপ করতে না পারে তাই এটি readonly করে ফিক্সড 10000 করে দেওয়া হয়েছে -->
             <div class="form-group">
                 <label>Required GP for Paid Service Qualification</label>
                 <input type="text" id="sell-amount" class="form-control" value="10,000 GP" disabled style="background:#070a14; color:#fbbf24; font-weight:bold;">
@@ -166,7 +165,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-    <script[cite: 7]>
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
@@ -209,7 +208,7 @@
             let fixedAmount = 10000;
 
             if (userPoints < fixedAmount) {
-                tg.showAlert("You need at least 10,000 GP in your wallet to submit this request!");
+                tg.showAlert("You need at least 10,000 GP in your wallet to submit this request!"[cite: 7]);
                 return;
             }
 
@@ -223,9 +222,8 @@
                 status: "Pending",
                 timestamp: Date.now()
             }).then(() => {
-                // ফায়ারবেসে points এবং gp উভয় প্রপার্টি আপডেট করা যাতে সব জায়গায় ব্যালেন্স সিঙ্ক থাকে
                 userRef.update({ points: newPoints, gp: newPoints });
-                tg.showAlert("GP sale request submitted successfully! Admin will check your ID and Name for approval.");
+                tg.showAlert("GP sale request submitted successfully! Admin will check your ID and Name for approval."[cite: 7]);
             });
         }
     </script>
