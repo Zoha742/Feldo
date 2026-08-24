@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Master Admin Control Center</title>
-    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
-    <script src="config.js"></script>
+    <title>HeyCen - Ultra Pro Admin Control Center</title>
+    <!-- Firebase SDKs (Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root { 
             --bg: #050a18; --card: #121e36; --border: #1e2d4d; 
@@ -19,7 +21,7 @@
         .header { background: var(--card); padding: 15px; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 100; display: flex; align-items: center; gap: 15px; }
         .back-nav { font-size: 20px; color: white; cursor: pointer; padding: 5px; }
 
-        .container { padding: 15px; }
+        .container { padding: 15px; max-width: 480px; margin: 0 auto; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
         
@@ -36,11 +38,11 @@
         .btn-orange { background: var(--orange); color: white; }
         .btn-purple { background: var(--purple); color: white; }
 
-        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--purple); }
+        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); }
         .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
         
         #login-screen { height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; z-index: 1001; max-height: 80vh; overflow-y: auto; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; z-index: 1001; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         
         .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
@@ -55,7 +57,7 @@
         <div class="card" style="width: 320px; text-align: center;">
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
                 <i class="fas fa-arrow-left back-nav" onclick="window.history.back()"></i>
-                <h3 style="margin:0;">Master Admin Login</h3>
+                <h3 style="margin:0;">HeyCen Admin Login</h3>
             </div>
             <p style="font-size: 12px; color: #94a3b8;">Enter master credentials</p>
             <input type="password" id="admin-pass" class="input-box" placeholder="Password">
@@ -66,7 +68,7 @@
     <div id="admin-panel" style="display: none;">
         <div class="header">
             <i class="fas fa-arrow-left back-nav" onclick="location.reload()"></i>
-            <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> Master Control Center</h3>
+            <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> HeyCen Ultra Admin</h3>
         </div>
 
         <div class="container">
@@ -96,6 +98,7 @@
                 <div id="wd-list">Loading withdrawals...</div>
             </div>
 
+            <!-- ৪. ইউজার সার্চ ও ম্যানেজমেন্ট -->
             <div class="card">
                 <h4><i class="fas fa-user-shield"></i> User Search & Management</h4>
                 <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
@@ -132,6 +135,21 @@
     </div>
 
     <script>
+        // HeyCen Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycan-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         function checkLogin() {
             if(document.getElementById('admin-pass').value === "s#642S") {
                 document.getElementById('login-screen').style.display = 'none';
@@ -141,16 +159,14 @@
         }
 
         function init() {
-            // ১. GP Sell Requests (Agent) লোড করা
+            // ১. GP Sell Requests (Agent / Free Qualification) লোড করা
             db.ref('sell_requests').on('value', snap => {
                 let html = "";
-                let pendingCount = 0;
                 snap.forEach(c => {
                     let req = c.val();
                     if(req.status === "Pending") {
-                        pendingCount++;
                         html += `<div class="list-item" style="border-left-color: var(--purple);">
-                            <b>User Name: ${req.userName}</b><br>
+                            <b>User Name: ${req.userName || 'Unknown'}</b><br>
                             <small>Telegram ID: <b>${req.userId}</b> | Selling: <span style="color:#fbbf24; font-weight:bold;">${req.amount} GP</span></small>
                             <div class="grid" style="margin-top:10px;">
                                 <button class="btn btn-green" style="padding:6px;" onclick="approveAgentReq('${c.key}', '${req.userId}', ${req.amount})">Approve & Qualify</button>
@@ -162,7 +178,7 @@
                 document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
             });
 
-            // ২. ইউজার ওভারভিউ ও ওয়ালেট পেমেন্ট প্রুফ লোড করা
+            // ২. ইউজার লিস্ট ও ডাইরেক্ট ওয়ালেট পেমেন্ট প্রুফ লোড করা (HeyCen Database Path Structure)
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
                 let banned = 0, totalGP = 0, activeCount = 0;
@@ -173,15 +189,17 @@
                 snap.forEach(c => {
                     let u = c.val();
                     let uId = c.key;
-                    let uName = u.name || "Unknown";
+                    let uName = u.username || u.name || "Unknown";
                     if(u.banned) banned++;
-                    totalGP += (u.gp || 0);
+                    
+                    let userPoints = u.points !== undefined ? u.points : (u.gp || 0);
+                    totalGP += userPoints;
 
                     if (u.lastSeen && (currentTime - u.lastSeen) < (5 * 60 * 1000)) { 
                         activeCount++; 
                     }
 
-                    usersArray.push({ id: uId, name: uName, gp: u.gp || 0, banned: u.banned || false });
+                    usersArray.push({ id: uId, name: uName, gp: userPoints, banned: u.banned || false });
 
                     if(u.pending_boosts) {
                         Object.keys(u.pending_boosts).forEach(coinId => {
@@ -215,7 +233,7 @@
                     html += `<div class="user-item">
                         <div>
                             <b>${u.name}</b> <small style="color:#94a3b8;">(${u.id})</small> ${u.banned ? '<span class="badge-banned">BANNED</span>' : ''}<br>
-                            <small>${u.gp} GP</small>
+                            <small>${u.gp.toLocaleString()} GP</small>
                         </div>
                         <button class="btn btn-blue" style="width:auto; padding:5px 12px;" onclick="openUser('${u.id}', '${u.name.replace(/'/g, "\\'")}', ${u.gp}, ${u.banned})">Manage</button>
                     </div>`;
@@ -225,7 +243,7 @@
                 document.getElementById('st-active').innerText = activeCount;
                 document.getElementById('st-banned').innerText = banned;
                 document.getElementById('st-total-gp').innerText = totalGP.toLocaleString();
-                document.getElementById('user-list').innerHTML = html;
+                document.getElementById('user-list').innerHTML = html || "No users found.";
                 document.getElementById('boost-req-list').innerHTML = boostHtml || "No pending payment proofs.";
             });
 
@@ -290,7 +308,10 @@
                 [`boosts/${coinId}/expireTime`]: expireTime,
                 [`pending_boosts/${coinId}`]: null
             }).then(() => {
-                db.ref('notifications/' + uid).push({ text: `Your payment was verified! Boost has been activated by Admin.`, date: new Date().toLocaleString() });
+                db.ref('users/' + uid + '/notifications').push({
+                    text: `🎉 Payment verified! Your service/boost has been successfully activated by Admin.`,
+                    date: new Date().toLocaleString()
+                });
                 alert("Payment Verified and Boost Activated Successfully!");
             });
         }
@@ -298,7 +319,10 @@
         function rejectBoost(uid, coinId) {
             if(confirm("Are you sure you want to reject this payment?")) {
                 db.ref(`users/${uid}/pending_boosts/${coinId}`).remove().then(() => {
-                    db.ref('notifications/' + uid).push({ text: `Your payment proof was rejected by Admin.`, date: new Date().toLocaleString() });
+                    db.ref('users/' + uid + '/notifications').push({
+                        text: `Your payment proof was rejected by Admin.`,
+                        date: new Date().toLocaleString()
+                    });
                     alert("Payment Proof Rejected.");
                 });
             }
@@ -319,7 +343,8 @@
 
         function updateUserGP() {
             let gp = parseInt(document.getElementById('m-gp').value);
-            db.ref('users/' + window.targetU + '/gp').set(gp).then(() => { alert("GP Updated!"); closeModal(); });
+            // HeyCen অ্যাপে points এবং gp দুটি প্রপার্টিই যেন আপডেট হয়
+            db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
         }
 
         function toggleBan() {
@@ -330,8 +355,16 @@
         function updateWD(key, status, uid, amt) {
             if(confirm(`Confirm ${status}?`)) {
                 db.ref('withdraw_requests/' + key).update({ status: status }).then(() => {
-                    if(status === 'rejected') { db.ref('users/' + uid + '/gp').transaction(c => (c || 0) + amt); }
-                    db.ref('notifications/' + uid).push({ text: `Your withdraw of ${amt} GP was ${status}.`, date: new Date().toLocaleString() });
+                    if(status === 'rejected') { 
+                        db.ref('users/' + uid).transaction(u => {
+                            if(u) {
+                                u.gp = (u.gp || 0) + amt;
+                                u.points = (u.points || 0) + amt;
+                            }
+                            return u;
+                        }); 
+                    }
+                    db.ref('users/' + uid + '/notifications').push({ text: `Your withdraw of ${amt} GP was ${status}.`, date: new Date().toLocaleString() });
                     alert("Request Updated!");
                 });
             }
