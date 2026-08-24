@@ -65,6 +65,29 @@
             font-size: 14px;
             box-sizing: border-box;
         }
+        
+        .uid-box {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px dashed #7c3aed;
+            padding: 10px 12px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+            font-size: 13px;
+            color: #c084fc;
+        }
+        .copy-btn {
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+        }
+
         .submit-btn {
             background: #7c3aed;
             color: #fff;
@@ -76,6 +99,7 @@
             font-weight: 700;
             cursor: pointer;
             transition: background 0.2s;
+            margin-top: 10px;
         }
         .submit-btn:hover { background: #6d28d9; }
 
@@ -111,12 +135,12 @@
     <div class="container">
         <div class="header-banner">
             <h2>🤝 Agent & GP Exchange</h2>
-            <p>Sell your earned GP points securely to verified agents</p>
+            <p>Sell your earned GP points securely via Bitget or Binance</p>
         </div>
 
         <div class="card">
             <h3>Sell GP to Agent</h3>
-            <p>Enter the amount of GP you want to sell. Once submitted, our agent/admin will verify and approve your request.</p>
+            <p>Select your payout method, copy the agent UID, make transfer, and upload screenshot proof.</p>
             
             <div class="form-group">
                 <label>Your Available GP Balance</label>
@@ -129,8 +153,24 @@
             </div>
 
             <div class="form-group">
-                <label>Payment Method & Number (Bkash/Nagad/Binance)</label>
-                <input type="text" id="payment-details" class="form-control" placeholder="e.g. Bkash - 017xxxxxxxx">
+                <label>Select Payout Method</label>
+                <select id="payment-method" class="form-control">
+                    <option value="Binance">Binance</option>
+                    <option value="Bitget">Bitget</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Agent UID (Send payment here first)</label>
+                <div class="uid-box">
+                    <span id="admin-uid-text">7757851056</span>
+                    <button class="copy-btn" onclick="copyUID()"><i class="fa-solid fa-copy"></i> Copy UID</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Upload Payment Proof (Screenshot)</label>
+                <input type="file" id="payment-proof" class="form-control" accept="image/*">
             </div>
 
             <button class="submit-btn" onclick="submitSellRequest()">Submit Sale Request</button>
@@ -182,9 +222,17 @@
             }
         });
 
+        function copyUID() {
+            let uidText = "7757851056";
+            navigator.clipboard.writeText(uidText).then(() => {
+                tg.showAlert("Agent UID copied: " + uidText);
+            });
+        }
+
         function submitSellRequest() {
             let amount = parseInt(document.getElementById('sell-amount').value);
-            let details = document.getElementById('payment-details').value;
+            let method = document.getElementById('payment-method').value;
+            let fileInput = document.getElementById('payment-proof');
 
             if (!amount || amount <= 0) {
                 tg.showAlert("Please enter a valid GP amount to sell.");
@@ -194,30 +242,34 @@
                 tg.showAlert("You don't have enough GP balance!");
                 return;
             }
-            if (!details) {
-                tg.showAlert("Please enter your payment details.");
+            if (fileInput.files.length === 0) {
+                tg.showAlert("Please upload payment screenshot proof.");
                 return;
             }
 
-            // Deduct points temporarily or wait for admin approval (here we deduct or hold)
-            let newPoints = userPoints - amount;
-            
-            // Send request to Firebase admin requests node
-            let requestRef = db.ref('sell_requests').push();
-            requestRef.set({
-                userId: userId,
-                userName: userName,
-                amount: amount,
-                details: details,
-                status: "Pending",
-                timestamp: Date.now()
-            }).then(() => {
-                // Update user points
-                userRef.update({ points: newPoints });
-                tg.showAlert("GP sell request submitted successfully to Agent! Waiting for admin approval.");
-                document.getElementById('sell-amount').value = "";
-                document.getElementById('payment-details').value = "";
-            });
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function () {
+                let base64Image = reader.result;
+                let newPoints = userPoints - amount;
+
+                let requestRef = db.ref('sell_requests').push();
+                requestRef.set({
+                    userId: userId,
+                    userName: userName,
+                    amount: amount,
+                    method: method,
+                    proofImage: base64Image,
+                    status: "Pending",
+                    timestamp: Date.now()
+                }).then(() => {
+                    userRef.update({ points: newPoints });
+                    tg.showAlert("GP sell request submitted successfully! Waiting for admin approval.");
+                    document.getElementById('sell-amount').value = "";
+                    fileInput.value = "";
+                });
+            };
         }
     </script>
 </body>
