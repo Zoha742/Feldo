@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Agent & Sell GP</title>
+    <title>HeyCen - Agent & GP Exchange</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -66,29 +66,16 @@
             box-sizing: border-box;
         }
 
-        .uid-display-box {
-            background: #0b0f19;
+        .info-box {
+            background: rgba(124, 58, 237, 0.1);
             border: 1px dashed #7c3aed;
             padding: 12px;
             border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 6px;
+            margin-bottom: 14px;
+            font-size: 13px;
             color: #c084fc;
-            font-weight: bold;
-            font-size: 14px;
         }
-        .copy-uid-btn {
-            background: #7c3aed;
-            color: #fff;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: bold;
-        }
+        .info-box span { display: block; margin-bottom: 4px; }
 
         .submit-btn {
             background: linear-gradient(135deg, #10b981, #059669);
@@ -101,7 +88,6 @@
             font-weight: 700;
             cursor: pointer;
             transition: 0.2s;
-            margin-top: 10px;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
         .submit-btn:hover { opacity: 0.9; }
@@ -137,46 +123,33 @@
 
     <div class="container">
         <div class="header-banner">
-            <h2>🤝 GP Exchange & Wallet</h2>
-            <p>Sell your GP points (Minimum 10,000 GP) via Bitget or Binance</p>
+            <h2>🤝 Agent & GP Qualification</h2>
+            <p>Sell your GP to qualify for paid service (Min limit: 10,000 GP)</p>
         </div>
 
         <div class="card">
-            <h3>Sell GP Points</h3>
-            <p>Select your wallet option, enter your amount (Min 10,000 GP), copy your profile UID to receive payment, and upload screenshot proof.</p>
+            <h3>GP Sale & Qualification</h3>
+            <p>Your Telegram details are auto-detected. Minimum 10,000 GP is required to submit a sale request.</p>
             
+            <div class="form-group">
+                <label>Your Telegram Name & ID (Auto)</label>
+                <div class="info-box" id="auto-user-info">
+                    <span><strong>Name:</strong> <span id="display-name">Loading...</span></span>
+                    <span><strong>ID:</strong> <span id="display-id">Loading...</span></span>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label>Your Available GP Balance</label>
                 <input type="text" id="user-balance" class="form-control" value="0 GP" disabled>
             </div>
             
             <div class="form-group">
-                <label>Amount to Sell (Min 10,000 GP)</label>
-                <input type="number" id="sell-amount" class="form-control" placeholder="e.g. 10000" min="10000" value="10000">
+                <label>Amount to Sell (Fixed / Min 10,000 GP)</label>
+                <input type="number" id="sell-amount" class="form-control" value="10000" min="10000">
             </div>
 
-            <div class="form-group">
-                <label>Select Wallet Option</label>
-                <select id="wallet-method" class="form-control">
-                    <option value="Binance">Binance</option>
-                    <option value="Bitget">Bitget</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label>Your Profile UID (For Receiving Payment)</label>
-                <div class="uid-display-box">
-                    <span id="my-profile-uid">Loading...</span>
-                    <button class="copy-uid-btn" onclick="copyMyUID()"><i class="fa-solid fa-copy"></i> Copy UID</button>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Upload Transfer Screenshot / Proof</label>
-                <input type="file" id="payment-proof" class="form-control" accept="image/*">
-            </div>
-
-            <button class="submit-btn" onclick="submitSellRequest()">Sell GP Now</button>
+            <button class="submit-btn" onclick="submitSellRequest()">Submit Sale Request</button>
         </div>
     </div>
 
@@ -212,10 +185,11 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id.toString() : "7757851056";
-        let userName = user ? (user.first_name || "User") : "User";
+        let userName = user ? (user.first_name || "Zoha") : "Zoha";
 
-        // Show User UID on screen
-        document.getElementById('my-profile-uid').innerText = userId;
+        // Auto display telegram name and ID
+        document.getElementById('display-name').innerText = userName;
+        document.getElementById('display-id').innerText = userId;
 
         let userRef = db.ref('users/' + userId);
         let userPoints = 0;
@@ -228,53 +202,32 @@
             }
         });
 
-        function copyMyUID() {
-            navigator.clipboard.writeText(userId).then(() => {
-                tg.showAlert("Your Profile UID Copied: " + userId);
-            });
-        }
-
         function submitSellRequest() {
             let amount = parseInt(document.getElementById('sell-amount').value);
-            let method = document.getElementById('wallet-method').value;
-            let fileInput = document.getElementById('payment-proof');
 
             if (!amount || amount < 10000) {
-                tg.showAlert("Minimum sell limit is 10,000 GP!");
+                tg.showAlert("Minimum sell requirement is 10,000 GP!");
                 return;
             }
             if (amount > userPoints) {
-                tg.showAlert("You don't have enough GP balance!");
-                return;
-            }
-            if (fileInput.files.length === 0) {
-                tg.showAlert("Please upload payment/transfer screenshot proof.");
+                tg.showAlert("You don't have enough GP balance to sell!");
                 return;
             }
 
-            let file = fileInput.files[0];
-            let reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = function () {
-                let base64Image = reader.result;
-                let newPoints = userPoints - amount;
+            let newPoints = userPoints - amount;
 
-                let requestRef = db.ref('sell_requests').push();
-                requestRef.set({
-                    userId: userId,
-                    userName: userName,
-                    amount: amount,
-                    method: method,
-                    proofImage: base64Image,
-                    status: "Pending",
-                    timestamp: Date.now()
-                }).then(() => {
-                    userRef.update({ points: newPoints });
-                    tg.showAlert("GP sell request submitted successfully! Admin will check your UID and proof.");
-                    document.getElementById('sell-amount').value = "10000";
-                    fileInput.value = "";
-                });
-            };
+            let requestRef = db.ref('sell_requests').push();
+            requestRef.set({
+                userId: userId,
+                userName: userName,
+                amount: amount,
+                status: "Pending",
+                timestamp: Date.now()
+            }).then(() => {
+                userRef.update({ points: newPoints });
+                tg.showAlert("GP sale request submitted successfully! Admin will check your ID and Name for approval.");
+                document.getElementById('sell-amount').value = "10000";
+            });
         }
     </script>
 </body>
