@@ -42,7 +42,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .top-header h1 {
             margin: 0 0 4px 0;
@@ -54,8 +54,25 @@
             font-size: 13px;
             color: var(--text-muted);
         }
+        .header-icons {
+            display: flex;
+            gap: 8px;
+        }
+        .icon-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 14px;
+            cursor: pointer;
+        }
 
-        /* User Profile Card */
+        /* User Profile Card (Matching Screenshot_74 layout) */
         .profile-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -64,12 +81,13 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .profile-left {
             display: flex;
             align-items: center;
             gap: 14px;
+            width: 100%;
         }
         .avatar-container {
             width: 60px;
@@ -77,6 +95,7 @@
             border-radius: 50%;
             padding: 2px;
             background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            flex-shrink: 0;
         }
         .avatar-container img {
             width: 100%;
@@ -84,23 +103,57 @@
             border-radius: 50%;
             object-fit: cover;
         }
+        .profile-info {
+            width: 100%;
+        }
         .profile-info h3 {
             margin: 0 0 4px 0;
-            font-size: 18px;
+            font-size: 16px;
             display: flex;
             align-items: center;
             gap: 6px;
         }
         .profile-info h3 i {
             color: #3b82f6;
-            font-size: 14px;
+            font-size: 13px;
         }
-        .user-id {
-            font-size: 12px;
+        .level-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .level-badge {
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+        .xp-text {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .xp-bar-container {
+            width: 100%;
+            background: #1e293b;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+        .xp-bar-fill {
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+            height: 100%;
+            width: 0%;
+        }
+        .join-date {
+            font-size: 10px;
             color: var(--text-muted);
         }
 
-        /* Menu Options Grid (Matching Screenshot Layout) */
+        /* Menu Options Grid */
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -111,7 +164,7 @@
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 16px;
-            padding: 18px 12px;
+            padding: 16px 12px;
             text-align: center;
             cursor: pointer;
             transition: transform 0.2s, border-color 0.2s;
@@ -123,30 +176,30 @@
             border-color: #3b82f6;
         }
         .option-icon {
-            font-size: 22px;
-            margin-bottom: 8px;
+            font-size: 20px;
+            margin-bottom: 6px;
         }
         .option-title {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             color: #f8fafc;
         }
         .option-desc {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
         }
 
-        /* Full Width Admin Panel Box */
+        /* Admin Panel Box */
         .admin-box {
             background: var(--card-bg);
             border: 1px solid #7f1d1d;
             border-radius: 16px;
-            padding: 16px;
+            padding: 14px;
             text-align: center;
             cursor: pointer;
-            margin-top: 12px;
+            margin-bottom: 16px;
         }
         .admin-box:hover {
             border-color: #ef4444;
@@ -204,9 +257,13 @@
                 <h1>Profile</h1>
                 <p>Manage your account & track your activity</p>
             </div>
+            <div class="header-icons">
+                <button class="icon-btn" onclick="tg.showAlert('No new notifications')"><i class="fa-regular fa-bell"></i></button>
+                <button class="icon-btn" onclick="tg.showAlert('Settings options coming soon')"><i class="fa-solid fa-gear"></i></button>
+            </div>
         </div>
 
-        <!-- Profile Card (Shows User Image, Name & ID) -->
+        <!-- Profile Card (User Image, Name, ID & 0 XP) -->
         <div class="profile-card">
             <div class="profile-left">
                 <div class="avatar-container">
@@ -214,7 +271,14 @@
                 </div>
                 <div class="profile-info">
                     <h3 id="profile-name">Loading... <i class="fa-solid fa-circle-check"></i></h3>
-                    <div class="user-id" id="profile-id">ID: 000000</div>
+                    <div class="level-row">
+                        <span class="level-badge">Level 1</span>
+                        <span class="xp-text">0 / 1,000 XP</span>
+                    </div>
+                    <div class="xp-bar-container">
+                        <div class="xp-bar-fill"></div>
+                    </div>
+                    <div class="join-date" id="profile-id">ID: 000000</div>
                 </div>
             </div>
         </div>
@@ -337,30 +401,33 @@
         let firstName = user ? (user.first_name || "User") : "Guest";
         let username = user && user.username ? `@${user.username}` : `ID: ${userId}`;
 
-        // Set User Name and ID
+        // Set User Name and ID in Profile Card
         document.getElementById('profile-name').innerHTML = `${firstName} <i class="fa-solid fa-circle-check"></i>`;
         document.getElementById('profile-id').innerText = username;
 
-        // If Telegram provides a profile photo url, use it
+        // Set Telegram Profile Picture if available
         if (user && user.photo_url) {
             document.getElementById('user-avatar').src = user.photo_url;
         }
 
-        // Fetch User Data from Firebase (Points default to 0 for new users)
+        // Fetch User Data from Firebase (Points & Tasks Done)
         let userRef = db.ref('users/' + userId);
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
             if (data && data.points !== undefined) {
-                document.getElementById('total-gp').innerText = data.points.toLocaleString();
+                document.getElementById('total-gp').innerText = (data.points || 0).toLocaleString();
+                document.getElementById('tasks-done-count').innerText = (data.tasksDone || 0).toLocaleString();
             } else {
-                // Initialize new user with 0 points
+                // Initialize new user with 0 points and 0 tasks done
                 userRef.set({
                     username: firstName,
                     points: 0,
+                    tasksDone: 0,
                     streakDay: 1,
                     lastCheckInDate: ""
                 });
                 document.getElementById('total-gp').innerText = "0";
+                document.getElementById('tasks-done-count').innerText = "0";
             }
         });
     </script>
