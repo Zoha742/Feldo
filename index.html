@@ -94,16 +94,16 @@
             </div>
             <div class="header-icons">
                 <button class="notification-btn"><i class="fa-regular fa-bell"></i></button>
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User">
+                <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User">
             </div>
         </div>
 
         <!-- Points Card -->
         <div class="points-card">
-            <div class="points-title">Your Points</div>
-            <div class="points-value" id="balance">12,540</div>
-            <div class="usd-badge" id="usd-value">≈ $1.25</div>
-            <button class="history-btn" onclick="location.href='task.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+            <div class="points-title">Your Points (GP)</div>
+            <div class="points-value" id="balance">0</div>
+            <div class="usd-badge" id="usd-value">≈ $0.00</div>
+            <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
         </div>
 
         <!-- Quick Menu -->
@@ -221,12 +221,15 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id : "guest_user";
-        let username = user ? (user.username || user.first_name) : "Arefin";
+        let username = user ? (user.first_name || "Arefin") : "Arefin";
 
         document.getElementById('username').innerText = username;
-        let userRef = db.ref('users/' + userId);
+        if (user && user.photo_url) {
+            document.getElementById('user-avatar').src = user.photo_url;
+        }
 
-        let userData = { points: 12540, streakDay: 1, lastCheckInDate: "" };
+        let userRef = db.ref('users/' + userId);
+        let userData = { points: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "" };
 
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
@@ -234,16 +237,16 @@
                 userData = data;
                 updateUI();
             } else {
-                userData = { points: 12540, streakDay: 1, lastCheckInDate: "" };
+                userData = { points: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "" };
                 userRef.set(userData);
                 updateUI();
             }
         });
 
         function updateUI() {
-            document.getElementById('balance').innerText = userData.points.toLocaleString();
-            document.getElementById('usd-value').innerText = '≈ $' + (userData.points / 10000).toFixed(2);
-            document.getElementById('streak-text').innerHTML = `<i class="fa-solid fa-fire"></i> ${userData.streakDay} Days Streak`;
+            document.getElementById('balance').innerText = (userData.points || 0).toLocaleString();
+            document.getElementById('usd-value').innerText = '≈ $' + ((userData.points || 0) / 10000).toFixed(2);
+            document.getElementById('streak-text').innerHTML = `<i class="fa-solid fa-fire"></i> ${userData.streakDay || 1} Days Streak`;
             renderDailyBonus();
         }
 
@@ -251,10 +254,11 @@
             const container = document.getElementById('daily-bonus-container');
             container.innerHTML = '';
             const rewards = [10, 15, 20, 25, 30, 35, 50];
+            let currentStreak = userData.streakDay || 1;
             
             for (let i = 1; i <= 7; i++) {
-                let isClaimed = i < userData.streakDay;
-                let isActive = i === userData.streakDay;
+                let isClaimed = i < currentStreak;
+                let isActive = i === currentStreak;
                 let iconClass = isClaimed ? "fa-solid fa-circle-check" : (i === 3 ? "fa-solid fa-gift" : "fa-solid fa-box-open");
                 let cardClass = "bonus-card" + (isActive ? " active" : "") + (isClaimed ? " claimed" : "");
 
@@ -275,21 +279,24 @@
                 return;
             }
             const rewards = [10, 15, 20, 25, 30, 35, 50];
-            let rewardAmount = rewards[userData.streakDay - 1] || 10;
+            let rewardAmount = rewards[(userData.streakDay || 1) - 1] || 10;
 
-            userData.points += rewardAmount;
+            userData.points = (userData.points || 0) + rewardAmount;
+            userData.tasksDone = (userData.tasksDone || 0) + 1;
             userData.lastCheckInDate = today;
-            userData.streakDay = userData.streakDay < 7 ? userData.streakDay + 1 : 1;
+            userData.streakDay = (userData.streakDay || 1) < 7 ? (userData.streakDay || 1) + 1 : 1;
 
             userRef.set(userData).then(() => {
-                tg.showAlert(`Claimed Day bonus! +${rewardAmount} points added.`);
+                tg.showAlert(`Claimed Daily Bonus! +${rewardAmount} GP added.`);
             });
         }
 
         function completeTask(taskName, points) {
-            userData.points += points;
+            userData.points = (userData.points || 0) + points;
+            userData.tasksDone = (userData.tasksDone || 0) + 1;
+            
             userRef.set(userData).then(() => {
-                tg.showAlert(`Task "${taskName}" completed! +${points} points added.`);
+                tg.showAlert(`Task "${taskName}" completed! +${points} GP added.`);
             });
         }
     </script>
