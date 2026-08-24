@@ -101,7 +101,6 @@
             </div>
             <div class="header-icons">
                 <button class="notification-btn"><i class="fa-regular fa-bell"></i></button>
-                <!-- Profile Image Click redirects to profile.html -->
                 <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User" onclick="location.href='profile.html'">
             </div>
         </div>
@@ -134,14 +133,14 @@
             </div>
         </div>
 
-        <!-- Daily Bonus (7 Days) -->
+        <!-- Daily Bonus -->
         <div class="section-header">
             <div class="section-title">Daily Bonus</div>
             <div class="streak-badge" id="streak-text"><i class="fa-solid fa-fire"></i> 1 Days Streak</div>
         </div>
         <div class="bonus-scroll" id="daily-bonus-container"></div>
 
-        <!-- Available Tasks (6 Options) -->
+        <!-- Available Tasks -->
         <div class="section-header">
             <div class="section-title">Available Tasks</div>
             <a href="task.html" style="font-size: 12px; color: #6366f1; text-decoration: none; font-weight: 600;">View All</a>
@@ -173,7 +172,7 @@
             <button class="action-btn green" onclick="completeTask('Download App', 100)">Start</button>
         </div>
 
-        <!-- Task 3: Banner Ads View -->
+        <!-- Task 3 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #3b82f6;"><i class="fa-solid fa-rectangle-ad"></i></div>
@@ -186,7 +185,7 @@
             <button class="action-btn" onclick="completeTask('Banner Ads View', 80)">Start</button>
         </div>
 
-        <!-- Task 4: Weekly Offer -->
+        <!-- Task 4 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #f97316;"><i class="fa-solid fa-gift"></i></div>
@@ -199,7 +198,7 @@
             <button class="action-btn orange" onclick="completeTask('Weekly Special Offer', 500)">Claim</button>
         </div>
 
-        <!-- Task 5: Telegram Channel Join -->
+        <!-- Task 5 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #0ea5e9;"><i class="fa-brands fa-telegram"></i></div>
@@ -212,7 +211,7 @@
             <button class="action-btn" onclick="completeTask('Join Telegram Channel', 60)">Join</button>
         </div>
 
-        <!-- Task 6: Lucky Spin Offer -->
+        <!-- Task 6 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #ef4444;"><i class="fa-solid fa-rotate"></i></div>
@@ -282,7 +281,7 @@
         tg.expand();
 
         let user = tg.initDataUnsafe.user;
-        let userId = user ? user.id : "7757851056";
+        let userId = user ? user.id.toString() : "7757851056";
         let username = user ? (user.first_name || "Arefin") : "Arefin";
 
         document.getElementById('username').innerText = username;
@@ -291,23 +290,28 @@
         }
 
         let userRef = db.ref('users/' + userId);
-        let userData = { points: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "" };
+        let userData = { points: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, lastSeen: Date.now() };
 
+        // ফায়ারবেসে ইউজারের ডেটা চেক করা এবং নতুন অ্যাকাউন্ট হলে অটো-ক্রিয়েট করা
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
-            if (data && data.points !== undefined) {
+            if (data && (data.points !== undefined || data.gp !== undefined)) {
                 userData = data;
+                userData.points = data.points !== undefined ? data.points : (data.gp || 0);
                 updateUI();
+                // প্রতিবার অ্যাপে ঢুকলে ইউজার নেম ও লাস্ট সিন আপডেট হবে (যাতে অ্যাডমিন প্যানেলে শো করে)
+                userRef.update({ name: username, username: username, lastSeen: Date.now() });
             } else {
-                userData = { points: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "" };
+                userData = { points: 0, gp: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, username: username, lastSeen: Date.now() };
                 userRef.set(userData);
                 updateUI();
             }
         });
 
         function updateUI() {
-            document.getElementById('balance').innerText = (userData.points || 0).toLocaleString();
-            document.getElementById('usd-value').innerText = '≈ $' + ((userData.points || 0) / 10000).toFixed(2);
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            document.getElementById('balance').innerText = currentPoints.toLocaleString();
+            document.getElementById('usd-value').innerText = '≈ $' + (currentPoints / 10000).toFixed(2);
             document.getElementById('streak-text').innerHTML = `<i class="fa-solid fa-fire"></i> ${userData.streakDay || 1} Days Streak`;
             renderDailyBonus();
         }
@@ -343,7 +347,9 @@
             const rewards = [10, 15, 20, 25, 30, 35, 50];
             let rewardAmount = rewards[(userData.streakDay || 1) - 1] || 10;
 
-            userData.points = (userData.points || 0) + rewardAmount;
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            userData.points = currentPoints + rewardAmount;
+            userData.gp = userData.points;
             userData.tasksDone = (userData.tasksDone || 0) + 1;
             userData.lastCheckInDate = today;
             userData.streakDay = (userData.streakDay || 1) < 7 ? (userData.streakDay || 1) + 1 : 1;
@@ -354,13 +360,25 @@
         }
 
         function completeTask(taskName, points) {
-            userData.points = (userData.points || 0) + points;
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            userData.points = currentPoints + points;
+            userData.gp = userData.points;
             userData.tasksDone = (userData.tasksDone || 0) + 1;
             
             userRef.set(userData).then(() => {
                 tg.showAlert(`Task "${taskName}" completed! +${points} GP added.`);
             });
         }
+
+        // নোটিফিকেশন অ্যালার্ট চেক
+        db.ref('users/' + userId + '/notifications').on('child_added', (snapshot) => {
+            let notif = snapshot.val();
+            let msg = notif.message || notif.text;
+            if (msg) {
+                tg.showAlert(msg);
+                snapshot.ref.remove();
+            }
+        });
     </script>
 </body>
 </html>
