@@ -1,1 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyCen - Agent / Sell GP</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #2a1b4e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 90px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        .header-banner {
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+        }
+        .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
+        .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
 
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .card h3 { margin: 0 0 10px 0; font-size: 16px; color: #c084fc; }
+        .card p { margin: 0 0 16px 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; margin-bottom: 6px; color: var(--text-muted); }
+        .form-control {
+            width: 100%;
+            background: #0b0f19;
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .submit-btn {
+            background: #7c3aed;
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover { background: #6d28d9; }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav-item.active { color: #c084fc; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-banner">
+            <h2>🤝 Agent & GP Exchange</h2>
+            <p>Sell your earned GP points securely to verified agents</p>
+        </div>
+
+        <div class="card">
+            <h3>Sell GP to Agent</h3>
+            <p>Enter the amount of GP you want to sell. Once submitted, our agent/admin will verify and approve your request.</p>
+            
+            <div class="form-group">
+                <label>Your Available GP Balance</label>
+                <input type="text" id="user-balance" class="form-control" value="0 GP" disabled>
+            </div>
+            
+            <div class="form-group">
+                <label>Amount to Sell (GP)</label>
+                <input type="number" id="sell-amount" class="form-control" placeholder="e.g. 1000">
+            </div>
+
+            <div class="form-group">
+                <label>Payment Method & Number (Bkash/Nagad/Binance)</label>
+                <input type="text" id="payment-details" class="form-control" placeholder="e.g. Bkash - 017xxxxxxxx">
+            </div>
+
+            <button class="submit-btn" onclick="submitSellRequest()">Submit Sale Request</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Watch Ads</a>
+        <a class="nav-item active" href="agent.html"><i class="fa-solid fa-handshake"></i>Agent</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycan-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id : "7757851056";
+        let userName = user ? (user.first_name || "User") : "User";
+
+        let userRef = db.ref('users/' + userId);
+        let userPoints = 0;
+
+        userRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            if (data && data.points !== undefined) {
+                userPoints = data.points;
+                document.getElementById('user-balance').value = userPoints.toLocaleString() + " GP";
+            }
+        });
+
+        function submitSellRequest() {
+            let amount = parseInt(document.getElementById('sell-amount').value);
+            let details = document.getElementById('payment-details').value;
+
+            if (!amount || amount <= 0) {
+                tg.showAlert("Please enter a valid GP amount to sell.");
+                return;
+            }
+            if (amount > userPoints) {
+                tg.showAlert("You don't have enough GP balance!");
+                return;
+            }
+            if (!details) {
+                tg.showAlert("Please enter your payment details.");
+                return;
+            }
+
+            // Deduct points temporarily or wait for admin approval (here we deduct or hold)
+            let newPoints = userPoints - amount;
+            
+            // Send request to Firebase admin requests node
+            let requestRef = db.ref('sell_requests').push();
+            requestRef.set({
+                userId: userId,
+                userName: userName,
+                amount: amount,
+                details: details,
+                status: "Pending",
+                timestamp: Date.now()
+            }).then(() => {
+                // Update user points
+                userRef.update({ points: newPoints });
+                tg.showAlert("GP sell request submitted successfully to Agent! Waiting for admin approval.");
+                document.getElementById('sell-amount').value = "";
+                document.getElementById('payment-details').value = "";
+            });
+        }
+    </script>
+</body>
+</html>
