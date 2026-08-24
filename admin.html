@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Ultra Pro Admin Control Center</title>
+    <title>HeyCen - Master Admin Control Center</title>
     <!-- Firebase SDKs (Compat) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
@@ -16,12 +16,13 @@
             --blue: #3b82f6; --green: #22c55e; --red: #ef4444; 
             --orange: #f59e0b; --purple: #a855f7; --primary: #fbbf24;
         }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; display: flex; justify-content: center; }
         
-        .header { background: var(--card); padding: 15px; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 100; display: flex; align-items: center; gap: 15px; }
+        .container { padding: 15px; width: 100%; max-width: 480px; box-sizing: border-box; }
+        
+        .header { background: var(--card); padding: 15px; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 100; display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-radius: 0 0 12px 12px; }
         .back-nav { font-size: 20px; color: white; cursor: pointer; padding: 5px; }
 
-        .container { padding: 15px; max-width: 480px; margin: 0 auto; box-sizing: border-box; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
         
@@ -41,8 +42,7 @@
         .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); }
         .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
         
-        #login-screen { height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; z-index: 1001; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         
         .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
@@ -53,57 +53,43 @@
 </head>
 <body>
 
-    <div id="login-screen">
-        <div class="card" style="width: 320px; text-align: center;">
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                <i class="fas fa-arrow-left back-nav" onclick="window.history.back()"></i>
-                <h3 style="margin:0;">HeyCen Admin Login</h3>
-            </div>
-            <p style="font-size: 12px; color: #94a3b8;">Enter master credentials</p>
-            <input type="password" id="admin-pass" class="input-box" placeholder="Password">
-            <button class="btn btn-blue" onclick="checkLogin()">Login Dashboard</button>
-        </div>
-    </div>
-
-    <div id="admin-panel" style="display: none;">
+    <div class="container" id="admin-panel">
         <div class="header">
-            <i class="fas fa-arrow-left back-nav" onclick="location.reload()"></i>
-            <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> HeyCen Ultra Admin</h3>
+            <i class="fas fa-arrow-left back-nav" onclick="location.href='profile.html'"></i>
+            <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> HeyCen Master Admin</h3>
         </div>
 
-        <div class="container">
-            <div class="grid">
-                <div class="stat-box"><small>Total Users</small><h2 id="st-users">0</h2></div>
-                <div class="stat-box"><small>Active (Live)</small><h2 id="st-active" style="color: var(--green);">0</h2></div>
-                <div class="stat-box"><small>Pending Req</small><h2 id="st-pending" style="color: var(--orange);">0</h2></div>
-                <div class="stat-box"><small>Total GP</small><h2 id="st-total-gp" style="color: var(--green);">0</h2></div>
-                <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
-            </div>
+        <div class="grid">
+            <div class="stat-box"><small>Total Users</small><h2 id="st-users">0</h2></div>
+            <div class="stat-box"><small>Active (Live)</small><h2 id="st-active" style="color: var(--green);">0</h2></div>
+            <div class="stat-box"><small>Pending Req</small><h2 id="st-pending" style="color: var(--orange);">0</h2></div>
+            <div class="stat-box"><small>Total GP</small><h2 id="st-total-gp" style="color: var(--green);">0</h2></div>
+            <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
+        </div>
 
-            <!-- ১. ফ্রি জিপি সেল রিকোয়েস্ট (Agent / GP Sale) -->
-            <div class="card" style="border-color: var(--purple);">
-                <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests (Agent Qualification)</h4>
-                <div id="agent-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading GP sale requests...</div>
-            </div>
+        <!-- ১. ফ্রি জিপি সেল রিকোয়েস্ট (Agent / GP Sale) -->
+        <div class="card" style="border-color: var(--purple);">
+            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests (Agent Qualification)</h4>
+            <div id="agent-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading GP sale requests...</div>
+        </div>
 
-            <!-- ২. পেইড সার্ভিস / ওয়ালেট পেমেন্ট রিকোয়েস্ট -->
-            <div class="card" style="border-color: var(--orange);">
-                <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Direct Wallet Payments (Boosts)</h4>
-                <div id="boost-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading payment proofs...</div>
-            </div>
+        <!-- ২. পেইড সার্ভিস / ওয়ালেট পেমেন্ট রিকোয়েস্ট -->
+        <div class="card" style="border-color: var(--orange);">
+            <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Direct Wallet Payments (Boosts)</h4>
+            <div id="boost-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading payment proofs...</div>
+        </div>
 
-            <!-- ৩. উইথড্র রিকোয়েস্ট ম্যানেজমেন্ট -->
-            <div class="card" style="border-color: var(--blue);">
-                <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Management</h4>
-                <div id="wd-list">Loading withdrawals...</div>
-            </div>
+        <!-- ৩. উইথড্র রিকোয়েস্ট ম্যানেজমেন্ট -->
+        <div class="card" style="border-color: var(--blue);">
+            <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Management</h4>
+            <div id="wd-list">Loading withdrawals...</div>
+        </div>
 
-            <!-- ৪. ইউজার সার্চ ও ম্যানেজমেন্ট -->
-            <div class="card">
-                <h4><i class="fas fa-user-shield"></i> User Search & Management</h4>
-                <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
-                <div id="user-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;"></div>
-            </div>
+        <!-- ৪. ইউজার সার্চ ও ম্যানেজমেন্ট -->
+        <div class="card">
+            <h4><i class="fas fa-user-shield"></i> User Search & Management</h4>
+            <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
+            <div id="user-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;"></div>
         </div>
     </div>
 
@@ -135,7 +121,6 @@
     </div>
 
     <script>
-        // HeyCen Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
@@ -150,15 +135,22 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        function checkLogin() {
-            if(document.getElementById('admin-pass').value === "s#642S") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'block';
-                init();
-            } else { alert("Incorrect Password!"); }
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id.toString() : "7757851056";
+        const ADMIN_ID = "7757851056";
+
+        // সিকিউরিটি চেক: শুধু নির্দিষ্ট অ্যাডমিন আইডি হলে ড্যাশবোর্ড দেখাবে, অন্যথায় ব্যাক করে দেবে
+        if (userId !== ADMIN_ID && userId !== "7757851056") {
+            alert("Access Denied! Unauthorized User.");
+            window.location.href = "index.html";
+        } else {
+            initAdmin();
         }
 
-        function init() {
+        function initAdmin() {
             // ১. GP Sell Requests (Agent / Free Qualification) লোড করা
             db.ref('sell_requests').on('value', snap => {
                 let html = "";
@@ -178,7 +170,7 @@
                 document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
             });
 
-            // ২. ইউজার লিস্ট ও ডাইরেক্ট ওয়ালেট পেমেন্ট প্রুফ লোড করা (HeyCen Database Path Structure)
+            // ২. ইউজার লিস্ট ও ডাইরেক্ট ওয়ালেট পেমেন্ট প্রুফ লোড করা
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
                 let banned = 0, totalGP = 0, activeCount = 0;
@@ -343,7 +335,6 @@
 
         function updateUserGP() {
             let gp = parseInt(document.getElementById('m-gp').value);
-            // HeyCen অ্যাপে points এবং gp দুটি প্রপার্টিই যেন আপডেট হয়
             db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
         }
 
