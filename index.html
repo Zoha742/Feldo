@@ -26,7 +26,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 90px 0; /* Space for bottom nav */
+            padding: 0 0 90px 0;
             display: flex;
             justify-content: center;
         }
@@ -365,7 +365,7 @@
             <div class="points-title">Your Points</div>
             <div class="points-value" id="balance">12,540</div>
             <div class="usd-badge" id="usd-value">≈ $1.25</div>
-            <button class="history-btn" onclick="alert('History coming soon!')"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+            <button class="history-btn" onclick="claimBonus()"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
         </div>
 
         <!-- Quick Menu -->
@@ -374,15 +374,15 @@
                 <div class="menu-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-check"></i></div>
                 <div class="menu-label">Daily Check-in</div>
             </div>
-            <div class="menu-item" onclick="alert('Ad feature loading...')">
+            <div class="menu-item" onclick="claimBonus()">
                 <div class="menu-icon" style="background: #ef4444;"><i class="fa-solid fa-play"></i></div>
                 <div class="menu-label">Watch Ads</div>
             </div>
-            <div class="menu-item" onclick="alert('Tasks section')">
+            <div class="menu-item" onclick="claimBonus()">
                 <div class="menu-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
                 <div class="menu-label">Tasks</div>
             </div>
-            <div class="menu-item" onclick="alert('Rewards section')">
+            <div class="menu-item" onclick="claimBonus()">
                 <div class="menu-icon" style="background: #3b82f6;"><i class="fa-solid fa-gift"></i></div>
                 <div class="menu-label">Rewards</div>
             </div>
@@ -469,7 +469,7 @@
                 <h3>Watch Ads & Earn More!</h3>
                 <p>Watch ads and earn unlimited points</p>
             </div>
-            <button class="promo-btn"><i class="fa-solid fa-play"></i> Watch Now</button>
+            <button class="promo-btn" onclick="claimBonus()"><i class="fa-solid fa-play"></i> Watch Now</button>
         </div>
     </div>
 
@@ -479,15 +479,15 @@
             <i class="fa-solid fa-house"></i>
             Home
         </a>
-        <a class="nav-item" onclick="alert('Tasks page')">
+        <a class="nav-item">
             <i class="fa-solid fa-list-check"></i>
             Tasks
         </a>
-        <a class="nav-item" onclick="alert('Rewards page')">
+        <a class="nav-item">
             <i class="fa-solid fa-gift"></i>
             Rewards
         </a>
-        <a class="nav-item" onclick="alert('Profile page')">
+        <a class="nav-item">
             <i class="fa-solid fa-user"></i>
             Profile
         </a>
@@ -534,7 +534,6 @@
                 document.getElementById('balance').innerText = data.points.toLocaleString();
                 document.getElementById('usd-value').innerText = '≈ $' + (data.points / 10000).toFixed(2);
             } else {
-                // If user doesn't exist in DB, initialize with 12540 points matching design
                 userRef.set({
                     username: username,
                     points: 12540
@@ -544,17 +543,16 @@
             }
         });
 
-        // Claim Bonus / Task Function (Updates Firebase DB)
+        // Claim Bonus Function (Updates Firebase DB)
         function claimBonus() {
             userRef.once('value').then((snapshot) => {
                 let currentPoints = snapshot.val() ? (snapshot.val().points || 0) : 12540;
                 let newPoints = currentPoints + 50;
                 
-                // Update Firebase
                 userRef.update({
                     points: newPoints
                 }).then(() => {
-                    tg.showAlert('Successfully earned +50 points and updated database!');
+                    tg.showAlert('Successfully earned points and updated database!');
                 });
             });
         }
