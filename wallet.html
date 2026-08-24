@@ -1,1 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyCen - Wallet & Payments</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #2a1b4e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 90px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        .header-banner {
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+        }
+        .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
+        .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
 
+        .wallet-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .ton-connect-btn {
+            background: #0098EA;
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 152, 234, 0.3);
+            transition: background 0.2s;
+        }
+        .ton-connect-btn:hover { background: #0082c4; }
+
+        .info-box {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #d8b4fe;
+            line-height: 1.4;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav-item.active { color: #c084fc; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-banner">
+            <h2>💎 TON Wallet & Payments</h2>
+            <p>Connect your TON wallet to pay or receive crypto instantly</p>
+        </div>
+
+        <div class="wallet-card">
+            <h3 style="margin-top:0; color:#fff;">TON Connect Setup</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Link your Telegram Wallet to bypass ads and unlock instant VIP features.</p>
+            <button class="ton-connect-btn" onclick="connectWallet()">
+                <i class="fa-solid fa-wallet"></i> Connect TON Wallet
+            </button>
+        </div>
+
+        <div class="info-box">
+            <i class="fa-solid fa-circle-info"></i> Note: If you don't want to pay via wallet, you can freely earn GP points by watching ads and selling them through the Agent option!
+        </div>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Watch Ads</a>
+        <a class="nav-item" href="agent.html"><i class="fa-solid fa-handshake"></i>Agent</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function connectWallet() {
+            tg.showAlert("TON Connect SDK initializing... Wallet integration will be active soon!");
+        }
+    </script>
+</body>
+</html>
