@@ -54,34 +54,6 @@
             font-size: 13px;
             color: var(--text-muted);
         }
-        .header-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .icon-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-main);
-            font-size: 16px;
-            cursor: pointer;
-            position: relative;
-        }
-        .icon-btn::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            right: 10px;
-            width: 8px;
-            height: 8px;
-            background: #ef4444;
-            border-radius: 50%;
-        }
 
         /* User Profile Card */
         .profile-card {
@@ -92,7 +64,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
         .profile-left {
             display: flex;
@@ -100,7 +72,6 @@
             gap: 14px;
         }
         .avatar-container {
-            position: relative;
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -124,263 +95,70 @@
             color: #3b82f6;
             font-size: 14px;
         }
-        .level-badge {
-            display: inline-block;
-            background: rgba(139, 92, 246, 0.2);
-            color: #a78bfa;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        .xp-bar-container {
-            width: 150px;
-            background: #1e293b;
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 4px;
-        }
-        .xp-bar-fill {
-            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
-            height: 100%;
-            width: 62.5%;
-        }
-        .xp-text {
-            font-size: 10px;
+        .user-id {
+            font-size: 12px;
             color: var(--text-muted);
-        }
-        .join-date {
-            font-size: 11px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 4px;
-        }
-        .arrow-icon {
-            color: var(--text-muted);
-            font-size: 16px;
         }
 
-        /* Stats Grid (4 columns) */
-        .stats-grid {
+        /* Menu Options Grid (Matching Screenshot Layout) */
+        .options-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .option-box {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 16px 10px;
-            margin-bottom: 16px;
+            border-radius: 16px;
+            padding: 18px 12px;
             text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
         }
-        .stat-item .stat-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px auto;
-            font-size: 14px;
-            color: #fff;
+        .option-box:active {
+            transform: scale(0.97);
         }
-        .stat-item .value {
+        .option-box:hover {
+            border-color: #3b82f6;
+        }
+        .option-icon {
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        .option-title {
             font-size: 13px;
             font-weight: 700;
-            margin-bottom: 2px;
-        }
-        .stat-item .label {
-            font-size: 9px;
-            color: var(--text-muted);
-            line-height: 1.2;
-        }
-
-        /* Level Banner Card */
-        .level-banner {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .level-banner-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-        }
-        .shield-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 20px;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-        }
-        .level-details h4 {
-            margin: 0 0 2px 0;
-            font-size: 15px;
-        }
-        .level-details .sub-title {
-            font-size: 12px;
-            color: #eab308;
-            font-weight: 600;
+            letter-spacing: 0.5px;
             margin-bottom: 4px;
+            color: #f8fafc;
         }
-        .level-details p {
-            margin: 0;
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-        .level-progress-right {
-            text-align: right;
-        }
-        .level-progress-right .xp-ratio {
+        .option-desc {
             font-size: 11px;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        .level-progress-right .xp-bar {
-            width: 90px;
-            background: #1e293b;
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 4px;
-        }
-        .level-progress-right .xp-fill {
-            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
-            height: 100%;
-            width: 62.5%;
-        }
-        .level-progress-right .remaining-xp {
-            font-size: 9px;
-            color: #a78bfa;
+            color: var(--text-muted);
         }
 
-        /* Menu List Options */
-        .menu-list {
+        /* Full Width Admin Panel Box */
+        .admin-box {
             background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-        .menu-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--card-border);
+            border: 1px solid #7f1d1d;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
             cursor: pointer;
-            text-decoration: none;
-            color: var(--text-main);
+            margin-top: 12px;
         }
-        .menu-row:last-child {
-            border-bottom: none;
+        .admin-box:hover {
+            border-color: #ef4444;
         }
-        .menu-row-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .admin-box .option-icon {
+            color: #ef4444;
         }
-        .menu-row-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 14px;
+        .admin-box .option-title {
+            color: #ef4444;
         }
-        .menu-row-text h5 {
-            margin: 0 0 2px 0;
-            font-size: 13px;
-        }
-        .menu-row-text p {
-            margin: 0;
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-        .menu-row-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .badge-count {
-            background: #1e293b;
-            color: #a78bfa;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        /* Withdraw USDT Banner */
-        .withdraw-banner {
-            background: linear-gradient(135deg, #131c2e 0%, #0f172a 100%);
-            border: 1px solid #1e3a34;
-            border-radius: 20px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
-        .withdraw-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .tether-icon {
-            width: 40px;
-            height: 40px;
-            background: #0d9488;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 18px;
-            font-weight: bold;
-        }
-        .withdraw-info h4 {
-            margin: 0 0 2px 0;
-            font-size: 13px;
-            color: #2dd4bf;
-        }
-        .withdraw-info p {
-            margin: 0;
-            font-size: 10px;
-            color: var(--text-muted);
-            max-width: 200px;
-            line-height: 1.3;
-        }
-        .coming-soon-btn {
-            background: rgba(13, 148, 136, 0.15);
-            border: 1px solid rgba(13, 148, 136, 0.4);
-            color: #2dd4bf;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            white-space: nowrap;
+        .admin-box .option-desc {
+            color: #fca5a5;
         }
 
         /* Bottom Navigation Bar */
@@ -426,159 +204,85 @@
                 <h1>Profile</h1>
                 <p>Manage your account & track your activity</p>
             </div>
-            <div class="header-actions">
-                <button class="icon-btn" onclick="tg.showAlert('No new notifications')"><i class="fa-regular fa-bell"></i></button>
-                <button class="icon-btn" onclick="tg.showAlert('Settings options coming soon')"><i class="fa-solid fa-gear"></i></button>
-            </div>
         </div>
 
-        <!-- Profile Card -->
+        <!-- Profile Card (Shows User Image, Name & ID) -->
         <div class="profile-card">
             <div class="profile-left">
                 <div class="avatar-container">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
+                    <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
                 </div>
                 <div class="profile-info">
-                    <h3 id="profile-name">CryptoHunter <i class="fa-solid fa-circle-check"></i></h3>
-                    <div class="level-badge">Level 12</div>
-                    <div class="xp-bar-container">
-                        <div class="xp-bar-fill"></div>
-                    </div>
-                    <div class="xp-text">6,250 / 10,000 XP</div>
-                    <div class="join-date"><i class="fa-regular fa-calendar"></i> Member since May 2024</div>
+                    <h3 id="profile-name">Loading... <i class="fa-solid fa-circle-check"></i></h3>
+                    <div class="user-id" id="profile-id">ID: 000000</div>
                 </div>
-            </div>
-            <i class="fa-solid fa-chevron-right arrow-icon"></i>
-        </div>
-
-        <!-- Stats Grid (4 Cards) -->
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-icon" style="background: #eab308;"><i class="fa-solid fa-coins"></i></div>
-                <div class="value" id="total-points">12,540</div>
-                <div class="label">Total Points</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon" style="background: #10b981;"><i class="fa-solid fa-chart-line"></i></div>
-                <div class="value">1,250</div>
-                <div class="label">Points Earned<br>(This Week)</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon" style="background: #3b82f6;"><i class="fa-solid fa-wallet"></i></div>
-                <div class="value">2,340</div>
-                <div class="label">Pending Points</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon" style="background: #a855f7;"><i class="fa-solid fa-gift"></i></div>
-                <div class="value">10,200</div>
-                <div class="label">Withdrawn Points</div>
             </div>
         </div>
 
-        <!-- Level Progress Banner -->
-        <div class="level-banner">
-            <div class="level-banner-left">
-                <div class="shield-icon"><i class="fa-solid fa-shield-halved"></i></div>
-                <div class="level-details">
-                    <h4>Level 12</h4>
-                    <div class="sub-title">Rising Star ⭐</div>
-                    <p>Keep earning to reach Level 13 and unlock more bonuses!</p>
-                </div>
+        <!-- Options Grid (As per Screenshot_72.png) -->
+        <div class="options-grid">
+            <!-- Total GP -->
+            <div class="option-box" onclick="tg.showAlert('Your total accumulated GP points.')">
+                <div class="option-icon" style="color: #eab308;"><i class="fa-solid fa-coins"></i></div>
+                <div class="option-title">TOTAL GP</div>
+                <div class="option-desc" id="total-gp">0</div>
             </div>
-            <div class="level-progress-right">
-                <div class="xp-ratio">6,250 / 10,000 XP</div>
-                <div class="xp-bar"><div class="xp-fill"></div></div>
-                <div class="remaining-xp">3,750 XP to Level 13</div>
+
+            <!-- Task Done -->
+            <div class="option-box" onclick="location.href='task.html'">
+                <div class="option-icon" style="color: #22c55e;"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="option-title">TASK DONE</div>
+                <div class="option-desc" id="tasks-done-count">0</div>
+            </div>
+
+            <!-- Refer Friends -->
+            <div class="option-box" onclick="tg.showAlert('Referral link copied! Invite friends to earn more.')">
+                <div class="option-icon" style="color: #ec4899;"><i class="fa-solid fa-user-plus"></i></div>
+                <div class="option-title">REFER FRIENDS</div>
+                <div class="option-desc">Get GP Rewards</div>
+            </div>
+
+            <!-- Earn More -->
+            <div class="option-box" onclick="location.href='task.html'">
+                <div class="option-icon" style="color: #a855f7;"><i class="fa-solid fa-gem"></i></div>
+                <div class="option-title">EARN MORE</div>
+                <div class="option-desc">Extra Offers</div>
+            </div>
+
+            <!-- Wallet Setup -->
+            <div class="option-box" onclick="tg.showAlert('TON Connect integration coming soon!')">
+                <div class="option-icon" style="color: #3b82f6;"><i class="fa-solid fa-wallet"></i></div>
+                <div class="option-title">WALLET SETUP</div>
+                <div class="option-desc">TON Connect</div>
+            </div>
+
+            <!-- Withdraw -->
+            <div class="option-box" onclick="tg.showAlert('Withdrawals will open soon.')">
+                <div class="option-icon" style="color: #ef4444;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                <div class="option-title">WITHDRAW</div>
+                <div class="option-desc">GP Cashout</div>
+            </div>
+
+            <!-- History -->
+            <div class="option-box" onclick="tg.showAlert('No recent history found.')">
+                <div class="option-icon" style="color: #60a5fa;"><i class="fa-solid fa-list-ul"></i></div>
+                <div class="option-title">HISTORY</div>
+                <div class="option-desc">Log Details</div>
+            </div>
+
+            <!-- Support -->
+            <div class="option-box" onclick="tg.showAlert('Contact support at @heycan_support')">
+                <div class="option-icon" style="color: #34d399;"><i class="fa-solid fa-headset"></i></div>
+                <div class="option-title">SUPPORT</div>
+                <div class="option-desc">Get Help</div>
             </div>
         </div>
 
-        <!-- Menu Options List -->
-        <div class="menu-list">
-            <a class="menu-row" onclick="tg.showAlert('Activity details')">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #10b981;"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <div class="menu-row-text">
-                        <h5>My Activity</h5>
-                        <p>View your earnings and activities</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right arrow-icon"></i>
-            </a>
-
-            <a class="menu-row" onclick="tg.showAlert('Transaction history')">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #3b82f6;"><i class="fa-solid fa-file-invoice"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Transaction History</h5>
-                        <p>Check your points history</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right arrow-icon"></i>
-            </a>
-
-            <a class="menu-row" onclick="tg.showAlert('Referral system')">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #f59e0b;"><i class="fa-solid fa-user-group"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Referrals</h5>
-                        <p>Invite friends and earn more points</p>
-                    </div>
-                </div>
-                <div class="menu-row-right">
-                    <span class="badge-count">12 Referrals</span>
-                    <i class="fa-solid fa-chevron-right"></i>
-                </div>
-            </a>
-
-            <a class="menu-row" onclick="tg.showAlert('Achievements section')">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #a855f7;"><i class="fa-solid fa-trophy"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Achievements</h5>
-                        <p>See your badges and achievements</p>
-                    </div>
-                </div>
-                <div class="menu-row-right">
-                    <span class="badge-count">8/24</span>
-                    <i class="fa-solid fa-chevron-right"></i>
-                </div>
-            </a>
-
-            <a class="menu-row" onclick="tg.showAlert('Help & Support')">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #06b6d4;"><i class="fa-solid fa-headset"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Help & Support</h5>
-                        <p>Get help and support</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right arrow-icon"></i>
-            </a>
-
-            <a class="menu-row" onclick="tg.showAlert('About Us')">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #6366f1;"><i class="fa-solid fa-circle-info"></i></div>
-                    <div class="menu-row-text">
-                        <h5>About Us</h5>
-                        <p>Learn more about our platform</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right arrow-icon"></i>
-            </a>
-        </div>
-
-        <!-- Withdraw USDT Banner -->
-        <div class="withdraw-banner">
-            <div class="withdraw-left">
-                <div class="tether-icon">₮</div>
-                <div class="withdraw-info">
-                    <h4>Withdraw with USDT</h4>
-                    <p>Soon you'll be able to convert your points to USDT and withdraw to your wallet.</p>
-                </div>
-            </div>
-            <div class="coming-soon-btn">
-                <i class="fa-regular fa-clock"></i> Coming Soon
-            </div>
+        <!-- Admin Panel (Full Width) -->
+        <div class="admin-box" onclick="tg.showAlert('Admin access restricted.')">
+            <div class="option-icon"><i class="fa-solid fa-user-shield"></i></div>
+            <div class="option-title">ADMIN PANEL</div>
+            <div class="option-desc" style="color: #fca5a5;">Control Center (Secret)</div>
         </div>
     </div>
 
@@ -630,16 +334,33 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id : "guest_user";
-        let username = user ? (user.username || user.first_name) : "CryptoHunter";
+        let firstName = user ? (user.first_name || "User") : "Guest";
+        let username = user && user.username ? `@${user.username}` : `ID: ${userId}`;
 
-        document.getElementById('profile-name').innerHTML = `${username} <i class="fa-solid fa-circle-check"></i>`;
+        // Set User Name and ID
+        document.getElementById('profile-name').innerHTML = `${firstName} <i class="fa-solid fa-circle-check"></i>`;
+        document.getElementById('profile-id').innerText = username;
 
-        // Sync points from Firebase DB
+        // If Telegram provides a profile photo url, use it
+        if (user && user.photo_url) {
+            document.getElementById('user-avatar').src = user.photo_url;
+        }
+
+        // Fetch User Data from Firebase (Points default to 0 for new users)
         let userRef = db.ref('users/' + userId);
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
             if (data && data.points !== undefined) {
-                document.getElementById('total-points').innerText = data.points.toLocaleString();
+                document.getElementById('total-gp').innerText = data.points.toLocaleString();
+            } else {
+                // Initialize new user with 0 points
+                userRef.set({
+                    username: firstName,
+                    points: 0,
+                    streakDay: 1,
+                    lastCheckInDate: ""
+                });
+                document.getElementById('total-gp').innerText = "0";
             }
         });
     </script>
