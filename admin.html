@@ -3,17 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Admin Control Center</title>
+    <title>HeyCen - Master Admin Control Center</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #131c2e;
-            --card-border: #7f1d1d;
+            --bg-color: #070a14;
+            --card-bg: #0f172a;
+            --border-color: #1e293b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --purple-grad: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+            --blue-grad: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --emerald-grad: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --amber-grad: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,48 +28,148 @@
             display: flex;
             justify-content: center;
         }
-        .container { width: 100%; max-width: 480px; }
-        .banner { background: #7f1d1d; padding: 16px; border-radius: 12px; text-align: center; margin-bottom: 20px; }
-        .banner h2 { margin: 0; font-size: 18px; color: #fca5a5; }
+        .container { width: 100%; max-width: 480px; box-sizing: border-box; }
         
-        .request-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 12px;
+        /* Master Header Banner */
+        .admin-banner {
+            background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);
+            border: 1px solid #ef4444;
+            padding: 18px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
         }
-        .request-card h4 { margin: 0 0 4px 0; font-size: 14px; color: #fff; }
-        .request-card p { margin: 2px 0; font-size: 12px; color: var(--text-muted); }
-        .approve-btn {
-            background: #10b981;
+        .admin-banner h2 { margin: 0 0 4px 0; font-size: 20px; color: #fca5a5; }
+        .admin-banner p { margin: 0; font-size: 12px; color: #fecaca; }
+
+        /* Tabs Navigation */
+        .admin-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            background: #7c3aed;
+            color: #fff;
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+        }
+
+        /* Sections */
+        .admin-section { display: none; }
+        .admin-section.active-section { display: block; }
+
+        /* Request Cards */
+        .req-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Different Colors for Different Sections */
+        .req-card.agent-box { border-left: 5px solid #a855f7; }
+        .req-card.payment-box { border-left: 5px solid #3b82f6; }
+        .req-card.withdraw-box { border-left: 5px solid #f59e0b; }
+
+        .req-card h4 { margin: 0 0 8px 0; font-size: 14px; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+        .req-card p { margin: 4px 0; font-size: 12px; color: var(--text-muted); }
+        .req-card p span { color: #f8fafc; font-weight: 600; }
+        
+        .proof-img {
+            width: 100%;
+            max-height: 160px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .action-row { display: flex; gap: 8px; margin-top: 12px; }
+        .btn-approve {
+            flex: 1;
+            background: var(--emerald-grad);
             color: #fff;
             border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
+            padding: 10px;
+            border-radius: 8px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
-            margin-top: 8px;
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
         }
-        .unauthorized { text-align: center; margin-top: 50px; color: #ef4444; font-size: 18px; }
+        .btn-reject {
+            background: #ef4444;
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .no-data { text-align: center; color: var(--text-muted); font-size: 12px; padding: 30px 0; }
+        .unauthorized { text-align: center; margin-top: 80px; color: #ef4444; font-size: 18px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="container" id="admin-container" style="display:none;">
-        <div class="banner">
-            <h2>🛡️ Admin Control Center</h2>
-            <p style="margin:4px 0 0 0; font-size:11px; color:#fca5a5;">Approve GP Sell Requests</p>
+        <div class="admin-banner">
+            <h2>🛡️ Master Control Center</h2>
+            <p>Manage GP Sales, Direct Payments & Withdrawals</p>
         </div>
 
-        <div id="requests-list">
-            <p style="text-align:center; color:var(--text-muted);">Loading requests...</p>
+        <!-- Colorful Navigation Tabs -->
+        <div class="admin-tabs">
+            <button class="tab-btn active" onclick="switchTab('agentTab', this)"><i class="fa-solid fa-handshake"></i> GP Sales (Agent)</button>
+            <button class="tab-btn" onclick="switchTab('paymentTab', this)"><i class="fa-solid fa-wallet"></i> Direct Payments</button>
+            <button class="tab-btn" onclick="switchTab('withdrawTab', this)"><i class="fa-solid fa-money-bill-transfer"></i> Fund Withdraw</button>
+        </div>
+
+        <!-- Section 1: GP Sales (Agent) -->
+        <div id="agentTab" class="admin-section active-section">
+            <div id="agent-list">
+                <div class="no-data">Loading GP sale requests...</div>
+            </div>
+        </div>
+
+        <!-- Section 2: Direct Payments (Wallet / Paid Service) -->
+        <div id="paymentTab" class="admin-section">
+            <div id="payment-list">
+                <div class="no-data">Loading direct payment proofs...</div>
+            </div>
+        </div>
+
+        <!-- Section 3: Fund Withdraw -->
+        <div id="withdrawTab" class="admin-section">
+            <div id="withdraw-list">
+                <div class="no-data">Loading withdrawal requests...</div>
+            </div>
         </div>
     </div>
 
     <div class="unauthorized" id="unauthorized-msg">
-        Access Denied! Admins Only.
+        <i class="fa-solid fa-triangle-exclamation" style="font-size: 40px; margin-bottom: 10px;"></i><br>
+        Access Denied! Master Admin Only.
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -91,26 +195,36 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id.toString() : "7757851056"; 
-        const ADMIN_ID = "7757851056";
+        const ADMIN_ID = "7757851056"; // আপনার নির্ধারিত মাস্টার অ্যাডমিন আইডি
 
         if (userId === ADMIN_ID) {
             document.getElementById('admin-container').style.display = "block";
             document.getElementById('unauthorized-msg').style.display = "none";
-            loadRequests();
+            loadAgentRequests();
+            loadPaymentRequests();
+            loadWithdrawRequests();
         } else {
             document.getElementById('admin-container').style.display = "none";
             document.getElementById('unauthorized-msg').style.display = "block";
         }
 
-        function loadRequests() {
-            let reqRef = db.ref('sell_requests');
-            reqRef.on('value', (snapshot) => {
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active-section'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active-section');
+            btnElement.classList.add('active');
+        }
+
+        // 1. Load GP Sale Requests (Agent Section - No image needed, just Name & ID)
+        function loadAgentRequests() {
+            db.ref('sell_requests').on('value', (snapshot) => {
                 let data = snapshot.val();
-                let listDiv = document.getElementById('requests-list');
+                let listDiv = document.getElementById('agent-list');
                 listDiv.innerHTML = "";
 
                 if (!data) {
-                    listDiv.innerHTML = "<p style='text-align:center; color:var(--text-muted);'>No pending requests.</p>";
+                    listDiv.innerHTML = `<div class="no-data">No pending GP sale requests.</div>`;
                     return;
                 }
 
@@ -118,27 +232,128 @@
                     let req = data[key];
                     if (req.status === "Pending") {
                         listDiv.innerHTML += `
-                            <div class="request-card">
-                                <h4>User: ${req.userName} (ID: ${req.userId})</h4>
-                                <p><strong>Selling Amount:</strong> ${req.amount} GP</p>
-                                <p><strong>Payment Info:</strong> ${req.details}</p>
-                                <button class="approve-btn" onclick="approveRequest('${key}', '${req.userId}', ${req.amount})">Approve & Notify</button>
+                            <div class="req-card agent-box">
+                                <h4><span>👤 ${req.userName}</span> <span style="color:#c084fc;">${req.amount} GP</span></h4>
+                                <p><strong>Telegram ID:</strong> <span>${req.userId}</span></p>
+                                <p><strong>Status:</strong> <span style="color:#f59e0b;">Pending Qualification</span></p>
+                                <div class="action-row">
+                                    <button class="btn-approve" onclick="approveAgentReq('${key}', '${req.userId}', ${req.amount})"><i class="fa-solid fa-check"></i> Approve & Qualify</button>
+                                </div>
                             </div>
                         `;
                     }
                 }
+                if (listDiv.innerHTML === "") {
+                    listDiv.innerHTML = `<div class="no-data">No pending GP sale requests.</div>`;
+                }
             });
         }
 
-        function approveRequest(reqKey, targetUserId, amount) {
-            // Update request status to Approved
+        // 2. Load Direct Payment Proofs (Wallet / Paid Service)
+        function loadPaymentRequests() {
+            db.ref('pending_boosts').on('value', (snapshot) => {
+                let data = snapshot.val();
+                let listDiv = document.getElementById('payment-list');
+                listDiv.innerHTML = "";
+
+                if (!data) {
+                    listDiv.innerHTML = `<div class="no-data">No direct payment proofs found.</div>`;
+                    return;
+                }
+
+                // Nested loop for users and boosts
+                let hasData = false;
+                for (let uId in data) {
+                    for (let bKey in data[uId]) {
+                        let pay = data[uId][bKey];
+                        if (pay.status === true) {
+                            hasData = true;
+                            listDiv.innerHTML += `
+                                <div class="req-card payment-box">
+                                    <h4><span>💳 ${pay.userName}</span> <span style="color:#38bdf8;">${pay.method}</span></h4>
+                                    <p><strong>User ID:</strong> <span>${pay.customUserId || uId}</span></p>
+                                    <p><strong>Item/Service:</strong> <span>${pay.coin} Boost</span></p>
+                                    <p><strong>Time:</strong> <span>${pay.dateTime}</span></p>
+                                    ${pay.screenshot ? `<img src="${pay.screenshot}" class="proof-img" alt="Payment Proof">` : ''}
+                                    <div class="action-row">
+                                        <button class="btn-approve" onclick="approvePayment('${uId}', '${bKey}')"><i class="fa-solid fa-check"></i> Verify & Activate</button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    }
+                }
+                if (!hasData) {
+                    listDiv.innerHTML = `<div class="no-data">No direct payment proofs found.</div>`;
+                }
+            });
+        }
+
+        // 3. Load Fund Withdraw Requests (Placeholder for future withdraw node)
+        function loadWithdrawRequests() {
+            db.ref('withdraw_requests').on('value', (snapshot) => {
+                let data = snapshot.val();
+                let listDiv = document.getElementById('withdraw-list');
+                listDiv.innerHTML = "";
+
+                if (!data) {
+                    listDiv.innerHTML = `<div class="no-data">No fund withdrawal requests.</div>`;
+                    return;
+                }
+
+                for (let key in data) {
+                    let wReq = data[key];
+                    if (wReq.status === "Pending") {
+                        listDiv.innerHTML += `
+                            <div class="req-card withdraw-box">
+                                <h4><span>💰 ${wReq.userName}</span> <span style="color:#f59e0b;">${wReq.amount}</span></h4>
+                                <p><strong>User ID:</strong> <span>${wReq.userId}</span></p>
+                                <p><strong>Details:</strong> <span>${wReq.details}</span></p>
+                                <div class="action-row">
+                                    <button class="btn-approve" onclick="approveWithdraw('${key}', '${wReq.userId}')"><i class="fa-solid fa-check"></i> Pay & Approve</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                if (listDiv.innerHTML === "") {
+                    listDiv.innerHTML = `<div class="no-data">No fund withdrawal requests.</div>`;
+                }
+            });
+        }
+
+        // Approval Actions
+        function approveAgentReq(reqKey, targetUserId, amount) {
             db.ref('sell_requests/' + reqKey).update({ status: "Approved" }).then(() => {
-                // Trigger a notification or flag for the user in their node
                 db.ref('users/' + targetUserId + '/notifications').push({
-                    message: `Congratulations! Your GP sale request for ${amount} GP has been approved by Admin! Payment is processing.`,
+                    message: `🎉 Congratulations! Your GP sale of ${amount} GP has been approved by Admin. You are now qualified for paid services!`,
                     timestamp: Date.now()
                 });
-                alert("Request Approved Successfully!");
+                alert("GP Sale Request Approved Successfully!");
+            });
+        }
+
+        function approvePayment(uId, bKey) {
+            // Activate boost for user
+            db.ref(`users/${uId}/boosts/${bKey}`).set({
+                expireTime: Date.now() + (15 * 24 * 60 * 60 * 1000) // 15 days
+            }).then(() => {
+                db.ref(`users/${uId}/pending_boosts/${bKey}`).remove();
+                db.ref('users/' + uId + '/notifications').push({
+                    message: `🎉 Payment verified! Your service/boost has been successfully activated by Admin.`,
+                    timestamp: Date.now()
+                });
+                alert("Payment Verified and Boost Activated!");
+            });
+        }
+
+        function approveWithdraw(reqKey, targetUserId) {
+            db.ref('withdraw_requests/' + reqKey).update({ status: "Approved" }).then(() => {
+                db.ref('users/' + targetUserId + '/notifications').push({
+                    message: `🎉 Your fund withdrawal request has been processed and approved by Admin!`,
+                    timestamp: Date.now()
+                });
+                alert("Withdrawal Approved Successfully!");
             });
         }
     </script>
