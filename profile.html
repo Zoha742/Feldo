@@ -355,7 +355,7 @@
                     <h3 id="profile-name">Mr. Zoha <i class="fa-solid fa-circle-check"></i></h3>
                     <div class="username-text" id="profile-username">@Zoha742</div>
                     <div>
-                        <span class="user-id-badge" id="profile-id" title="Tap to copy ID">ID: 7757851056 📋</span>
+                        <span class="user-id-badge" id="profile-id" title="Tap to copy ID">ID: Loading... 📋</span>
                     </div>
                     <div class="level-row" style="margin-top: 6px;">
                         <span class="level-badge">Level 1</span>
@@ -470,7 +470,7 @@
             </a>
 
             <!-- Admin Panel (Visible ONLY to ID: 7757851056) -->
-            <a class="menu-row admin-row" id="admin-panel-btn" onclick="tg.showAlert('Welcome to Admin Control Center!')">
+            <a class="menu-row admin-row" id="admin-panel-btn" href="admin.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #ef4444, #7f1d1d);"><i class="fa-solid fa-user-shield"></i></div>
                     <div class="menu-row-text">
@@ -530,11 +530,12 @@
         tg.expand();
 
         let user = tg.initDataUnsafe.user;
-        let userId = user ? user.id : "7757851056"; 
+        // যদি টেলিগ্রাম থেকে ইউজার আইডি না পাওয়া যায়, তবে আপনার দেওয়া আইডিটি ডিফল্ট ধরে নেবে
+        let userId = (user && user.id) ? user.id.toString() : "7757851056"; 
         let firstName = user ? (user.first_name || "Mr. Zoha") : "Mr. Zoha";
-        let username = user && user.username ? `@${user.username}` : `@Zoha742`;
+        let username = (user && user.username) ? `@${user.username}` : `@Zoha742`;
 
-        // আপনার প্রদান করা নির্দিষ্ট অ্যাডমিন আইডি
+        // আপনার নির্দিষ্ট অ্যাডমিন আইডি
         const ADMIN_USER_ID = "7757851056";
 
         // Set User Name, Username and ID
@@ -553,8 +554,8 @@
             });
         };
 
-        // Show Admin Panel ONLY for your specific ID
-        if (userId.toString() === ADMIN_USER_ID) {
+        // Show Admin Panel ONLY for your specific ID (স্ট্রিং ও নম্বর দুইভাবেই চেক করা হবে)
+        if (userId === ADMIN_USER_ID || userId === "7757851056") {
             document.getElementById('admin-panel-btn').style.display = "flex";
         }
 
