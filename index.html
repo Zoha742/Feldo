@@ -6,95 +6,491 @@
     <title>HeyCen Mini App</title>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #10b981;
-            --text-color: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --accent-green: #22c55e;
+            --accent-blue: #3b82f6;
+            --border-color: #e2e8f0;
         }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             margin: 0;
-            padding: 16px;
+            padding: 0 0 90px 0; /* Space for bottom nav */
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
         }
+
         .container {
             width: 100%;
-            max-width: 400px;
-        }
-        .header {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            margin: 0 0 8px 0;
-            font-size: 24px;
-            color: var(--accent-color);
-        }
-        .balance-box {
-            font-size: 28px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .btn {
-            background-color: var(--accent-color);
-            color: #ffffff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: opacity 0.2s;
-        }
-        .btn:active {
-            opacity: 0.8;
-        }
-        .card {
-            background: var(--card-bg);
+            max-width: 480px;
             padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        /* Header Section */
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 20px;
+        }
+        .user-info h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .user-info p {
+            margin: 4px 0 0 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .notification-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: var(--text-main);
+            cursor: pointer;
+            position: relative;
+        }
+        .notification-btn::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+        }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Points Card */
+        .points-card {
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            padding: 24px;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+        .points-title {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 6px;
+        }
+        .points-value {
+            font-size: 34px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+        .usd-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .history-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Quick Menu Grid */
+        .quick-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .menu-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 14px 8px;
+            border-radius: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .menu-item:active {
+            transform: scale(0.95);
+        }
+        .menu-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px auto;
+            font-size: 18px;
+            color: #fff;
+        }
+        .menu-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* Daily Bonus Section */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .streak-badge {
+            font-size: 12px;
+            color: #f97316;
+            font-weight: 600;
+        }
+        .bonus-scroll {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+            scrollbar-width: none;
+        }
+        .bonus-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .bonus-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            min-width: 65px;
+            padding: 12px 6px;
+            border-radius: 14px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .bonus-card.active {
+            border-color: #8b5cf6;
+            background: #f3e8ff;
+        }
+        .bonus-card .day {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .bonus-card .icon {
+            font-size: 18px;
+            margin-bottom: 6px;
+            color: #22c55e;
+        }
+        .bonus-card .reward {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Available Tasks */
+        .task-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .task-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 18px;
+        }
+        .task-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .task-info p {
+            margin: 0;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .task-reward {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #eab308;
+            margin-top: 4px;
+        }
+        .action-btn {
+            background: #6366f1;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .action-btn.red {
+            background: #ef4444;
+        }
+
+        /* Promo Banner */
+        .promo-banner {
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            padding: 16px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+        .promo-banner h3 {
+            margin: 0 0 4px 0;
+            font-size: 15px;
+        }
+        .promo-banner p {
+            margin: 0;
+            font-size: 11px;
+            opacity: 0.9;
+        }
+        .promo-btn {
+            background: rgba(255,255,255,0.25);
+            border: none;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            white-space: nowrap;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-sizing: border-box;
+            z-index: 100;
+        }
+        .nav-item {
+            text-align: center;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .nav-item.active {
+            color: #6366f1;
+        }
+        .nav-item i {
+            font-size: 18px;
+            display: block;
+            margin-bottom: 3px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Profile Header -->
+        <!-- Header -->
         <div class="header">
-            <h1>HeyCen App</h1>
-            <p id="username" style="color: var(--text-muted); margin: 0;">Loading user...</p>
-            <div class="balance-box" id="balance">0.00 HEY</div>
-            <p style="font-size: 12px; color: var(--text-muted);">Total Earned Rewards</p>
-        </div>
-
-        <!-- Daily Task Section -->
-        <div class="card">
-            <div>
-                <strong>Daily Check-in</strong>
-                <div style="font-size: 12px; color: var(--text-muted);">Claim your daily bonus</div>
+            <div class="user-info">
+                <h2>Hello, <span id="username">Arefin</span> 👋</h2>
+                <p>Complete tasks, watch ads & earn points</p>
             </div>
-            <button class="btn" style="width: auto; padding: 8px 16px;" onclick="claimBonus()">Claim</button>
+            <div class="header-icons">
+                <button class="notification-btn"><i class="fa-regular fa-bell"></i></button>
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User">
+            </div>
         </div>
 
-        <!-- Action Button -->
-        <button class="btn" onclick="alert('More tasks coming soon!')">Complete Tasks</button>
+        <!-- Points Card -->
+        <div class="points-card">
+            <div class="points-title">Your Points</div>
+            <div class="points-value" id="balance">12,540</div>
+            <div class="usd-badge" id="usd-value">≈ $1.25</div>
+            <button class="history-btn" onclick="alert('History coming soon!')"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+        </div>
+
+        <!-- Quick Menu -->
+        <div class="quick-menu">
+            <div class="menu-item" onclick="claimBonus()">
+                <div class="menu-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="menu-label">Daily Check-in</div>
+            </div>
+            <div class="menu-item" onclick="alert('Ad feature loading...')">
+                <div class="menu-icon" style="background: #ef4444;"><i class="fa-solid fa-play"></i></div>
+                <div class="menu-label">Watch Ads</div>
+            </div>
+            <div class="menu-item" onclick="alert('Tasks section')">
+                <div class="menu-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
+                <div class="menu-label">Tasks</div>
+            </div>
+            <div class="menu-item" onclick="alert('Rewards section')">
+                <div class="menu-icon" style="background: #3b82f6;"><i class="fa-solid fa-gift"></i></div>
+                <div class="menu-label">Rewards</div>
+            </div>
+        </div>
+
+        <!-- Daily Bonus -->
+        <div class="section-header">
+            <div class="section-title">Daily Bonus</div>
+            <div class="streak-badge"><i class="fa-solid fa-fire"></i> 3 Days Streak</div>
+        </div>
+        <div class="bonus-scroll">
+            <div class="bonus-card">
+                <div class="day">Day 1</div>
+                <div class="icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="reward">+10</div>
+            </div>
+            <div class="bonus-card">
+                <div class="day">Day 2</div>
+                <div class="icon"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="reward">+15</div>
+            </div>
+            <div class="bonus-card active">
+                <div class="day">Day 3</div>
+                <div class="icon"><i class="fa-solid fa-gift"></i></div>
+                <div class="reward">+20</div>
+            </div>
+            <div class="bonus-card">
+                <div class="day">Day 4</div>
+                <div class="icon"><i class="fa-solid fa-box-open"></i></div>
+                <div class="reward">+25</div>
+            </div>
+            <div class="bonus-card">
+                <div class="day">Day 5</div>
+                <div class="icon"><i class="fa-solid fa-box-open"></i></div>
+                <div class="reward">+30</div>
+            </div>
+        </div>
+
+        <!-- Available Tasks -->
+        <div class="section-header">
+            <div class="section-title">Available Tasks</div>
+            <a href="#" style="font-size: 12px; color: #6366f1; text-decoration: none; font-weight: 600;">View All</a>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #8b5cf6;"><i class="fa-solid fa-file-lines"></i></div>
+                <div class="task-info">
+                    <h4>Complete Survey</h4>
+                    <p>Complete survey and earn points</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +150</div>
+                </div>
+            </div>
+            <button class="action-btn" onclick="claimBonus()">Start</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-download"></i></div>
+                <div class="task-info">
+                    <h4>Download App</h4>
+                    <p>Download and open the app</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +100</div>
+                </div>
+            </div>
+            <button class="action-btn" style="background: #22c55e;" onclick="claimBonus()">Start</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #ef4444;"><i class="fa-solid fa-video"></i></div>
+                <div class="task-info">
+                    <h4>Watch Video</h4>
+                    <p>Watch full video and earn points</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +50</div>
+                </div>
+            </div>
+            <button class="action-btn red" onclick="claimBonus()">Start</button>
+        </div>
+
+        <!-- Promo Banner -->
+        <div class="promo-banner" style="margin-top: 20px;">
+            <div>
+                <h3>Watch Ads & Earn More!</h3>
+                <p>Watch ads and earn unlimited points</p>
+            </div>
+            <button class="promo-btn"><i class="fa-solid fa-play"></i> Watch Now</button>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a class="nav-item" onclick="alert('Tasks page')">
+            <i class="fa-solid fa-list-check"></i>
+            Tasks
+        </a>
+        <a class="nav-item" onclick="alert('Rewards page')">
+            <i class="fa-solid fa-gift"></i>
+            Rewards
+        </a>
+        <a class="nav-item" onclick="alert('Profile page')">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
     </div>
 
     <!-- Firebase SDKs -->
@@ -102,7 +498,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
-        // Correct Firebase Configuration with exact Database URL
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
@@ -124,9 +520,9 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id : "guest_user";
-        let username = user ? (user.username || user.first_name) : "Guest";
+        let username = user ? (user.username || user.first_name) : "Arefin";
 
-        document.getElementById('username').innerText = `@${username}`;
+        document.getElementById('username').innerText = username;
 
         // Reference to user's data in Firebase Realtime Database
         let userRef = db.ref('users/' + userId);
@@ -135,28 +531,30 @@
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
             if (data && data.points !== undefined) {
-                document.getElementById('balance').innerText = data.points.toFixed(2) + ' HEY';
+                document.getElementById('balance').innerText = data.points.toLocaleString();
+                document.getElementById('usd-value').innerText = '≈ $' + (data.points / 10000).toFixed(2);
             } else {
-                // If user doesn't exist in DB, initialize with 100 points
+                // If user doesn't exist in DB, initialize with 12540 points matching design
                 userRef.set({
                     username: username,
-                    points: 100
+                    points: 12540
                 });
-                document.getElementById('balance').innerText = '100.00 HEY';
+                document.getElementById('balance').innerText = '12,540';
+                document.getElementById('usd-value').innerText = '≈ $1.25';
             }
         });
 
-        // Claim Bonus Function (Updates Firebase DB)
+        // Claim Bonus / Task Function (Updates Firebase DB)
         function claimBonus() {
             userRef.once('value').then((snapshot) => {
-                let currentPoints = snapshot.val() ? (snapshot.val().points || 0) : 100;
-                let newPoints = currentPoints + 10;
+                let currentPoints = snapshot.val() ? (snapshot.val().points || 0) : 12540;
+                let newPoints = currentPoints + 50;
                 
                 // Update Firebase
                 userRef.update({
                     points: newPoints
                 }).then(() => {
-                    tg.showAlert('Successfully claimed 10 HEY tokens and saved to database!');
+                    tg.showAlert('Successfully earned +50 points and updated database!');
                 });
             });
         }
