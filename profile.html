@@ -72,7 +72,7 @@
             cursor: pointer;
         }
 
-        /* User Profile Card (Matching Screenshot_74 layout) */
+        /* User Profile Card */
         .profile-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -153,65 +153,116 @@
             color: var(--text-muted);
         }
 
-        /* Menu Options Grid */
-        .options-grid {
+        /* Stats Grid (4 columns) */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .option-box {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 16px 12px;
+            border-radius: 20px;
+            padding: 14px 8px;
+            margin-bottom: 16px;
             text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
         }
-        .option-box:active {
-            transform: scale(0.97);
+        .stat-item .stat-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px auto;
+            font-size: 13px;
+            color: #fff;
         }
-        .option-box:hover {
-            border-color: #3b82f6;
-        }
-        .option-icon {
-            font-size: 20px;
-            margin-bottom: 6px;
-        }
-        .option-title {
+        .stat-item .value {
             font-size: 12px;
             font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
-            color: #f8fafc;
+            margin-bottom: 2px;
         }
-        .option-desc {
+        .stat-item .label {
+            font-size: 9px;
+            color: var(--text-muted);
+            line-height: 1.2;
+        }
+
+        /* Menu List Options (Screenshot_3 Style) */
+        .menu-list {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+        .menu-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--card-border);
+            cursor: pointer;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: background 0.2s;
+        }
+        .menu-row:hover {
+            background: rgba(255,255,255,0.02);
+        }
+        .menu-row:last-child {
+            border-bottom: none;
+        }
+        .menu-row-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .menu-row-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+        }
+        .menu-row-text h5 {
+            margin: 0 0 2px 0;
+            font-size: 13px;
+        }
+        .menu-row-text p {
+            margin: 0;
             font-size: 10px;
             color: var(--text-muted);
         }
+        .menu-row-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+        .badge-count {
+            background: #1e293b;
+            color: #a78bfa;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .arrow-icon {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
 
-        /* Admin Panel Box */
-        .admin-box {
-            background: var(--card-bg);
-            border: 1px solid #7f1d1d;
-            border-radius: 16px;
-            padding: 14px;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 16px;
+        /* Admin Panel Menu Style */
+        .menu-row.admin-row {
+            border-top: 1px solid #7f1d1d;
+            background: rgba(127, 29, 29, 0.1);
         }
-        .admin-box:hover {
-            border-color: #ef4444;
-        }
-        .admin-box .option-icon {
+        .menu-row.admin-row .menu-row-text h5 {
             color: #ef4444;
-        }
-        .admin-box .option-title {
-            color: #ef4444;
-        }
-        .admin-box .option-desc {
-            color: #fca5a5;
         }
 
         /* Bottom Navigation Bar */
@@ -283,70 +334,118 @@
             </div>
         </div>
 
-        <!-- Options Grid (As per Screenshot_72.png) -->
-        <div class="options-grid">
-            <!-- Total GP -->
-            <div class="option-box" onclick="tg.showAlert('Your total accumulated GP points.')">
-                <div class="option-icon" style="color: #eab308;"><i class="fa-solid fa-coins"></i></div>
-                <div class="option-title">TOTAL GP</div>
-                <div class="option-desc" id="total-gp">0</div>
+        <!-- Stats Grid (4 Cards) -->
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-icon" style="background: #eab308;"><i class="fa-solid fa-coins"></i></div>
+                <div class="value" id="total-points">0</div>
+                <div class="label">Total GP</div>
             </div>
-
-            <!-- Task Done -->
-            <div class="option-box" onclick="location.href='task.html'">
-                <div class="option-icon" style="color: #22c55e;"><i class="fa-solid fa-circle-check"></i></div>
-                <div class="option-title">TASK DONE</div>
-                <div class="option-desc" id="tasks-done-count">0</div>
+            <div class="stat-item">
+                <div class="stat-icon" style="background: #10b981;"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="value" id="tasks-done-count">0</div>
+                <div class="label">Task Done</div>
             </div>
-
-            <!-- Refer Friends -->
-            <div class="option-box" onclick="tg.showAlert('Referral link copied! Invite friends to earn more.')">
-                <div class="option-icon" style="color: #ec4899;"><i class="fa-solid fa-user-plus"></i></div>
-                <div class="option-title">REFER FRIENDS</div>
-                <div class="option-desc">Get GP Rewards</div>
+            <div class="stat-item">
+                <div class="stat-icon" style="background: #3b82f6;"><i class="fa-solid fa-wallet"></i></div>
+                <div class="value">0</div>
+                <div class="label">Pending GP</div>
             </div>
-
-            <!-- Earn More -->
-            <div class="option-box" onclick="location.href='task.html'">
-                <div class="option-icon" style="color: #a855f7;"><i class="fa-solid fa-gem"></i></div>
-                <div class="option-title">EARN MORE</div>
-                <div class="option-desc">Extra Offers</div>
-            </div>
-
-            <!-- Wallet Setup -->
-            <div class="option-box" onclick="tg.showAlert('TON Connect integration coming soon!')">
-                <div class="option-icon" style="color: #3b82f6;"><i class="fa-solid fa-wallet"></i></div>
-                <div class="option-title">WALLET SETUP</div>
-                <div class="option-desc">TON Connect</div>
-            </div>
-
-            <!-- Withdraw -->
-            <div class="option-box" onclick="tg.showAlert('Withdrawals will open soon.')">
-                <div class="option-icon" style="color: #ef4444;"><i class="fa-solid fa-money-bill-transfer"></i></div>
-                <div class="option-title">WITHDRAW</div>
-                <div class="option-desc">GP Cashout</div>
-            </div>
-
-            <!-- History -->
-            <div class="option-box" onclick="tg.showAlert('No recent history found.')">
-                <div class="option-icon" style="color: #60a5fa;"><i class="fa-solid fa-list-ul"></i></div>
-                <div class="option-title">HISTORY</div>
-                <div class="option-desc">Log Details</div>
-            </div>
-
-            <!-- Support -->
-            <div class="option-box" onclick="tg.showAlert('Contact support at @heycan_support')">
-                <div class="option-icon" style="color: #34d399;"><i class="fa-solid fa-headset"></i></div>
-                <div class="option-title">SUPPORT</div>
-                <div class="option-desc">Get Help</div>
+            <div class="stat-item">
+                <div class="stat-icon" style="background: #a855f7;"><i class="fa-solid fa-gift"></i></div>
+                <div class="value">0</div>
+                <div class="label">Withdrawn</div>
             </div>
         </div>
 
-        <!-- Admin Panel (Full Width) -->
-        <div class="admin-box" onclick="tg.showAlert('Admin access restricted.')">
-            <div class="option-icon"><i class="fa-solid fa-user-shield"></i></div>
-            <div class="option-title">ADMIN PANEL</div>
-            <div class="option-desc" style="color: #fca5a5;">Control Center (Secret)</div>
+        <!-- Menu Options List (Screenshot_3 Style) -->
+        <div class="menu-list">
+            <!-- My Activity -->
+            <a class="menu-row" onclick="tg.showAlert('Activity details coming soon')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: #10b981;"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <div class="menu-row-text">
+                        <h5>My Activity</h5>
+                        <p>View your earnings and activities</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+
+            <!-- Transaction History -->
+            <a class="menu-row" onclick="tg.showAlert('Transaction history is empty')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: #3b82f6;"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div class="menu-row-text">
+                        <h5>Transaction History</h5>
+                        <p>Check your points history</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+
+            <!-- Referrals -->
+            <a class="menu-row" onclick="tg.showAlert('Referral link copied! Invite friends to earn more.')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: #f59e0b;"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="menu-row-text">
+                        <h5>Refer Friends</h5>
+                        <p>Invite friends and earn GP rewards</p>
+                    </div>
+                </div>
+                <div class="menu-row-right">
+                    <span class="badge-count">0 Referrals</span>
+                    <i class="fa-solid fa-chevron-right arrow-icon"></i>
+                </div>
+            </a>
+
+            <!-- Wallet Setup -->
+            <a class="menu-row" onclick="tg.showAlert('TON Connect integration coming soon!')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: #6366f1;"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="menu-row-text">
+                        <h5>Wallet Setup</h5>
+                        <p>TON Connect</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+
+            <!-- Withdraw -->
+            <a class="menu-row" onclick="tg.showAlert('Withdrawals will open soon.')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: #ef4444;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <div class="menu-row-text">
+                        <h5>Withdraw</h5>
+                        <p>GP Cashout</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+
+            <!-- Support -->
+            <a class="menu-row" onclick="tg.showAlert('Contact support at @heycan_support')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: #34d399;"><i class="fa-solid fa-headset"></i></div>
+                    <div class="menu-row-text">
+                        <h5>Support</h5>
+                        <p>Get help and support</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon"></i>
+            </a>
+
+            <!-- Admin Panel (Secret Control Center) -->
+            <a class="menu-row admin-row" onclick="tg.showAlert('Admin access restricted.')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: #ef4444;"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="menu-row-text">
+                        <h5 style="color: #ef4444;">Admin Panel</h5>
+                        <p style="color: #fca5a5;">Control Center (Secret)</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right arrow-icon" style="color: #ef4444;"></i>
+            </a>
         </div>
     </div>
 
@@ -415,7 +514,7 @@
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
             if (data && data.points !== undefined) {
-                document.getElementById('total-gp').innerText = (data.points || 0).toLocaleString();
+                document.getElementById('total-points').innerText = (data.points || 0).toLocaleString();
                 document.getElementById('tasks-done-count').innerText = (data.tasksDone || 0).toLocaleString();
             } else {
                 // Initialize new user with 0 points and 0 tasks done
@@ -426,7 +525,7 @@
                     streakDay: 1,
                     lastCheckInDate: ""
                 });
-                document.getElementById('total-gp').innerText = "0";
+                document.getElementById('total-points').innerText = "0";
                 document.getElementById('tasks-done-count').innerText = "0";
             }
         });
