@@ -13,11 +13,11 @@
         :root {
             --bg-color: #0b0f19;
             --card-bg: #131c2e;
-            --card-border: #1e293b;
+            --card-border: #2a1b4e;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --accent-purple: #8b5cf6;
-            --accent-blue: #3b82f6;
+            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+            --purple-glow: rgba(124, 58, 237, 0.25);
         }
 
         body {
@@ -48,7 +48,7 @@
             margin: 0 0 4px 0;
             font-size: 24px;
             font-weight: 700;
-            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            background: linear-gradient(135deg, #c084fc, #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -73,19 +73,20 @@
             color: var(--text-main);
             font-size: 14px;
             cursor: pointer;
+            box-shadow: 0 0 10px var(--purple-glow);
         }
 
-        /* User Profile Card */
+        /* User Profile Card with Purple Gradient */
         .profile-card {
-            background: linear-gradient(135deg, #131c2e 0%, #1a103c 100%);
-            border: 1px solid #3b82f6;
+            background: linear-gradient(135deg, #16102a 0%, #1e1b4b 100%);
+            border: 1px solid #7c3aed;
             border-radius: 20px;
             padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 16px;
-            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.15);
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
         }
         .profile-left {
             display: flex;
@@ -98,8 +99,9 @@
             height: 60px;
             border-radius: 50%;
             padding: 2px;
-            background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
+            background: linear-gradient(135deg, #c084fc, #7c3aed);
             flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
         }
         .avatar-container img {
             width: 100%;
@@ -118,9 +120,32 @@
             gap: 6px;
         }
         .profile-info h3 i {
-            color: #3b82f6;
+            color: #a855f7;
             font-size: 13px;
         }
+        
+        /* Separate Username and ID styling */
+        .username-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+        .user-id-badge {
+            font-size: 11px;
+            color: #c084fc;
+            font-weight: 650;
+            cursor: pointer;
+            display: inline-block;
+            background: rgba(124, 58, 237, 0.15);
+            padding: 1px 6px;
+            border-radius: 6px;
+            border: 1px dashed rgba(192, 132, 252, 0.4);
+            transition: background 0.2s;
+        }
+        .user-id-badge:hover {
+            background: rgba(124, 58, 237, 0.3);
+        }
+
         .level-row {
             display: flex;
             justify-content: space-between;
@@ -128,8 +153,8 @@
             margin-bottom: 4px;
         }
         .level-badge {
-            background: rgba(139, 92, 246, 0.25);
-            color: #c084fc;
+            background: rgba(124, 58, 237, 0.3);
+            color: #d8b4fe;
             padding: 2px 8px;
             border-radius: 20px;
             font-size: 10px;
@@ -141,24 +166,19 @@
         }
         .xp-bar-container {
             width: 100%;
-            background: #1e293b;
+            background: #1e1b4b;
             height: 6px;
             border-radius: 3px;
             overflow: hidden;
             margin-bottom: 4px;
         }
         .xp-bar-fill {
-            background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6);
+            background: linear-gradient(90deg, #c084fc, #7c3aed);
             height: 100%;
             width: 0%;
         }
-        .user-id {
-            font-size: 11px;
-            color: #38bdf8;
-            font-weight: 600;
-        }
 
-        /* Stats Grid (4 columns) */
+        /* Stats Grid (4 columns) with Purple accents */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -169,6 +189,7 @@
             padding: 14px 8px;
             margin-bottom: 16px;
             text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .stat-item .stat-icon {
             width: 32px;
@@ -180,6 +201,7 @@
             margin: 0 auto 6px auto;
             font-size: 14px;
             color: #fff;
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
         }
         .stat-item .value {
             font-size: 13px;
@@ -199,6 +221,7 @@
             border-radius: 20px;
             overflow: hidden;
             margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .menu-row {
             display: flex;
@@ -212,7 +235,7 @@
             transition: background 0.2s;
         }
         .menu-row:hover {
-            background: rgba(255,255,255,0.02);
+            background: rgba(124, 58, 237, 0.05);
         }
         .menu-row:last-child {
             border-bottom: none;
@@ -231,6 +254,7 @@
             justify-content: center;
             color: #fff;
             font-size: 15px;
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
         }
         .menu-row-text h5 {
             margin: 0 0 2px 0;
@@ -249,8 +273,8 @@
             font-size: 13px;
         }
         .badge-count {
-            background: #1e293b;
-            color: #a78bfa;
+            background: rgba(124, 58, 237, 0.2);
+            color: #d8b4fe;
             padding: 3px 10px;
             border-radius: 20px;
             font-size: 11px;
@@ -261,11 +285,11 @@
             font-size: 13px;
         }
 
-        /* Admin Panel Menu Style (Hidden by default) */
+        /* Admin Panel Menu Style (Hidden by default, visible only to specific ID) */
         .menu-row.admin-row {
             border-top: 1px solid #7f1d1d;
             background: rgba(127, 29, 29, 0.15);
-            display: none; /* Initially hidden, shown only for admin */
+            display: none; 
         }
         .menu-row.admin-row .menu-row-text h5 {
             color: #ef4444;
@@ -286,6 +310,7 @@
             padding: 10px 0;
             box-sizing: border-box;
             z-index: 100;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
         }
         .nav-item {
             text-align: center;
@@ -320,15 +345,18 @@
             </div>
         </div>
 
-        <!-- Profile Card (User Image, Name, ID & 0 XP) -->
+        <!-- Profile Card -->
         <div class="profile-card">
             <div class="profile-left">
                 <div class="avatar-container">
                     <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
                 </div>
                 <div class="profile-info">
-                    <h3 id="profile-name">Loading... <i class="fa-solid fa-circle-check"></i></h3>
-                    <div class="user-id" id="profile-id">ID: 000000</div>
+                    <h3 id="profile-name">Mr. Zoha <i class="fa-solid fa-circle-check"></i></h3>
+                    <div class="username-text" id="profile-username">@Zoha742</div>
+                    <div>
+                        <span class="user-id-badge" id="profile-id" title="Tap to copy ID">ID: 7757851056 📋</span>
+                    </div>
                     <div class="level-row" style="margin-top: 6px;">
                         <span class="level-badge">Level 1</span>
                         <span class="xp-text">0 / 1,000 XP</span>
@@ -343,7 +371,7 @@
         <!-- Stats Grid (4 Cards) -->
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-coins"></i></div>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #7c3aed, #4c1d95);"><i class="fa-solid fa-coins"></i></div>
                 <div class="value" id="total-points">0</div>
                 <div class="label">Total GP</div>
             </div>
@@ -353,12 +381,12 @@
                 <div class="label">Task Done</div>
             </div>
             <div class="stat-item">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #2563eb);"><i class="fa-solid fa-wallet"></i></div>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-wallet"></i></div>
                 <div class="value">0</div>
                 <div class="label">Pending GP</div>
             </div>
             <div class="stat-item">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #a855f7, #9333ea);"><i class="fa-solid fa-gift"></i></div>
+                <div class="stat-icon" style="background: linear-gradient(135deg, #ec4899, #be185d);"><i class="fa-solid fa-gift"></i></div>
                 <div class="value">0</div>
                 <div class="label">Withdrawn</div>
             </div>
@@ -369,7 +397,7 @@
             <!-- My Activity -->
             <a class="menu-row" onclick="tg.showAlert('Activity details coming soon')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #10b981;"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-heart-pulse"></i></div>
                     <div class="menu-row-text">
                         <h5>My Activity</h5>
                         <p>View your earnings and activities</p>
@@ -381,7 +409,7 @@
             <!-- Transaction History -->
             <a class="menu-row" onclick="tg.showAlert('Transaction history is empty')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #3b82f6;"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-file-invoice"></i></div>
                     <div class="menu-row-text">
                         <h5>Transaction History</h5>
                         <p>Check your points history</p>
@@ -393,7 +421,7 @@
             <!-- Referrals -->
             <a class="menu-row" onclick="tg.showAlert('Referral link copied! Invite friends to earn more.')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #f59e0b;"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #f59e0b, #b45309);"><i class="fa-solid fa-user-group"></i></div>
                     <div class="menu-row-text">
                         <h5>Refer Friends</h5>
                         <p>Invite friends and earn GP rewards</p>
@@ -408,7 +436,7 @@
             <!-- Wallet Setup -->
             <a class="menu-row" onclick="tg.showAlert('TON Connect integration coming soon!')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #6366f1;"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #7c3aed, #5b21b6);"><i class="fa-solid fa-wallet"></i></div>
                     <div class="menu-row-text">
                         <h5>Wallet Setup</h5>
                         <p>TON Connect</p>
@@ -420,7 +448,7 @@
             <!-- Withdraw -->
             <a class="menu-row" onclick="tg.showAlert('Withdrawals will open soon.')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #ef4444;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #ef4444, #991b1b);"><i class="fa-solid fa-money-bill-transfer"></i></div>
                     <div class="menu-row-text">
                         <h5>Withdraw</h5>
                         <p>GP Cashout</p>
@@ -432,7 +460,7 @@
             <!-- Support -->
             <a class="menu-row" onclick="tg.showAlert('Contact support at @heycan_support')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #34d399;"><i class="fa-solid fa-headset"></i></div>
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #06b6d4, #0e7490);"><i class="fa-solid fa-headset"></i></div>
                     <div class="menu-row-text">
                         <h5>Support</h5>
                         <p>Get help and support</p>
@@ -441,10 +469,10 @@
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
 
-            <!-- Admin Panel (Visible only to Admin ID) -->
+            <!-- Admin Panel (Visible ONLY to ID: 7757851056) -->
             <a class="menu-row admin-row" id="admin-panel-btn" onclick="tg.showAlert('Welcome to Admin Control Center!')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #ef4444;"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #ef4444, #7f1d1d);"><i class="fa-solid fa-user-shield"></i></div>
                     <div class="menu-row-text">
                         <h5 style="color: #ef4444;">Admin Panel</h5>
                         <p style="color: #fca5a5;">Control Center (Secret)</p>
@@ -502,21 +530,31 @@
         tg.expand();
 
         let user = tg.initDataUnsafe.user;
-        let userId = user ? user.id : "742526130"; // আপনার নিজস্ব টেস্ট আইডি বা গেস্ট আইডি
-        let firstName = user ? (user.first_name || "Zoha") : "Zoha";
+        let userId = user ? user.id : "7757851056"; 
+        let firstName = user ? (user.first_name || "Mr. Zoha") : "Mr. Zoha";
         let username = user && user.username ? `@${user.username}` : `@Zoha742`;
 
-        // আপনার টেলিগ্রাম আইডি এখানে দিন (যেমন: আপনার আসল টেলিগ্রাম ইউজার আইডি বসিয়ে দেবেন)
-        // উদাহরণস্বরূপ এখানে আপনার আইডি বা ইউজারনেম চেক করা হচ্ছে:
-        const ADMIN_USER_ID = "123456789"; // <-- এখানে আপনার রিয়েল Telegram Numeric ID বসিয়ে নেবেন (যেমন: 58291023)
+        // আপনার প্রদান করা নির্দিষ্ট অ্যাডমিন আইডি
+        const ADMIN_USER_ID = "7757851056";
 
-        // Set User Name and ID in Profile Card
+        // Set User Name, Username and ID
         document.getElementById('profile-name').innerHTML = `${firstName} <i class="fa-solid fa-circle-check"></i>`;
-        document.getElementById('profile-id').innerText = `ID: ${userId} (${username})`;
+        document.getElementById('profile-username').innerText = username;
+        
+        let idBadgeElement = document.getElementById('profile-id');
+        idBadgeElement.innerText = `ID: ${userId} 📋`;
 
-        // Show Admin Panel ONLY for you
-        // যদি আপনার টেলিগ্রাম আইডি দিয়ে লগইন করা থাকে তবেই অ্যাডমিন প্যানেل দেখাবে
-        if (userId.toString() === ADMIN_USER_ID || username === "@Zoha742") {
+        // Click to Copy ID functionality
+        idBadgeElement.onclick = function() {
+            navigator.clipboard.writeText(userId).then(() => {
+                tg.showAlert(`ID copied successfully: ${userId}`);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        };
+
+        // Show Admin Panel ONLY for your specific ID
+        if (userId.toString() === ADMIN_USER_ID) {
             document.getElementById('admin-panel-btn').style.display = "flex";
         }
 
