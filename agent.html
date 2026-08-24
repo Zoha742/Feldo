@@ -124,12 +124,12 @@
     <div class="container">
         <div class="header-banner">
             <h2>🤝 Agent & GP Qualification</h2>
-            <p>Sell your GP to qualify for paid service (Min limit: 10,000 GP)</p>
+            <p>Sell 10,000 GP to qualify for paid service</p>
         </div>
 
         <div class="card">
             <h3>GP Sale & Qualification</h3>
-            <p>Your Telegram details are auto-detected. Minimum 10,000 GP is required to submit a sale request.</p>
+            <p>Your Telegram details are auto-detected. Exactly 10,000 GP will be deducted from your wallet to submit this qualification request.</p>
             
             <div class="form-group">
                 <label>Your Telegram Name & ID (Auto)</label>
@@ -144,9 +144,10 @@
                 <input type="text" id="user-balance" class="form-control" value="0 GP" disabled>
             </div>
             
+            <!-- ইউজার যাতে নিজের ইচ্ছামতো টাইপ করতে না পারে তাই এটি readonly করে ফিক্সড 10000 করে দেওয়া হয়েছে -->
             <div class="form-group">
-                <label>Amount to Sell (Fixed / Min 10,000 GP)</label>
-                <input type="number" id="sell-amount" class="form-control" value="10000" min="10000">
+                <label>Required GP for Paid Service Qualification</label>
+                <input type="text" id="sell-amount" class="form-control" value="10,000 GP" disabled style="background:#070a14; color:#fbbf24; font-weight:bold;">
             </div>
 
             <button class="submit-btn" onclick="submitSellRequest()">Submit Sale Request</button>
@@ -165,7 +166,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-    <script>
+    <script[cite: 7]>
         const firebaseConfig = {
             apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
@@ -187,7 +188,6 @@
         let userId = user ? user.id.toString() : "7757851056";
         let userName = user ? (user.first_name || "Zoha") : "Zoha";
 
-        // Auto display telegram name and ID
         document.getElementById('display-name').innerText = userName;
         document.getElementById('display-id').innerText = userId;
 
@@ -199,34 +199,33 @@
             if (data && data.points !== undefined) {
                 userPoints = data.points;
                 document.getElementById('user-balance').value = userPoints.toLocaleString() + " GP";
+            } else if (data && data.gp !== undefined) {
+                userPoints = data.gp;
+                document.getElementById('user-balance').value = userPoints.toLocaleString() + " GP";
             }
         });
 
         function submitSellRequest() {
-            let amount = parseInt(document.getElementById('sell-amount').value);
+            let fixedAmount = 10000;
 
-            if (!amount || amount < 10000) {
-                tg.showAlert("Minimum sell requirement is 10,000 GP!");
-                return;
-            }
-            if (amount > userPoints) {
-                tg.showAlert("You don't have enough GP balance to sell!");
+            if (userPoints < fixedAmount) {
+                tg.showAlert("You need at least 10,000 GP in your wallet to submit this request!");
                 return;
             }
 
-            let newPoints = userPoints - amount;
+            let newPoints = userPoints - fixedAmount;
 
             let requestRef = db.ref('sell_requests').push();
             requestRef.set({
                 userId: userId,
                 userName: userName,
-                amount: amount,
+                amount: fixedAmount,
                 status: "Pending",
                 timestamp: Date.now()
             }).then(() => {
-                userRef.update({ points: newPoints });
+                // ফায়ারবেসে points এবং gp উভয় প্রপার্টি আপডেট করা যাতে সব জায়গায় ব্যালেন্স সিঙ্ক থাকে
+                userRef.update({ points: newPoints, gp: newPoints });
                 tg.showAlert("GP sale request submitted successfully! Admin will check your ID and Name for approval.");
-                document.getElementById('sell-amount').value = "10000";
             });
         }
     </script>
