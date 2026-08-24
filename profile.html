@@ -285,7 +285,7 @@
             font-size: 13px;
         }
 
-        /* Admin Panel Menu Style (Hidden by default, visible only to specific ID) */
+        /* Admin Panel Menu Style */
         .menu-row.admin-row {
             border-top: 1px solid #7f1d1d;
             background: rgba(127, 29, 29, 0.15);
@@ -352,8 +352,8 @@
                     <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
                 </div>
                 <div class="profile-info">
-                    <h3 id="profile-name">Mr. Zoha <i class="fa-solid fa-circle-check"></i></h3>
-                    <div class="username-text" id="profile-username">@Zoha742</div>
+                    <h3 id="profile-name">User <i class="fa-solid fa-circle-check"></i></h3>
+                    <div class="username-text" id="profile-username">@user</div>
                     <div>
                         <span class="user-id-badge" id="profile-id" title="Tap to copy ID">ID: Loading... 📋</span>
                     </div>
@@ -394,7 +394,6 @@
 
         <!-- Menu Options List -->
         <div class="menu-list">
-            <!-- My Activity -->
             <a class="menu-row" onclick="tg.showAlert('Activity details coming soon')">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-heart-pulse"></i></div>
@@ -406,7 +405,6 @@
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
 
-            <!-- Transaction History -->
             <a class="menu-row" onclick="tg.showAlert('Transaction history is empty')">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-file-invoice"></i></div>
@@ -418,7 +416,6 @@
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
 
-            <!-- Referrals -->
             <a class="menu-row" onclick="tg.showAlert('Referral link copied! Invite friends to earn more.')">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #f59e0b, #b45309);"><i class="fa-solid fa-user-group"></i></div>
@@ -433,7 +430,6 @@
                 </div>
             </a>
 
-            <!-- Wallet Setup -->
             <a class="menu-row" onclick="tg.showAlert('TON Connect integration coming soon!')">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #7c3aed, #5b21b6);"><i class="fa-solid fa-wallet"></i></div>
@@ -445,7 +441,6 @@
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
 
-            <!-- Withdraw -->
             <a class="menu-row" onclick="tg.showAlert('Withdrawals will open soon.')">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #ef4444, #991b1b);"><i class="fa-solid fa-money-bill-transfer"></i></div>
@@ -457,7 +452,6 @@
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
 
-            <!-- Support -->
             <a class="menu-row" onclick="tg.showAlert('Contact support at @heycan_support')">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #06b6d4, #0e7490);"><i class="fa-solid fa-headset"></i></div>
@@ -493,13 +487,13 @@
             <i class="fa-solid fa-list-check"></i>
             Tasks
         </a>
-        <a class="nav-item" onclick="tg.showAlert('Watch Ads coming soon!')">
+        <a class="nav-item" href="ads.html">
             <i class="fa-solid fa-play"></i>
             Watch Ads
         </a>
-        <a class="nav-item" onclick="tg.showAlert('Rewards coming soon!')">
-            <i class="fa-solid fa-gift"></i>
-            Rewards
+        <a class="nav-item" href="agent.html">
+            <i class="fa-solid fa-handshake"></i>
+            Agent
         </a>
         <a class="nav-item active" href="profile.html">
             <i class="fa-solid fa-user"></i>
@@ -530,12 +524,10 @@
         tg.expand();
 
         let user = tg.initDataUnsafe.user;
-        // যদি টেলিগ্রাম থেকে ইউজার আইডি না পাওয়া যায়, তবে আপনার দেওয়া আইডিটি ডিফল্ট ধরে নেবে
-        let userId = (user && user.id) ? user.id.toString() : "7757851056"; 
-        let firstName = user ? (user.first_name || "Mr. Zoha") : "Mr. Zoha";
-        let username = (user && user.username) ? `@${user.username}` : `@Zoha742`;
+        let userId = user ? user.id.toString() : "7757851056"; 
+        let firstName = user ? (user.first_name || "User") : "User";
+        let username = (user && user.username) ? `@${user.username}` : `@user`;
 
-        // আপনার নির্দিষ্ট অ্যাডমিন আইডি
         const ADMIN_USER_ID = "7757851056";
 
         // Set User Name, Username and ID
@@ -545,40 +537,42 @@
         let idBadgeElement = document.getElementById('profile-id');
         idBadgeElement.innerText = `ID: ${userId} 📋`;
 
-        // Click to Copy ID functionality
         idBadgeElement.onclick = function() {
             navigator.clipboard.writeText(userId).then(() => {
                 tg.showAlert(`ID copied successfully: ${userId}`);
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
             });
         };
 
-        // Show Admin Panel ONLY for your specific ID (স্ট্রিং ও নম্বর দুইভাবেই চেক করা হবে)
         if (userId === ADMIN_USER_ID || userId === "7757851056") {
             document.getElementById('admin-panel-btn').style.display = "flex";
         }
 
-        // Set Telegram Profile Picture if available
         if (user && user.photo_url) {
             document.getElementById('user-avatar').src = user.photo_url;
         }
 
-        // Fetch User Data from Firebase (Points & Tasks Done)
+        // Fetch User Data from Firebase (Supports both 'points' and 'gp')
         let userRef = db.ref('users/' + userId);
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
-            if (data && data.points !== undefined) {
-                document.getElementById('total-points').innerText = (data.points || 0).toLocaleString();
-                document.getElementById('tasks-done-count').innerText = (data.tasksDone || 0).toLocaleString();
+            if (data) {
+                let userPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                let tasksDone = data.tasksDone || 0;
+                
+                document.getElementById('total-points').innerText = userPoints.toLocaleString();
+                document.getElementById('tasks-done-count').innerText = tasksDone.toLocaleString();
             } else {
-                userRef.set({
-                    username: firstName,
+                let defaultData = {
+                    name: firstName,
+                    username: username,
                     points: 0,
+                    gp: 0,
                     tasksDone: 0,
                     streakDay: 1,
-                    lastCheckInDate: ""
-                });
+                    lastCheckInDate: "",
+                    lastSeen: Date.now()
+                };
+                userRef.set(defaultData);
                 document.getElementById('total-points').innerText = "0";
                 document.getElementById('tasks-done-count').innerText = "0";
             }
