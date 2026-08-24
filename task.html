@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyCen - Tasks</title>
+    <!-- Telegram Web App Script -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 90px 0;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        .tasks-header-banner {
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .tasks-header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
+        .tasks-header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
+        .task-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .task-grid-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .task-grid-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .task-grid-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
+        .task-grid-info h4 { margin: 0; font-size: 13px; font-weight: 700; }
+        .task-grid-info p { margin: 2px 0 0 0; font-size: 10px; color: var(--text-muted); }
+        .task-grid-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
+        .task-grid-reward { font-size: 12px; font-weight: 700; color: #eab308; display: flex; align-items: center; gap: 4px; }
+        .task-start-btn { background: #6366f1; color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .tasks-footer-note { text-align: center; font-size: 11px; color: #eab308; background: #fef9c3; padding: 10px; border-radius: 10px; border: 1px solid #fde047; margin-bottom: 20px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; box-sizing: border-box; z-index: 100; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .nav-item.active { color: #6366f1; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="tasks-header-banner">
+            <h2>🎁 Task Options</h2>
+            <p>Complete any task, watch ads & earn points</p>
+        </div>
+
+        <div class="tasks-footer-note">
+            ⭐ All tasks require watching ads to earn points.
+        </div>
+
+        <div class="task-grid">
+            <!-- 1 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #6366f1;"><i class="fa-solid fa-video"></i></div>
+                    <div class="task-grid-info"><h4>Watch Video</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +50</div>
+                    <button class="task-start-btn" onclick="completeTask('Watch Video', 50)">Start</button>
+                </div>
+            </div>
+            <!-- 2 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #8b5cf6;"><i class="fa-solid fa-file-lines"></i></div>
+                    <div class="task-grid-info"><h4>Complete Survey</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +150</div>
+                    <button class="task-start-btn" onclick="completeTask('Complete Survey', 150)">Start</button>
+                </div>
+            </div>
+            <!-- 3 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #3b82f6;"><i class="fa-solid fa-download"></i></div>
+                    <div class="task-grid-info"><h4>Download App</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +100</div>
+                    <button class="task-start-btn" onclick="completeTask('Download App', 100)">Start</button>
+                </div>
+            </div>
+            <!-- 4 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #ec4899;"><i class="fa-solid fa-gamepad"></i></div>
+                    <div class="task-grid-info"><h4>Play Game</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +120</div>
+                    <button class="task-start-btn" onclick="completeTask('Play Game', 120)">Start</button>
+                </div>
+            </div>
+            <!-- 5 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #f97316;"><i class="fa-solid fa-user-plus"></i></div>
+                    <div class="task-grid-info"><h4>Sign Up</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +100</div>
+                    <button class="task-start-btn" onclick="completeTask('Sign Up', 100)">Start</button>
+                </div>
+            </div>
+            <!-- 6 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #ef4444;"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <div class="task-grid-info"><h4>Make Purchase</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +300</div>
+                    <button class="task-start-btn" onclick="completeTask('Make Purchase', 300)">Start</button>
+                </div>
+            </div>
+            <!-- 7 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #0ea5e9;"><i class="fa-solid fa-globe"></i></div>
+                    <div class="task-grid-info"><h4>Visit Website</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +40</div>
+                    <button class="task-start-btn" onclick="completeTask('Visit Website', 40)">Start</button>
+                </div>
+            </div>
+            <!-- 8 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #6366f1;"><i class="fa-solid fa-globe"></i></div>
+                    <div class="task-grid-info"><h4>Register Website</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +80</div>
+                    <button class="task-start-btn" onclick="completeTask('Register on Website', 80)">Start</button>
+                </div>
+            </div>
+            <!-- 9 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #8b5cf6;"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <div class="task-grid-info"><h4>Fill Form</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +70</div>
+                    <button class="task-start-btn" onclick="completeTask('Fill Form', 70)">Start</button>
+                </div>
+            </div>
+            <!-- 10 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #3b82f6;"><i class="fa-brands fa-telegram"></i></div>
+                    <div class="task-grid-info"><h4>Telegram Channel</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +50</div>
+                    <button class="task-start-btn" onclick="completeTask('Join Telegram Channel', 50)">Start</button>
+                </div>
+            </div>
+            <!-- 11 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #2563eb;"><i class="fa-solid fa-users"></i></div>
+                    <div class="task-grid-info"><h4>Telegram Group</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +50</div>
+                    <button class="task-start-btn" onclick="completeTask('Join Telegram Group', 50)">Start</button>
+                </div>
+            </div>
+            <!-- 12 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #dc2626;"><i class="fa-brands fa-youtube"></i></div>
+                    <div class="task-grid-info"><h4>YouTube Sub</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +60</div>
+                    <button class="task-start-btn" onclick="completeTask('Subscribe on YouTube', 60)">Start</button>
+                </div>
+            </div>
+            <!-- 13 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #db2777;"><i class="fa-brands fa-instagram"></i></div>
+                    <div class="task-grid-info"><h4>Instagram</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +60</div>
+                    <button class="task-start-btn" onclick="completeTask('Follow on Instagram', 60)">Start</button>
+                </div>
+            </div>
+            <!-- 14 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #000000;"><i class="fa-brands fa-tiktok"></i></div>
+                    <div class="task-grid-info"><h4>TikTok Follow</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +60</div>
+                    <button class="task-start-btn" onclick="completeTask('Follow on TikTok', 60)">Start</button>
+                </div>
+            </div>
+            <!-- 15 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #eab308;"><i class="fa-solid fa-envelope-circle-check"></i></div>
+                    <div class="task-grid-info"><h4>Verify Email</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +40</div>
+                    <button class="task-start-btn" onclick="completeTask('Verify Email', 40)">Start</button>
+                </div>
+            </div>
+            <!-- 16 -->
+            <div class="task-grid-card">
+                <div class="task-grid-top">
+                    <div class="task-grid-icon" style="background: #9333ea;"><i class="fa-solid fa-bullhorn"></i></div>
+                    <div class="task-grid-info"><h4>Share Friends</h4><p>Watch ad & earn</p></div>
+                </div>
+                <div class="task-grid-bottom">
+                    <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +30</div>
+                    <button class="task-start-btn" onclick="completeTask('Share with Friends', 30)">Start</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="index.html">
+            <i class="fa-solid fa-house"></i>
+            Home
+        </a>
+        <a class="nav-item active" href="task.html">
+            <i class="fa-solid fa-list-check"></i>
+            Tasks
+        </a>
+        <a class="nav-item" onclick="tg.showAlert('Rewards feature coming soon!')">
+            <i class="fa-solid fa-gift"></i>
+            Rewards
+        </a>
+        <a class="nav-item" onclick="tg.showAlert('Profile feature coming soon!')">
+            <i class="fa-solid fa-user"></i>
+            Profile
+        </a>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycan-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id : "guest_user";
+        let userRef = db.ref('users/' + userId);
+
+        function completeTask(taskName, points) {
+            userRef.once('value').then((snapshot) => {
+                let currentPoints = snapshot.val() ? (snapshot.val().points || 0) : 12540;
+                let newPoints = currentPoints + points;
+                
+                userRef.update({ points: newPoints }).then(() => {
+                    tg.showAlert(`Task "${taskName}" completed! +${points} points added.`);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
