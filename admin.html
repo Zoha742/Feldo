@@ -6,7 +6,7 @@
     <title>HeyCen - Master Admin Control Center</title>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script> 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -219,7 +219,7 @@
                         });
                     }
 
-                    // ID Verified / Agent Direct Paid Proofs
+                    // ID Verified / Agent Direct Paid Proofs (পেমেন্ট প্রুফ সিস্টেম ২)
                     if(u.pending_agent_pay && u.pending_agent_pay.status === "Pending") {
                         let req = u.pending_agent_pay;
                         let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
@@ -351,6 +351,7 @@
             db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
         }
 
+        // নতুন ফিচার: জিপি এক ক্লিকে ০ (Zero) করা
         function makeGPZero() {
             if(confirm("Are you sure you want to make this user's GP 0?")) {
                 document.getElementById('m-gp').value = 0;
@@ -358,6 +359,7 @@
             }
         }
 
+        // নতুন ফিচার: ইউজারের সব বুস্ট বা ডাটা রিসেট করা
         function resetUserData() {
             if(confirm("Warning: This will reset user's boosts and pending requests! Proceed?")) {
                 db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
