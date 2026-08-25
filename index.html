@@ -5,32 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyCen - Home</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2.4">
     
     <style>
         :root {
-            --bg-color: #0b0f19;
-            --card-bg: #131c2e;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
-            --border-color: #2a1b4e;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --border-color: #e2e8f0;
         }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-main); 
-            margin: 0; 
-            padding: 0 0 90px 0; 
-            display: flex; 
-            justify-content: center; 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 90px 0;
+            display: flex;
+            justify-content: center;
             overflow-x: hidden;
         }
-        .container { 
-            width: 100%; 
-            max-width: 480px; 
-            padding: 16px; 
-            box-sizing: border-box; 
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
@@ -38,14 +38,55 @@
         .page-slide-left { transform: translateX(-100px); opacity: 0; }
         .page-slide-right { transform: translateX(100px); opacity: 0; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .user-info h2 { margin: 0; font-size: 20px; font-weight: 700; color: #fff; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .user-info h2 { margin: 0; font-size: 20px; font-weight: 700; }
         .user-info p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid #7c3aed; }
-        .points-card { background: var(--primary-gradient); border-radius: 20px; padding: 24px; color: #ffffff; position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3); }
+        .header-icons { display: flex; align-items: center; gap: 12px; }
+        .notification-btn { background: none; border: none; font-size: 20px; color: var(--text-main); cursor: pointer; position: relative; }
+        .notification-btn::after { content: ''; position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid #6366f1; }
+        .points-card { background: var(--primary-gradient); border-radius: 20px; padding: 24px; color: #ffffff; position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4); }
         .points-title { font-size: 13px; opacity: 0.9; margin-bottom: 6px; }
         .points-value { font-size: 34px; font-weight: 800; margin-bottom: 10px; }
         .usd-badge { display: inline-block; background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .history-btn { position: absolute; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.2); border: none; color: #ffffff; padding: 6px 14px; border-radius: 12px; font-size: 12px; cursor: pointer; backdrop-filter: blur(5px); }
+        .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .menu-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px 8px; border-radius: 16px; text-align: center; cursor: pointer; text-decoration: none; color: var(--text-main); }
+        .menu-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 18px; color: #fff; }
+        .menu-label { font-size: 11px; font-weight: 600; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .section-title { font-size: 16px; font-weight: 700; }
+        .streak-badge { font-size: 12px; color: #f97316; font-weight: 600; }
+        .bonus-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scrollbar-width: none; }
+        .bonus-scroll::-webkit-scrollbar { display: none; }
+        .bonus-card { background: var(--card-bg); border: 1px solid var(--border-color); min-width: 65px; padding: 12px 6px; border-radius: 14px; text-align: center; flex-shrink: 0; }
+        .bonus-card.active { border-color: #8b5cf6; background: #f3e8ff; }
+        .bonus-card.claimed { opacity: 0.6; background: #f1f5f9; }
+        .bonus-card .day { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+        .bonus-card .icon { font-size: 18px; margin-bottom: 6px; color: #22c55e; }
+        .bonus-card .reward { font-size: 11px; font-weight: 700; }
+        
+        .task-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .task-left { display: flex; align-items: center; gap: 12px; }
+        .task-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
+        .task-info h4 { margin: 0 0 4px 0; font-size: 14px; font-weight: 600; }
+        .task-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .task-reward { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #eab308; margin-top: 4px; }
+        .action-btn { background: #6366f1; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .action-btn.red { background: #ef4444; }
+        .action-btn.green { background: #22c55e; }
+        .action-btn.purple { background: #8b5cf6; }
+        .action-btn.orange { background: #f97316; }
+
+        .promo-banner { background: var(--primary-gradient); border-radius: 16px; padding: 16px; color: #fff; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .promo-banner h3 { margin: 0 0 4px 0; font-size: 15px; }
+        .promo-banner p { margin: 0; font-size: 11px; opacity: 0.9; }
+        .promo-btn { background: rgba(255,255,255,0.25); border: none; color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; backdrop-filter: blur(5px); white-space: nowrap; }
         
         /* ৫টি অপশনসহ নেভিগেশন বার এবং ডাইনামিক কালার ইফেক্ট */
         .bottom-nav { 
@@ -56,7 +97,7 @@
             transition: background 0.3s ease;
         }
         .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; cursor: pointer; flex: 1; }
-        .nav-item.active { color: #c084fc; }
+        .nav-item.active { color: #6366f1; }
         .nav-item i { font-size: 16px; display: block; margin-bottom: 3px; }
     </style>
 </head>
@@ -66,15 +107,129 @@
         <div class="header">
             <div class="user-info">
                 <h2>Hello, <span id="username">User</span> 👋</h2>
-                <p>Welcome to HeyCen Crypto</p>
+                <p>Complete tasks, watch ads & earn points</p>
             </div>
-            <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User" onclick="location.href='profile.html'">
+            <div class="header-icons">
+                <button class="notification-btn"><i class="fa-regular fa-bell"></i></button>
+                <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User" onclick="location.href='profile.html'">
+            </div>
         </div>
 
         <div class="points-card">
-            <div class="points-title">Your Points (GP)</div>
+            <div class="points-title">Your Points (GP)[cite: 9]</div>
             <div class="points-value" id="balance">0</div>
             <div class="usd-badge" id="usd-value">≈ $0.00</div>
+            <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+        </div>
+
+        <div class="quick-menu">
+            <div class="menu-item" onclick="claimDailyBonus()">
+                <div class="menu-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="menu-label">Daily Check-in</div>
+            </div>
+            <div class="menu-item" onclick="location.href='ads.html'">
+                <div class="menu-icon" style="background: #ef4444;"><i class="fa-solid fa-play"></i></div>
+                <div class="menu-label">Watch Ads</div>
+            </div>
+            <a href="task.html" class="menu-item">
+                <div class="menu-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
+                <div class="menu-label">Tasks</div>
+            </a>
+            <div class="menu-item" onclick="location.href='agent.html'">
+                <div class="menu-icon" style="background: #3b82f6;"><i class="fa-solid fa-handshake"></i></div>
+                <div class="menu-label">Agent</div>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <div class="section-title">Daily Bonus</div>
+            <div class="streak-badge" id="streak-text"><i class="fa-solid fa-fire"></i> 1 Days Streak[cite: 9]</div>
+        </div>
+        <div class="bonus-scroll" id="daily-bonus-container"></div>
+
+        <div class="section-header">
+            <div class="section-title">Available Tasks[cite: 9]</div>
+            <a href="task.html" style="font-size: 12px; color: #6366f1; text-decoration: none; font-weight: 600;">View All</a>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #8b5cf6;"><i class="fa-solid fa-file-lines"></i></div>
+                <div class="task-info">
+                    <h4>Complete Survey[cite: 9]</h4>
+                    <p>Watch ad & earn points[cite: 9]</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +150[cite: 9]</div>
+                </div>
+            </div>
+            <button class="action-btn purple" onclick="showComingSoon()">Start</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-download"></i></div>
+                <div class="task-info">
+                    <h4>Download App[cite: 9]</h4>
+                    <p>Watch ad & earn points[cite: 9]</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +100[cite: 9]</div>
+                </div>
+            </div>
+            <button class="action-btn green" onclick="showComingSoon()">Start</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #3b82f6;"><i class="fa-solid fa-rectangle-ad"></i></div>
+                <div class="task-info">
+                    <h4>Banner Ads View</h4>
+                    <p>View sponsored banners</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +80</div>
+                </div>
+            </div>
+            <button class="action-btn" onclick="showComingSoon()">Start</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #f97316;"><i class="fa-solid fa-gift"></i></div>
+                <div class="task-info">
+                    <h4>Weekly Special Offer</h4>
+                    <p>Complete weekly bonus goal</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +500</div>
+                </div>
+            </div>
+            <button class="action-btn orange" onclick="showComingSoon()">Claim</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #0ea5e9;"><i class="fa-brands fa-telegram"></i></div>
+                <div class="task-info">
+                    <h4>Join Telegram Channel[cite: 9]</h4>
+                    <p>Subscribe & get reward</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +60[cite: 9]</div>
+                </div>
+            </div>
+            <button class="action-btn" onclick="showComingSoon()">Join</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #ef4444;"><i class="fa-solid fa-rotate"></i></div>
+                <div class="task-info">
+                    <h4>Daily Lucky Spin</h4>
+                    <p>Spin & win random GP</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +200</div>
+                </div>
+            </div>
+            <button class="action-btn red" onclick="showComingSoon()">Spin</button>
+        </div>
+
+        <div class="promo-banner" style="margin-top: 20px;">
+            <div>
+                <h3>Watch Ads & Earn More![cite: 9]</h3>
+                <p>Watch ads and earn unlimited points[cite: 9]</p>
+            </div>
+            <button class="promo-btn" onclick="location.href='ads.html'"><i class="fa-solid fa-play"></i> Watch Now</button>
         </div>
     </div>
 
@@ -101,6 +256,7 @@
             appId: "1:442359961958:web:815606d4836a66003d50a7",
             measurementId: "G-XNQSP1R3JR"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -112,16 +268,85 @@
         let username = user ? (user.first_name || "User") : "User";
 
         document.getElementById('username').innerText = username;
-        if (user && user.photo_url) { document.getElementById('user-avatar').src = user.photo_url; }
+        if (user && user.photo_url) {
+            document.getElementById('user-avatar').src = user.photo_url;
+        }
 
-        db.ref('users/' + userId).on('value', (snapshot) => {
-            let data = snapshot.val() || { points: 0 };
-            let pts = data.points !== undefined ? data.points : (data.gp || 0);
-            document.getElementById('balance').innerText = pts.toLocaleString();
-            document.getElementById('usd-value').innerText = '≈ $' + (pts / 10000).toFixed(2);
+        let userRef = db.ref('users/' + userId);
+        let userData = { points: 0, gp: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, lastSeen: Date.now() };
+
+        userRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            if (data) {
+                userData = data;
+                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                userData.points = currentPoints;
+                userData.gp = currentPoints;
+                updateUI();
+                userRef.update({ name: username, username: username, lastSeen: Date.now() });
+            } else {
+                userData = { points: 0, gp: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, username: username, lastSeen: Date.now() };
+                userRef.set(userData);
+                updateUI();
+            }
         });
 
-        // সোয়াইপ লজিক এবং অ্যানিমেশন
+        function updateUI() {
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            document.getElementById('balance').innerText = currentPoints.toLocaleString();
+            document.getElementById('usd-value').innerText = '≈ $' + (currentPoints / 10000).toFixed(2);
+            document.getElementById('streak-text').innerHTML = `<i class="fa-solid fa-fire"></i> ${userData.streakDay || 1} Days Streak`;
+            renderDailyBonus();
+        }
+
+        function renderDailyBonus() {
+            const container = document.getElementById('daily-bonus-container');
+            container.innerHTML = '';
+            const rewards = [10, 15, 20, 25, 30, 35, 50];
+            let currentStreak = userData.streakDay || 1;
+            
+            for (let i = 1; i <= 7; i++) {
+                let isClaimed = i < currentStreak;
+                let isActive = i === currentStreak;
+                let iconClass = isClaimed ? "fa-solid fa-circle-check" : (i === 3 ? "fa-solid fa-gift" : "fa-solid fa-box-open");
+                let cardClass = "bonus-card" + (isActive ? " active" : "") + (isClaimed ? " claimed" : "");
+
+                container.innerHTML += `
+                    <div class="${cardClass}">
+                        <div class="day">Day ${i}</div>
+                        <div class="icon"><i class="${iconClass}"></i></div>
+                        <div class="reward">+${rewards[i-1]}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function claimDailyBonus() {
+            let today = new Date().toDateString();
+            if (userData.lastCheckInDate === today) {
+                tg.showAlert('You have already claimed today!');
+                return;
+            }
+            const rewards = [10, 15, 20, 25, 30, 35, 50];
+            let rewardAmount = rewards[(userData.streakDay || 1) - 1] || 10;
+
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            userData.points = currentPoints + rewardAmount;
+            userData.gp = userData.points;
+            userData.tasksDone = (userData.tasksDone || 0) + 1;
+            userData.lastCheckInDate = today;
+            userData.streakDay = (userData.streakDay || 1) < 7 ? (userData.streakDay || 1) + 1 : 1;
+
+            userRef.set(userData).then(() => {
+                tg.showAlert(`Claimed Daily Bonus! +${rewardAmount} GP added.`);
+            });
+        }
+
+        function showComingSoon() {
+            tg.showAlert("Coming Soon!");
+        }
+
+        // সোয়াইপ অ্যানিমেশন এবং ডাইনামিক কালার পরিবর্তনের লজিক
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
@@ -132,11 +357,20 @@
 
             if (Math.abs(diff) > 50) {
                 if (diff < 0) {
-                    // বামে টানলে Task পেজে যাবে
+                    // বাম দিকে টানলে Task পেজে যাবে
                     container.classList.add('page-slide-left');
                     bottomNav.style.background = '#1e1b4b';
                     setTimeout(() => { window.location.href = "task.html"; }, 250);
                 }
+            }
+        });
+
+        db.ref('users/' + userId + '/notifications').on('child_added', (snapshot) => {
+            let notif = snapshot.val();
+            let msg = notif.message || notif.text;
+            if (msg) {
+                tg.showAlert(msg);
+                snapshot.ref.remove();
             }
         });
     </script>
