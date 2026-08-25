@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Wallet & Payments</title>
+    <title>HeyCen - My Crypto UIDs</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-color: #0b0f19; 
+            --bg-color: #0b0f19;
             --card-bg: #131c2e;
             --card-border: #2a1b4e; 
             --text-main: #f8fafc;
@@ -38,56 +38,65 @@
         .page-slide-left { transform: translateX(-100px); opacity: 0; }
         .page-slide-right { transform: translateX(100px); opacity: 0; }
 
-        .header-banner {
-            background: var(--primary-gradient);
-            border-radius: 16px;
-            padding: 20px;
-            color: #fff;
+        .top-title {
             text-align: center;
+            color: #fbbf24;
+            font-size: 18px;
+            font-weight: 800;
             margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+            letter-spacing: 0.5px;
         }
-        .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
-        .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
 
         .wallet-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
+            padding: 18px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
-        .ton-connect-btn {
-            background: #0098EA;
+
+        .wallet-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .wallet-title i { color: #f59e0b; }
+
+        .wallet-input {
+            width: 100%;
+            background: #050a14;
+            border: 1px solid #2a3b68;
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            box-sizing: border-box;
+            margin-bottom: 12px;
+            outline: none;
+        }
+        .wallet-input:focus { border-color: #7c3aed; }
+
+        .save-btn {
+            background: #2563eb;
             color: #fff;
             border: none;
             width: 100%;
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0, 152, 234, 0.3);
-            transition: background 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            transition: 0.2s;
         }
-        .ton-connect-btn:hover { background: #0082c4; }
+        .save-btn:hover { background: #1d4ed8; }
 
-        .info-box {
-            background: rgba(124, 58, 237, 0.1);
-            border: 1px solid rgba(124, 58, 237, 0.3);
-            padding: 14px;
-            border-radius: 12px;
-            font-size: 12px;
-            color: #d8b4fe;
-            line-height: 1.4;
-        }
-
-        /* ৫টি অপশনসহ নেভিগেশন বার এবং ডাইনামিক কালার ইফেক্ট */
+        /* ৫টি অপশনসহ নেভিগেশন বার */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -120,25 +129,28 @@
 <body>
 
     <div class="container" id="mainContainer">
-        <div class="header-banner">
-            <h2>💎 TON Wallet & Payments</h2>
-            <p>Connect your TON wallet to pay or receive crypto instantly</p>
-        </div>
+        <div class="top-title">My Crypto UIDs</div>
 
+        <!-- Bitget UID Card -->
         <div class="wallet-card">
-            <h3 style="margin-top:0; color:#fff;">TON Connect Setup</h3>
-            <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px;">Link your Telegram Wallet to bypass ads and unlock instant VIP features.</p>
-            <button class="ton-connect-btn" onclick="connectWallet()">
-                <i class="fa-solid fa-wallet"></i> Connect TON Wallet
-            </button>
+            <div class="wallet-title">
+                <i class="fa-solid fa-shield-halved" style="color: #38bdf8;"></i> Bitget UID
+            </div>
+            <input type="text" id="bitget-uid" class="wallet-input" placeholder="Enter Bitget UID">
+            <button class="save-btn" onclick="saveUid('bitget')">Save Bitget UID</button>
         </div>
 
-        <div class="info-box">
-            <i class="fa-solid fa-circle-info"></i> Note: If you don't want to pay via wallet, you can freely earn GP points by watching ads and selling them through the Agent option![cite: 10]
+        <!-- Binance UID Card -->
+        <div class="wallet-card">
+            <div class="wallet-title">
+                <i class="fa-solid fa-wallet"></i> Binance UID
+            </div>
+            <input type="text" id="binance-uid" class="wallet-input" placeholder="Enter Binance UID">
+            <button class="save-btn" onclick="saveUid('binance')">Save Binance UID</button>
         </div>
     </div>
 
-    <!-- ৫টি অপশনসহ নেভিগেশন বার (hotcake.html সহ) -->
+    <!-- ৫টি অপশনসহ নেভিগেশন বার -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
@@ -147,15 +159,69 @@
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        function connectWallet() {
-            tg.showAlert("TON Connect SDK initializing... Wallet integration will be active soon!");[cite: 10]
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id.toString() : "7757851056";
+        let userRef = db.ref('users/' + userId);
+
+        // Load existing UIDs if available
+        userRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            if (data && data.uids) {
+                if (data.uids.bitget) {
+                    document.getElementById('bitget-uid').value = data.uids.bitget;
+                }
+                if (data.uids.binance) {
+                    document.getElementById('binance-uid').value = data.uids.binance;
+                }
+            }
+        });
+
+        function saveUid(type) {
+            let uidVal = "";
+            let name = "";
+
+            if (type === 'bitget') {
+                uidVal = document.getElementById('bitget-uid').value.trim();
+                name = "Bitget UID";
+            } else if (type === 'binance') {
+                uidVal = document.getElementById('binance-uid').value.trim();
+                name = "Binance UID";
+            }
+
+            if (!uidVal) {
+                tg.showAlert(`Please enter a valid ${name}!`);
+                return;
+            }
+
+            userRef.child('uids/' + type).set(uidVal).then(() => {
+                tg.showAlert(`${name} saved successfully!`);
+            }).catch((error) => {
+                tg.showAlert(`Failed to save: ${error.message}`);
+            });
         }
 
-        // সোয়াইপ অ্যানিমেশন এবং ডাইনামিক কালার পরিবর্তনের লজিক
+        // সোয়াইপ অ্যানিমেশন লজিক
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
@@ -166,12 +232,10 @@
 
             if (Math.abs(diff) > 50) {
                 if (diff > 0) {
-                    // ডান দিকে টানলে Task পেজে যাবে
                     container.classList.add('page-slide-right');
                     bottomNav.style.background = '#064e3b';
                     setTimeout(() => { window.location.href = "task.html"; }, 250);
                 } else {
-                    // বাম দিকে টানলে Ads পেজে যাবে
                     container.classList.add('page-slide-left');
                     bottomNav.style.background = '#1e1b4b';
                     setTimeout(() => { window.location.href = "ads.html"; }, 250);
