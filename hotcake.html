@@ -26,7 +26,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 100px 0;
+            padding: 0 0 100px 0; /* অন্য পেজের মতো সঠিক প্যাডিং ফিক্সড */
             display: flex;
             justify-content: center;
             overflow-x: hidden;
@@ -210,12 +210,12 @@
         }
         .cancel-text { color: #ef4444; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; display: inline-block; }
 
-        /* বড় এবং আকর্ষণীয় নেভিগেশন বার */
+        /* বড় এবং আকর্ষণীয় নেভিগেশন বার (অন্যান্য পেজের সাথে সামঞ্জস্যপূর্ণ)[cite: 18] */
         .bottom-nav {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 480px; background: var(--card-bg);
-            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around;
-            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100;
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 480px; background: var(--card-bg); 
+            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; 
+            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; 
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
             transition: background 0.3s ease;
         }
@@ -274,11 +274,11 @@
 
     <!-- বড় এবং সুন্দর নেভিগেশন বার -->
     <div class="bottom-nav" id="bottomNav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home[cite: 13]</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task[cite: 13]</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads[cite: 13]</a>
-        <a class="nav-item active" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake[cite: 13]</a>
-        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile[cite: 13]</a>
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
+        <a class="nav-item active" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
