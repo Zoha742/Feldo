@@ -21,7 +21,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 90px 0;
+            padding: 0 0 100px 0; /* নেভিগেশনের নিচে জায়গা বাড়ানোর জন্য */
             display: flex;
             justify-content: center;
             overflow-x: hidden;
@@ -88,17 +88,18 @@
         .promo-banner p { margin: 0; font-size: 11px; opacity: 0.9; }
         .promo-btn { background: rgba(255,255,255,0.25); border: none; color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; backdrop-filter: blur(5px); white-space: nowrap; }
         
-        /* ৫টি অপশনসহ নেভিগেশন বার এবং ডাইনামিক কালার ইফেক্ট */
+        /* বড় এবং আকর্ষণীয় নেভিগেশন বার */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
             border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; 
-            padding: 10px 0; box-sizing: border-box; z-index: 100; 
+            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; 
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
             transition: background 0.3s ease;
         }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-item.active { color: #6366f1; }
-        .nav-item i { font-size: 16px; display: block; margin-bottom: 3px; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -116,10 +117,10 @@
         </div>
 
         <div class="points-card">
-            <div class="points-title">Your Points (GP)</div>
+            <div class="points-title">Your Points (GP)[cite: 12]</div>
             <div class="points-value" id="balance">0</div>
             <div class="usd-badge" id="usd-value">≈ $0.00</div>
-            <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+            <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History[cite: 12]</button>
         </div>
 
         <div class="quick-menu">
@@ -157,7 +158,7 @@
                 <div class="task-icon" style="background: #8b5cf6;"><i class="fa-solid fa-file-lines"></i></div>
                 <div class="task-info">
                     <h4>Complete Survey</h4>
-                    <p>Watch ad & earn points</p>
+                    <p>Watch ad & earn points[cite: 12]</p>
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +150</div>
                 </div>
             </div>
@@ -169,7 +170,7 @@
                 <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-download"></i></div>
                 <div class="task-info">
                     <h4>Download App</h4>
-                    <p>Watch ad & earn points</p>
+                    <p>Watch ad & earn points[cite: 12]</p>
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +100</div>
                 </div>
             </div>
@@ -217,7 +218,7 @@
                 <div class="task-icon" style="background: #ef4444;"><i class="fa-solid fa-rotate"></i></div>
                 <div class="task-info">
                     <h4>Daily Lucky Spin</h4>
-                    <p>Spin & win random GP</p>
+                    <p>Spin & win random GP[cite: 12]</p>
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +200</div>
                 </div>
             </div>
@@ -227,19 +228,19 @@
         <div class="promo-banner" style="margin-top: 20px;">
             <div>
                 <h3>Watch Ads & Earn More!</h3>
-                <p>Watch ads and earn unlimited points</p>
+                <p>Watch ads and earn unlimited points[cite: 12]</p>
             </div>
             <button class="promo-btn" onclick="location.href='ads.html'"><i class="fa-solid fa-play"></i> Watch Now</button>
         </div>
     </div>
 
-    <!-- ৫টি অপশনসহ নেভিগেশন বার -->
+    <!-- বড় এবং সুন্দর নেভিগেশন বার -->
     <div class="bottom-nav" id="bottomNav">
-        <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
-        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
-        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+        <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home[cite: 12]</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task[cite: 12]</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads[cite: 12]</a>
+        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake[cite: 12]</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile[cite: 12]</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
