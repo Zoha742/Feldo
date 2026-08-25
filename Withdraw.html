@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyCen - Withdraw</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #2a1b4e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+            --orange-btn: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 90px 0;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        /* সোয়াইপ অ্যানিমেশন ক্লাস */
+        .page-slide-left { transform: translateX(-100px); opacity: 0; }
+        .page-slide-right { transform: translateX(100px); opacity: 0; }
+
+        .balance-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .balance-section p { margin: 0 0 4px 0; font-size: 13px; color: var(--text-muted); }
+        .balance-section h2 { margin: 0 0 10px 0; font-size: 28px; font-weight: 800; color: #22c55e; }
+        
+        .rate-badge {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ef4444;
+            padding: 6px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .withdraw-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+        
+        .form-control {
+            width: 100%;
+            background: #050a14;
+            border: 1px solid #2a3b68;
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .form-control:focus { border-color: #7c3aed; }
+        
+        select.form-control { cursor: pointer; }
+
+        .wallet-display {
+            background: #050a14;
+            border: 1px solid #2a3b68;
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            box-sizing: border-box;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+        .error-text { color: #ef4444; font-size: 12px; font-weight: 600; }
+
+        .withdraw-btn {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+            transition: 0.2s;
+        }
+        .withdraw-btn:hover { opacity: 0.9; }
+
+        .history-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .history-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .history-item {
+            background: #050a14;
+            border: 1px solid #2a3b68;
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+        .history-item div span { display: block; color: #fff; font-weight: bold; font-size: 13px; }
+
+        /* ৫টি অপশনসহ নেভিগেশন বার */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px; background: var(--card-bg);
+            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around;
+            padding: 10px 0; box-sizing: border-box; z-index: 100;
+            transition: background 0.3s ease;
+        }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item.active { color: #c084fc; }
+        .nav-item i { font-size: 16px; display: block; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="mainContainer">
+        <!-- Balance Section -->
+        <div class="balance-section">
+            <p>Current Balance</p>
+            <h2 id="user-current-balance">0 GP</h2>
+            <div class="rate-badge">Rate: 1,000,000 GP = 10 Dollar</div>
+        </div>
+
+        <!-- Withdraw Form Card -->
+        <div class="withdraw-card">
+            <div class="form-group">
+                <label>Amount (GP)</label>
+                <input type="number" id="withdraw-amount" class="form-control" placeholder="Enter amount to withdraw">
+            </div>
+
+            <div class="form-group">
+                <label>Select Wallet / Method</label>
+                <select id="withdraw-method" class="form-control" onchange="updateWalletDisplay()">
+                    <option value="bitget">Bitget UID</option>
+                    <option value="binance">Binance UID</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label id="wallet-label-text">Bitget UID</label>
+                <div id="wallet-address-display" class="wallet-display">
+                    <span class="error-text">UID not set! Update in Wallet.</span>
+                </div>
+            </div>
+
+            <button class="withdraw-btn" onclick="requestWithdraw()">Withdraw Now</button>
+        </div>
+
+        <!-- Withdraw History Section -->
+        <div class="history-title"><i class="fa-solid fa-clock-rotate-left"></i> Withdraw History</div>
+        <div class="history-box" id="history-container">
+            No history found.
+        </div>
+    </div>
+
+    <!-- ৫টি অপশনসহ নেভিগেশন বার -->
+    <div class="bottom-nav" id="bottomNav">
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
+        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id.toString() : "7757851056";
+        let userName = user ? (user.first_name || "User") : "User";
+        let userRef = db.ref('users/' + userId);
+
+        let userBalance = 0;
+        let savedUids = {};
+
+        // Fetch User Data & History
+        userRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            if (data) {
+                userBalance = data.points !== undefined ? data.points : (data.gp || 0);
+                document.getElementById('user-current-balance').innerText = userBalance.toLocaleString() + " GP";
+
+                if (data.uids) {
+                    savedUids = data.uids;
+                }
+                updateWalletDisplay();
+                loadHistory();
+            }
+        });
+
+        function updateWalletDisplay() {
+            let method = document.getElementById('withdraw-method').value;
+            let displayDiv = document.getElementById('wallet-address-display');
+            let labelText = document.getElementById('wallet-label-text');
+
+            if (method === 'bitget') {
+                labelText.innerText = "Bitget UID";
+                if (savedUids.bitget) {
+                    displayDiv.innerHTML = `<span style="color:#fbbf24; font-weight:bold;">${savedUids.bitget}</span>`;
+                } else {
+                    displayDiv.innerHTML = `<span class="error-text">Bitget UID not set! <a href="wallet.html" style="color:#38bdf8;">Update in Wallet</a>.</span>`;
+                }
+            } else if (method === 'binance') {
+                labelText.innerText = "Binance UID";
+                if (savedUids.binance) {
+                    displayDiv.innerHTML = `<span style="color:#fbbf24; font-weight:bold;">${savedUids.binance}</span>`;
+                } else {
+                    displayDiv.innerHTML = `<span class="error-text">Binance UID not set! <a href="wallet.html" style="color:#38bdf8;">Update in Wallet</a>.</span>`;
+                }
+            }
+        }
+
+        function requestWithdraw() {
+            let amountVal = document.getElementById('withdraw-amount').value;
+            let amount = parseInt(amountVal);
+            let method = document.getElementById('withdraw-method').value;
+            let targetUid = savedUids[method];
+
+            if (!amount || amount <= 0) {
+                tg.showAlert("Please enter a valid amount to withdraw!");
+                return;
+            }
+
+            if (amount > userBalance) {
+                tg.showAlert("You do not have enough GP balance!");
+                return;
+            }
+
+            if (!targetUid) {
+                tg.showAlert(`Please set your ${method.toUpperCase()} UID in the Wallet page first!`);
+                return;
+            }
+
+            let newBalance = userBalance - amount;
+            let dollarAmount = (amount / 1000000) * 10;
+
+            let withdrawData = {
+                userId: userId,
+                userName: userName,
+                amountGP: amount,
+                amountUSD: dollarAmount.toFixed(2),
+                method: method.toUpperCase(),
+                uid: targetUid,
+                status: "Pending",
+                timestamp: Date.now(),
+                date: new Date().toLocaleString()
+            };
+
+            // Save to withdraw requests and deduct balance
+            let withdrawRef = db.ref('withdraw_requests').push();
+            withdrawRef.set(withdrawData).then(() => {
+                userRef.update({ points: newBalance, gp: newBalance }).then(() => {
+                    tg.showAlert("Withdrawal request submitted successfully!");
+                    document.getElementById('withdraw-amount').value = "";
+                });
+            });
+        }
+
+        function loadHistory() {
+            db.ref('withdraw_requests').orderByChild('userId').equalTo(userId).on('value', (snapshot) => {
+                let historyContainer = document.getElementById('history-container');
+                historyContainer.innerHTML = '';
+
+                if (!snapshot.exists()) {
+                    historyContainer.innerHTML = "No history found.";
+                    return;
+                }
+
+                snapshot.forEach((childSnapshot) => {
+                    let req = childSnapshot.val();
+                    let statusColor = req.status === 'Pending' ? '#f59e0b' : (req.status === 'Approved' ? '#10b981' : '#ef4444');
+
+                    historyContainer.innerHTML += `
+                        <div class="history-item">
+                            <div>
+                                <span>${req.amountGP.toLocaleString()} GP ($${req.amountUSD})</span>
+                                <small style="color:var(--text-muted);">${req.method} (${req.uid}) - ${req.date}</small>
+                            </div>
+                            <span style="color: ${statusColor}; font-weight:bold; font-size:11px;">${req.status}</span>
+                        </div>
+                    `;
+                });
+            });
+        }
+
+        // সোয়াইপ অ্যানিমেশন লজিক
+        let touchStartX = 0;
+        window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+        window.addEventListener('touchend', e => {
+            let touchEndX = e.changedTouches[0].screenX;
+            let diff = touchEndX - touchStartX;
+            const container = document.getElementById('mainContainer');
+            const bottomNav = document.getElementById('bottomNav');
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    container.classList.add('page-slide-right');
+                    bottomNav.style.background = '#064e3b';
+                    setTimeout(() => { window.location.href = "ads.html"; }, 250);
+                } else {
+                    container.classList.add('page-slide-left');
+                    bottomNav.style.background = '#1e1b4b';
+                    setTimeout(() => { window.location.href = "profile.html"; }, 250);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
