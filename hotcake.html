@@ -64,7 +64,7 @@
 
         .timer-text { font-size: 12px; color: #f87171; font-weight: bold; text-align: center; }
 
-        /* বটম নেভিগেশন বার (Home, Task, Ads, Profile সহ ৪টি অপশন এবং ডাইনামিক কালার চেঞ্জ) */
+        /* ৫টি অপশনসহ বটম নেভিগেশন বার এবং ডাইনামিক কালার চেঞ্জ */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 480px; background: #0f172a;
@@ -72,9 +72,9 @@
             padding: 10px 0; box-sizing: border-box; z-index: 100;
             transition: background 0.3s ease;
         }
-        .nav-item { text-align: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; transition: color 0.2s; }
+        .nav-item { text-align: center; color: #64748b; text-decoration: none; font-size: 10px; font-weight: 600; cursor: pointer; flex: 1; transition: color 0.2s; }
         .nav-item.active { color: var(--primary); }
-        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
+        .nav-item i { font-size: 16px; display: block; margin-bottom: 3px; }
 
         /* পেমেন্ট মডাল ও বক্স ফিক্স */
         .modal-overlay {
@@ -124,12 +124,13 @@
         <div class="mining-container" id="miningList"></div>
     </div>
 
-    <!-- ৪টি অপশনসহ বটম নেভিগেশন বার -->
+    <!-- ৫টি অপশনসহ বটম নেভিগেশন বার -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fas fa-house"></i>Home</a>
         <a class="nav-item" href="task.html"><i class="fas fa-list-check"></i>Task</a>
         <a class="nav-item" href="ads.html"><i class="fas fa-play"></i>Ads</a>
-        <a class="nav-item active" href="hotcake.html"><i class="fas fa-hammer"></i>Profile</a> <!-- চাইলে এখানে Mining বা Profile আইকন রাখতে পারেন -->
+        <a class="nav-item active" href="hotcake.html"><i class="fas fa-hammer"></i>Mining</a>
+        <a class="nav-item" href="profile.html"><i class="fas fa-user"></i>Profile</a>
     </div>
 
     <!-- ১. ওয়ালেট ও পেমেন্ট অপশন সিলেকশন মডাল -->
@@ -373,7 +374,6 @@
     }
 
     // পেজ সোয়াইপ এবং ডাইনামিক অ্যানিমেশন ও কালার চেঞ্জ লজিক
-    const pages = ['index.html', 'task.html', 'ads.html', 'hotcake.html'];
     let touchStartX = 0;
 
     window.addEventListener('touchstart', e => {
@@ -388,15 +388,15 @@
 
         if (Math.abs(diff) > 50) {
             if (diff < 0) {
-                // বামে সোয়াইপ (Swipe Left) -> পরের পেজে যাওয়া
+                // বামে সোয়াইপ (Swipe Left) -> Profile পেজে যাওয়া
                 container.classList.add('page-slide-left');
-                bottomNav.style.background = '#1e1b4b'; // সোয়াইপ করার সময় নেভিগেশনের কালার বদলাবে
+                bottomNav.style.background = '#1e1b4b'; 
                 setTimeout(() => { window.location.href = 'profile.html'; }, 250);
             } else {
-                // ডানে সোয়াইপ (Swipe Right) -> আগের পেজে যাওয়া (Task পেজে ফিরবে)
+                // ডানে সোয়াইপ (Swipe Right) -> Ads পেজে যাওয়া
                 container.classList.add('page-slide-right');
-                bottomNav.style.background = '#064e3b'; // কালার বদলাবে
-                setTimeout(() => { window.location.href = 'task.html'; }, 250);
+                bottomNav.style.background = '#064e3b'; 
+                setTimeout(() => { window.location.href = 'ads.html'; }, 250);
             }
         }
     });
