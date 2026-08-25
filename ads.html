@@ -77,27 +77,6 @@
         .watch-btn { background: #7c3aed; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
         .watch-btn.done { background: #10b981; cursor: default; }
 
-        /* 10 Mining Options */
-        .mining-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .mining-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .mining-left { display: flex; align-items: center; gap: 12px; }
-        .mining-icon { width: 36px; height: 36px; background: #3b82f6; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
-        .mining-info h5 { margin: 0 0 2px 0; font-size: 13px; }
-        .mining-info p { margin: 0; font-size: 10px; color: var(--text-muted); }
-        .mine-btn { background: #3b82f6; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
-
         /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
@@ -137,8 +116,8 @@
     <div class="container">
         <!-- Header Banner -->
         <div class="header-banner">
-            <h2>🎬 Watch Ads & Mining</h2>
-            <p>Watch video ads and activate miners to earn extra GP</p>
+            <h2>🎬 Watch Ads & Earn</h2>
+            <p>Watch video ads to earn extra GP</p>
         </div>
 
         <!-- 6 Video Ads Section -->
@@ -146,15 +125,9 @@
         <div class="video-grid" id="video-ads-container">
             <!-- Populated via JS -->
         </div>
-
-        <!-- 10 Mining Options Section -->
-        <div class="section-title"><i class="fa-solid fa-pickaxe"></i> Mining Boosters (10 Options)</div>
-        <div class="mining-list" id="mining-options-container">
-            <!-- Populated via JS -->
-        </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Bottom Navigation Bar (Rewards renamed to Mining) -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html">
             <i class="fa-solid fa-house"></i>
@@ -168,9 +141,9 @@
             <i class="fa-solid fa-play"></i>
             Watch Ads
         </a>
-        <a class="nav-item" onclick="tg.showAlert('Rewards coming soon!')">
-            <i class="fa-solid fa-gift"></i>
-            Rewards
+        <a class="nav-item" href="store.html">
+            <i class="fa-solid fa-hammer"></i>
+            Mining
         </a>
         <a class="nav-item" href="profile.html">
             <i class="fa-solid fa-user"></i>
@@ -184,9 +157,9 @@
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
-            databaseURL: "https://heycan-9a9d8-default-rtdb.firebaseio.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
             projectId: "heycen-9a9d8",
             storageBucket: "heycen-9a9d8.firebasestorage.app",
             messagingSenderId: "442359961958",
@@ -201,17 +174,20 @@
         tg.expand();
 
         let user = tg.initDataUnsafe.user;
-        let userId = user ? user.id : "7757851056"; 
+        let userId = user ? user.id.toString() : "7757851056"; 
         let userRef = db.ref('users/' + userId);
 
-        let userData = { points: 0, tasksDone: 0 };
+        let userData = { points: 0, gp: 0, tasksDone: 0 };
 
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
-            if (data && data.points !== undefined) {
+            if (data) {
                 userData = data;
+                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                userData.points = currentPoints;
+                userData.gp = currentPoints;
             } else {
-                userRef.set({ points: 0, tasksDone: 0 });
+                userRef.set({ points: 0, gp: 0, tasksDone: 0 });
             }
         });
 
@@ -235,49 +211,23 @@
             `;
         }
 
-        // Render 10 Mining Options
-        const miningContainer = document.getElementById('mining-options-container');
-        const miningRewards = [100, 200, 300, 400, 500, 600, 750, 1000, 1500, 2500];
-        for (let i = 1; i <= 10; i++) {
-            miningContainer.innerHTML += `
-                <div class="mining-card">
-                    <div class="mining-left">
-                        <div class="mining-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-pickaxe"></i></div>
-                        <div class="mining-info">
-                            <h5>Miner Rig #${i}</h5>
-                            <p>Earn +${miningRewards[i-1]} GP Reward</p>
-                        </div>
-                    </div>
-                    <button class="mine-btn" onclick="claimMining(${miningRewards[i-1]}, this)">Claim</button>
-                </div>
-            `;
-        }
-
-        // Watch Video Ad function (Changes button to Done after click)
+        // Watch Video Ad function (Updates points and gp simultaneously)
         function watchVideoAd(id, points) {
             let btn = document.getElementById(`vid-btn-${id}`);
             if (btn.classList.contains('done')) return;
 
-            userData.points = (userData.points || 0) + points;
-            userData.tasksDone = (userData.tasksDone || 0) + 1;
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            let newPoints = currentPoints + points;
+            let newTasksDone = (userData.tasksDone || 0) + 1;
+
+            userData.points = newPoints;
+            userData.gp = newPoints;
+            userData.tasksDone = newTasksDone;
 
             userRef.set(userData).then(() => {
                 btn.innerText = "Done ✓";
                 btn.classList.add('done');
                 tg.showAlert(`Video Ad #${id} completed! +${points} GP added.`);
-            });
-        }
-
-        // Claim Mining Booster function
-        function claimMining(points, btnElement) {
-            userData.points = (userData.points || 0) + points;
-            userData.tasksDone = (userData.tasksDone || 0) + 1;
-
-            userRef.set(userData).then(() => {
-                btnElement.innerText = "Claimed";
-                btnElement.style.background = "#10b981";
-                btnElement.disabled = true;
-                tg.showAlert(`Mining reward collected! +${points} GP added.`);
             });
         }
     </script>
