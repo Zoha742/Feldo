@@ -185,7 +185,7 @@
             outline: none;
         }
 
-        /* Custom File Input Styling (Fixing white background issue) */
+        /* Custom File Input Styling */
         input[type="file"] {
             color: #94a3b8;
             background: #050a14;
@@ -201,9 +201,23 @@
             margin-right: 10px;
             transition: 0.2s;
         }
-        input[type="file"]::file-selector-button:hover {
-            opacity: 0.9;
+        input[type="file"]::file-selector-button:hover { opacity: 0.9; }
+
+        /* Fixed Submit Proof Button Design */
+        .btn-submit-proof {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: none;
+            width: 100%;
+            padding: 13px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: 0.2s;
         }
+        .btn-submit-proof:hover { opacity: 0.9; }
 
         .cancel-text { color: #ef4444; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 12px; display: inline-block; transition: 0.2s; }
         .cancel-text:hover { color: #dc2626; text-decoration: underline; }
@@ -270,7 +284,8 @@
         <div class="input-label">Upload Payment Proof / Screenshot:</div>
         <input type="file" id="proof-file" class="form-input" accept="image/*">
 
-        <button class="btn btn-green" onclick="submitBoostProof()" style="width: 100%; margin-top: 6px; padding: 13px; font-size: 14px;">Submit Proof</button>
+        <!-- Fixed Submit Button with Dark Green/Emerald Gradient and White Bold Text -->
+        <button class="btn-submit-proof" onclick="submitBoostProof()">Submit Proof</button>
         <br>
         <span class="cancel-text" onclick="closeModals()">Cancel</span>
     </div>
@@ -418,7 +433,7 @@
 
         function openProofModal(method, adminUid) {
             selectedMethod = method;
-            currentAdminUid = adminUid;
+            currentAdminuid = adminUid;
             document.getElementById('paymentMethodModal').style.display = 'none';
             
             document.getElementById('proof-title').innerText = `${method} Proof`;
@@ -430,8 +445,8 @@
         }
 
         function copyAdminUid() {
-            navigator.clipboard.writeText(currentAdminUid).then(() => {
-                tg.showAlert(`Admin UID copied: ${currentAdminUid}`);
+            navigator.clipboard.writeText(currentAdminuid).then(() => {
+                tg.showAlert(`Admin UID copied: ${currentAdminuid}`);
             });
         }
 
