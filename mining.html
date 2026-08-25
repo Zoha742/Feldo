@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyCen - Crypto Mining</title>
     <!-- Telegram Web App Script -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=2.2"></script>
     <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2.2">
     
     <style>
         :root {
@@ -185,7 +185,6 @@
             outline: none;
         }
 
-        /* Custom File Input Styling */
         input[type="file"] {
             color: #94a3b8;
             background: #050a14;
@@ -203,7 +202,6 @@
         }
         input[type="file"]::file-selector-button:hover { opacity: 0.9; }
 
-        /* Fixed Submit Proof Button Design */
         .btn-submit-proof {
             background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff;
@@ -284,7 +282,6 @@
         <div class="input-label">Upload Payment Proof / Screenshot:</div>
         <input type="file" id="proof-file" class="form-input" accept="image/*">
 
-        <!-- Fixed Submit Button with Dark Green/Emerald Gradient and White Bold Text -->
         <button class="btn-submit-proof" onclick="submitBoostProof()">Submit Proof</button>
         <br>
         <span class="cancel-text" onclick="closeModals()">Cancel</span>
@@ -330,7 +327,10 @@
         let selectedCoin = "";
         let selectedMethod = "";
         let currentAdminUid = "";
+        let isDataLoaded = false;
+        let isProcessing = false; // Spam click protection
 
+        // Optimized once/on fetch to prevent blocking
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
             if (data) {
@@ -341,6 +341,7 @@
             } else {
                 userRef.set({ points: 0, gp: 0, boosts: {}, pending_boosts: {}, name: userName });
             }
+            isDataLoaded = true;
             renderMiningRigs();
         });
 
@@ -366,6 +367,11 @@
 
         function renderMiningRigs() {
             const container = document.getElementById('mining-list-container');
+            if (!isDataLoaded) {
+                container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding:20px;"><i class="fas fa-spinner fa-spin"></i> Loading Rigs...</div>`;
+                return;
+            }
+
             container.innerHTML = '';
 
             coins.forEach(coin => {
@@ -403,6 +409,9 @@
         }
 
         function claimMiningReward(coinId, rewardAmount) {
+            if (isProcessing) return;
+            isProcessing = true;
+
             let lastClaimKey = `lastClaim_${coinId}`;
             let lastClaimTime = userData[lastClaimKey] || 0;
             let cooldownTime = 12 * 60 * 60 * 1000; // 12 Hours
@@ -410,6 +419,7 @@
             if (Date.now() - lastClaimTime < cooldownTime) {
                 let remainingHours = Math.ceil((cooldownTime - (Date.now() - lastClaimTime)) / (60 * 60 * 1000));
                 tg.showAlert(`Please wait! Next claim available in ${remainingHours} hours.`);
+                isProcessing = false;
                 return;
             }
 
@@ -421,7 +431,10 @@
 
             userRef.set(userData).then(() => {
                 tg.showAlert(`Successfully claimed +${rewardAmount} GP from ${coinId.toUpperCase()} mining!`);
+                isProcessing = false;
                 renderMiningRigs();
+            }).catch(() => {
+                isProcessing = false;
             });
         }
 
@@ -433,7 +446,7 @@
 
         function openProofModal(method, adminUid) {
             selectedMethod = method;
-            currentAdminuid = adminUid;
+            currentAdminUid = adminUid;
             document.getElementById('paymentMethodModal').style.display = 'none';
             
             document.getElementById('proof-title').innerText = `${method} Proof`;
@@ -445,8 +458,8 @@
         }
 
         function copyAdminUid() {
-            navigator.clipboard.writeText(currentAdminuid).then(() => {
-                tg.showAlert(`Admin UID copied: ${currentAdminuid}`);
+            navigator.clipboard.writeText(currentAdminUid).then(() => {
+                tg.showAlert(`Admin UID copied: ${currentAdminUid}`);
             });
         }
 
