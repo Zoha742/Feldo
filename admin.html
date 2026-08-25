@@ -219,7 +219,7 @@
                         });
                     }
 
-                    // ID Verified / Agent Direct Paid Proofs (পেমেন্ট প্রুফ সিস্টেম ২)
+                    // ID Verified / Agent Direct Paid Proofs
                     if(u.pending_agent_pay && u.pending_agent_pay.status === "Pending") {
                         let req = u.pending_agent_pay;
                         let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
@@ -351,7 +351,6 @@
             db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
         }
 
-        // নতুন ফিচার: জিপি এক ক্লিকে ০ (Zero) করা
         function makeGPZero() {
             if(confirm("Are you sure you want to make this user's GP 0?")) {
                 document.getElementById('m-gp').value = 0;
@@ -359,7 +358,6 @@
             }
         }
 
-        // নতুন ফিচার: ইউজারের সব বুস্ট বা ডাটা রিসেট করা
         function resetUserData() {
             if(confirm("Warning: This will reset user's boosts and pending requests! Proceed?")) {
                 db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
