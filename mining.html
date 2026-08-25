@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyCen - Crypto Mining</title>
     <!-- Telegram Web App Script -->
-    <script src="https://telegram.org/js/telegram-web-app.js?v=2.3"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js?v=2.5"></script>
     <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2.3">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2.5">
     
     <style>
         :root {
@@ -244,7 +244,7 @@
             <div class="title">CRYPTO MINING</div>
             <div style="width: 18px;"></div>
         </div>
-        <div class="sub-banner">ACTIVE MINING RIGS (12 HOURS INTERVAL)</div>
+        <div class="sub-banner">ACTIVE MINING RIGS (WATCH AD TO CLAIM)</div>
 
         <!-- 16 Mining Rigs Container -->
         <div id="mining-list-container"></div>
@@ -395,11 +395,11 @@
                             <div class="coin-icon"><i class="${coin.icon}"></i></div>
                             <div class="coin-info">
                                 <h4>${coin.name}</h4>
-                                <p>Normal: 50 GP | Boosted: 500 GP ($2.5 / 15 Days)</p>
+                                <p>Normal: Watch Ad (50 GP) | Boosted: 500 GP</p>
                             </div>
                         </div>
                         <div class="mining-actions">
-                            <button class="btn btn-claim" onclick="claimMiningReward('${coin.id}', ${isBoosted ? 500 : 50})">Claim ${isBoosted ? 500 : 50} GP</button>
+                            <button class="btn btn-claim" onclick="watchAdForMining('${coin.id}')"><i class="fa-solid fa-play"></i> Watch Ad (50 GP)</button>
                             ${boostBtnHTML}
                         </div>
                     </div>
@@ -407,34 +407,14 @@
             });
         }
 
-        function claimMiningReward(coinId, rewardAmount) {
+        // সাধারণ 50 GP ক্লিকের জন্য অ্যাড সিস্টেম ও কামিং সুন মেসেজ
+        function watchAdForMining(coinId) {
             if (isProcessing) return;
             isProcessing = true;
 
-            let lastClaimKey = `lastClaim_${coinId}`;
-            let lastClaimTime = userData[lastClaimKey] || 0;
-            let cooldownTime = 12 * 60 * 60 * 1000; // 12 Hours
-
-            if (Date.now() - lastClaimTime < cooldownTime) {
-                let remainingHours = Math.ceil((cooldownTime - (Date.now() - lastClaimTime)) / (60 * 60 * 1000));
-                tg.showAlert(`Please wait! Next claim available in ${remainingHours} hours.`);
-                isProcessing = false;
-                return;
-            }
-
-            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
-            userData.points = currentPoints + rewardAmount;
-            userData.gp = userData.points;
-            userData[lastClaimKey] = Date.now();
-            userData.tasksDone = (userData.tasksDone || 0) + 1;
-
-            userRef.set(userData).then(() => {
-                tg.showAlert(`Successfully claimed +${rewardAmount} GP from ${coinId.toUpperCase()} mining!`);
-                isProcessing = false;
-                renderMiningRigs();
-            }).catch(() => {
-                isProcessing = false;
-            });
+            // আপনার চাহিদা অনুযায়ী অ্যাড দেখার জন্য কামিং সুন মেসেজ পপআপ করা হবে
+            tg.showAlert("Coming Soon! Ad watching system for mining will be available soon.");
+            isProcessing = false;
         }
 
         function openPaymentModal(coinId) {
