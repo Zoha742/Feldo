@@ -264,7 +264,7 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation (Rewards renamed to Mining) -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html">
             <i class="fa-solid fa-house"></i>
@@ -274,13 +274,13 @@
             <i class="fa-solid fa-list-check"></i>
             Tasks
         </a>
-        <a class="nav-item" onclick="tg.showAlert('Watch Ads coming soon!')">
+        <a class="nav-item" href="ads.html">
             <i class="fa-solid fa-play"></i>
             Watch Ads
         </a>
-        <a class="nav-item" onclick="tg.showAlert('Rewards coming soon!')">
-            <i class="fa-solid fa-gift"></i>
-            Rewards
+        <a class="nav-item" href="store.html">
+            <i class="fa-solid fa-hammer"></i>
+            Mining
         </a>
         <a class="nav-item" href="profile.html">
             <i class="fa-solid fa-user"></i>
@@ -294,9 +294,9 @@
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
-            databaseURL: "https://heycan-9a9d8-default-rtdb.firebaseio.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
             projectId: "heycen-9a9d8",
             storageBucket: "heycen-9a9d8.firebasestorage.app",
             messagingSenderId: "442359961958",
@@ -311,13 +311,13 @@
         tg.expand();
 
         let user = tg.initDataUnsafe.user;
-        let userId = user ? user.id : "guest_user";
+        let userId = user ? user.id.toString() : "7757851056";
         let userRef = db.ref('users/' + userId);
 
         function completeTask(taskName, points) {
             userRef.once('value').then((snapshot) => {
-                let data = snapshot.val() || { points: 0, tasksDone: 0 };
-                let currentPoints = data.points || 0;
+                let data = snapshot.val() || { points: 0, gp: 0, tasksDone: 0 };
+                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
                 let currentTasksDone = data.tasksDone || 0;
 
                 let newPoints = currentPoints + points;
@@ -325,6 +325,7 @@
                 
                 userRef.update({ 
                     points: newPoints,
+                    gp: newPoints,
                     tasksDone: newTasksDone
                 }).then(() => {
                     tg.showAlert(`Task "${taskName}" completed! +${points} GP added.`);
