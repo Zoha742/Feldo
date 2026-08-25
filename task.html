@@ -11,12 +11,12 @@
     
     <style>
         :root {
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --border-color: #e2e8f0;
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #2a1b4e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -51,7 +51,7 @@
         }
         .task-grid-card {
             background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--card-border);
             padding: 14px;
             border-radius: 16px;
             display: flex;
@@ -62,13 +62,15 @@
         .task-grid-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
         .task-grid-info h4 { margin: 0; font-size: 13px; font-weight: 700; }
         .task-grid-info p { margin: 2px 0 0 0; font-size: 10px; color: var(--text-muted); }
-        .task-grid-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 10px; }
+        .task-grid-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 10px; }
         .task-grid-reward { font-size: 12px; font-weight: 700; color: #eab308; display: flex; align-items: center; gap: 4px; }
-        .task-start-btn { background: #6366f1; color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
-        .tasks-footer-note { text-align: center; font-size: 11px; color: #eab308; background: #fef9c3; padding: 10px; border-radius: 10px; border: 1px solid #fde047; margin-bottom: 20px; }
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 10px 0; box-sizing: border-box; z-index: 100; }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; }
-        .nav-item.active { color: #6366f1; }
+        .task-start-btn { background: #7c3aed; color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .tasks-footer-note { text-align: center; font-size: 11px; color: #eab308; background: rgba(234, 179, 8, 0.1); padding: 10px; border-radius: 10px; border: 1px solid rgba(234, 179, 8, 0.3); margin-bottom: 20px; }
+        
+        /* Bottom Navigation Bar (শুধু ৩টি অপশন) */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card-bg); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; padding: 10px 0; box-sizing: border-box; z-index: 100; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item.active { color: #c084fc; }
         .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
     </style>
 </head>
@@ -88,7 +90,7 @@
             <!-- 1 -->
             <div class="task-grid-card">
                 <div class="task-grid-top">
-                    <div class="task-grid-icon" style="background: #6366f1;"><i class="fa-solid fa-video"></i></div>
+                    <div class="task-grid-icon" style="background: #7c3aed;"><i class="fa-solid fa-video"></i></div>
                     <div class="task-grid-info"><h4>Watch Video</h4><p>Watch ad & earn</p></div>
                 </div>
                 <div class="task-grid-bottom">
@@ -264,21 +266,13 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation (Rewards renamed to Mining) -->
+    <!-- Bottom Navigation (Home, Mining, Profile) -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html">
             <i class="fa-solid fa-house"></i>
             Home
         </a>
-        <a class="nav-item active" href="task.html">
-            <i class="fa-solid fa-list-check"></i>
-            Tasks
-        </a>
-        <a class="nav-item" href="ads.html">
-            <i class="fa-solid fa-play"></i>
-            Watch Ads
-        </a>
-        <a class="nav-item" href="store.html">
+        <a class="nav-item" href="hotcake.html">
             <i class="fa-solid fa-hammer"></i>
             Mining
         </a>
@@ -332,6 +326,17 @@
                 });
             });
         }
+
+        // সোয়াইপ ব্যাক লজিক (ডানে টানলে Home এ যাবে)
+        let touchStartX = 0;
+        let touchEndX = 0;
+        window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+        window.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX > touchStartX + 50) {
+                window.location.href = "index.html";
+            }
+        });
     </script>
 </body>
 </html>
