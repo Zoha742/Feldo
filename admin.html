@@ -1,131 +1,132 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Master Admin Control Center</title>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    <title>HeyCen - Notifications</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { 
-            --bg: #050a18; --card: #121e36; --border: #1e2d4d; 
-            --blue: #3b82f6; --green: #22c55e; --red: #ef4444; 
-            --orange: #f59e0b; --purple: #a855f7; --primary: #fbbf24;
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #2a1b4e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
         }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; display: flex; justify-content: center; }
-        
-        .container { padding: 15px; width: 100%; max-width: 480px; box-sizing: border-box; }
-        
-        .header { background: var(--card); padding: 15px; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 100; display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-radius: 0 0 12px 12px; }
-        .back-nav { font-size: 20px; color: white; cursor: pointer; padding: 5px; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 100px 0;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
-        
-        .card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
-        
-        .stat-box { background: #0a1226; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border); }
-        .stat-box h2 { margin: 5px 0; font-size: 20px; color: var(--blue); }
+        .header-banner {
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+        }
+        .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
+        .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
 
-        .input-box { width: 100%; padding: 12px; margin: 8px 0; background: #0a1226; color: white; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 14px; }
-        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-blue { background: var(--blue); color: white; }
-        .btn-green { background: var(--green); color: white; }
-        .btn-red { background: var(--red); color: white; }
-        .btn-orange { background: var(--orange); color: white; }
-        .btn-purple { background: var(--purple); color: white; }
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .notif-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .notif-icon {
+            width: 38px; height: 38px;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid #7c3aed;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #c084fc; font-size: 16px; flex-shrink: 0;
+        }
+        .notif-content h4 { margin: 0 0 4px 0; font-size: 14px; color: #fff; font-weight: 700; }
+        .notif-content p { margin: 0 0 6px 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; word-break: break-word; }
+        .notif-time { font-size: 10px; color: #64748b; }
 
-        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); }
-        .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
-        
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
-        
-        .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        .proof-img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; margin-top: 8px; display: block; }
+        .no-notif {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 50px;
+            font-size: 13px;
+        }
+
+        /* ইমেজ ভিউয়ার মোডাল */
         .img-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; flex-direction: column; }
-        .img-modal img { max-width: 90%; max-height: 80vh; border-radius: 10px; border: 2px solid var(--primary); }
+        .img-modal img { max-width: 90%; max-height: 80vh; border-radius: 10px; border: 2px solid #7c3aed; }
+
+        /* বড় এবং সুন্দর নেভিগেশন বার */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 480px; background: var(--card-bg); 
+            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; 
+            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; 
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item.active { color: #c084fc; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="container" id="admin-panel">
-        <div class="header">
-            <i class="fas fa-arrow-left back-nav" onclick="location.href='profile.html'"></i>
-            <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> HeyCen Master Admin</h3>
+    <div class="container">
+        <div class="header-banner">
+            <h2>🔔 Notifications</h2>
+            <p>Check all announcements & updates from admin</p>
         </div>
 
-        <div class="grid">
-            <div class="stat-box"><small>Total Users</small><h2 id="st-users">0</h2></div>
-            <div class="stat-box"><small>Active (Live)</small><h2 id="st-active" style="color: var(--green);">0</h2></div>
-            <div class="stat-box"><small>Pending Req</small><h2 id="st-pending" style="color: var(--orange);">0</h2></div>
-            <div class="stat-box"><small>Total GP</small><h2 id="st-total-gp" style="color: var(--green);">0</h2></div>
-            <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
-        </div>
-
-        <!-- ১. জিপি সেল ও এজেন্ট রিকোয়েস্ট -->
-        <div class="card" style="border-color: var(--purple);">
-            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests (Agent Qualification)</h4>
-            <div id="agent-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading GP sale requests...</div>
-        </div>
-
-        <!-- ২. মাইনিং বুস্ট পেমেন্ট প্রুফ -->
-        <div class="card" style="border-color: var(--orange);">
-            <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> 1. Mining Boost Payment Proofs</h4>
-            <div id="boost-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading mining proofs...</div>
-        </div>
-
-        <!-- ৩. আইডি ভেরিফাইড / এজেন্ট পেইড পেমেন্ট প্রুফ -->
-        <div class="card" style="border-color: var(--green);">
-            <h4><i class="fas fa-id-card" style="color:var(--green);"></i> 2. ID Verified / Agent Paid Proofs</h4>
-            <div id="agent-pay-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading ID verification proofs...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--blue);">
-            <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Management</h4>
-            <div id="wd-list">Loading withdrawals...</div>
-        </div>
-
-        <div class="card">
-            <h4><i class="fas fa-user-shield"></i> User Search & Management</h4>
-            <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
-            <div id="user-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;"></div>
+        <div class="notif-list" id="notifications-container">
+            <div class="no-notif">Loading notifications...</div>
         </div>
     </div>
 
     <!-- Image Viewer Modal -->
     <div class="img-modal" id="imageModal" onclick="closeImageModal()">
         <span style="color:white; position:absolute; top:20px; right:30px; font-size:30px; cursor:pointer;">&times;</span>
-        <img id="modalImage" src="" alt="Payment Proof">
+        <img id="modalImage" src="" alt="Notification Media">
         <p style="color:#94a3b8; font-size:12px; margin-top:15px;">Click anywhere to close</p>
     </div>
 
-    <!-- User Management Modal -->
-    <div class="overlay" id="overlay" onclick="closeModal()"></div>
-    <div class="modal" id="modal">
-        <h3 id="m-title">Manage User</h3>
-        <p id="m-name-label" style="font-size: 14px; color: #fbbf24; margin: 5px 0; font-weight: bold;"></p>
-        <p id="m-uid-label" style="font-size: 12px; color: var(--blue); margin-bottom: 10px;"></p>
-        <hr border="0" style="height:1px; background:var(--border); margin:10px 0;">
-        
-        <label style="font-size:12px;">Balance (GP)</label>
-        <input type="number" id="m-gp" class="input-box">
-        
-        <div class="grid" style="margin-top:5px;">
-            <button class="btn btn-blue" onclick="updateUserGP()">Update GP</button>
-            <button class="btn btn-orange" onclick="makeGPZero()">Set GP to 0</button>
-        </div>
-
-        <div class="grid" style="margin-top:5px;">
-            <button class="btn btn-purple" onclick="resetUserData()">Reset Profile Data</button>
-            <button class="btn btn-red" id="ban-btn" onclick="toggleBan()">Ban User</button>
-        </div>
-
-        <button class="btn" style="background:#334155; margin-top:10px;" onclick="closeModal()">Cancel</button>
+    <!-- নেভিগেশন বার -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
+        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -146,255 +147,56 @@
         tg.expand();
 
         let user = tg.initDataUnsafe.user;
-        let userId = user ? user.id.toString() : "7757851056";
-        const ADMIN_ID = "7757851056";
+        let userId = user ? user.id.toString() : "7757851056"; 
 
-        if (userId !== ADMIN_ID && userId !== "7757851056") {
-            alert("Access Denied! Unauthorized User.");
-            window.location.href = "index.html";
-        } else {
-            initAdmin();
-        }
+        let notifRef = db.ref('users/' + userId + '/notifications');
+        notifRef.on('value', (snapshot) => {
+            const container = document.getElementById('notifications-container');
+            container.innerHTML = '';
 
-        function initAdmin() {
-            // ১. GP Sale Requests
-            db.ref('sell_requests').on('value', snap => {
-                let html = "";
-                snap.forEach(c => {
-                    let req = c.val();
-                    if(req.status === "Pending") {
-                        html += `<div class="list-item" style="border-left-color: var(--purple);">
-                            <b>User Name: ${req.userName || 'Unknown'}</b><br>
-                            <small>Telegram ID: <b>${req.userId}</b> | Selling: <span style="color:#fbbf24; font-weight:bold;">${req.amount} GP</span></small>
-                            <div class="grid" style="margin-top:10px;">
-                                <button class="btn btn-green" style="padding:6px;" onclick="approveAgentReq('${c.key}', '${req.userId}', ${req.amount})">Approve & Qualify</button>
-                                <button class="btn btn-red" style="padding:6px;" onclick="rejectAgentReq('${c.key}')">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
-            });
+            if (snapshot.exists()) {
+                let notifs = snapshot.val();
+                let keys = Object.keys(notifs).reverse();
 
-            // ২. Users Data, Mining Boosts & ID Verified Agent Direct Pays
-            db.ref('users').on('value', snap => {
-                let count = snap.numChildren();
-                let banned = 0, totalGP = 0, activeCount = 0;
-                let currentTime = Date.now();
-                let usersArray = [];
-                let boostHtml = "";
-                let agentPayHtml = "";
-                
-                snap.forEach(c => {
-                    let u = c.val();
-                    let uId = c.key;
-                    let uName = u.username || u.name || "Unknown";
-                    if(u.banned) banned++;
+                keys.forEach(key => {
+                    let item = notifs[key];
+                    let title = item.title || "Admin Notice";
+                    let message = item.message || item.text || "";
+                    let time = item.timestamp ? new Date(item.timestamp).toLocaleString() : "Just now";
                     
-                    let userPoints = u.points !== undefined ? u.points : (u.gp || 0);
-                    totalGP += userPoints;
-
-                    if (u.lastSeen && (currentTime - u.lastSeen) < (5 * 60 * 1000)) { 
-                        activeCount++; 
+                    let mediaElement = "";
+                    if (item.media) {
+                        if (item.media.startsWith("data:video") || item.media.includes("video")) {
+                            mediaElement = `<video src="${item.media}" controls style="width:100%; max-height:200px; border-radius:8px; margin-top:8px;"></video>`;
+                        } else {
+                            mediaElement = `<img src="${item.media}" style="width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-top:8px; cursor:pointer;" onclick="viewImage('${item.media}')">`;
+                        }
                     }
 
-                    usersArray.push({ id: uId, name: uName, gp: userPoints, banned: u.banned || false });
-
-                    // Mining Boost Payment Proofs
-                    if(u.pending_boosts) {
-                        Object.keys(u.pending_boosts).forEach(coinId => {
-                            let req = u.pending_boosts[coinId];
-                            if(req && req.status === true) {
-                                let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
-                                boostHtml += `<div class="list-item">
-                                    <b>User: ${uId} (${req.userName || 'N/A'})</b><br>
-                                    <small>Mining Coin: <b>${coinId.toUpperCase()}</b> | Method: ${req.method || 'Wallet'}</small>
-                                    ${proofImg}
-                                    <div class="grid" style="margin-top:10px;">
-                                        <button class="btn btn-green" style="padding:6px;" onclick="approveBoost('${uId}', '${coinId}')">Approve</button>
-                                        <button class="btn btn-red" style="padding:6px;" onclick="rejectBoost('${uId}', '${coinId}')">Reject</button>
-                                    </div>
-                                </div>`;
-                            }
-                        });
-                    }
-
-                    // ID Verified / Agent Direct Paid Proofs
-                    if(u.pending_agent_pay && u.pending_agent_pay.status === "Pending") {
-                        let req = u.pending_agent_pay;
-                        let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
-                        agentPayHtml += `<div class="list-item" style="border-left-color: var(--green);">
-                            <b>User: ${uId} (${req.userName || 'N/A'})</b><br>
-                            <small>Service: <b>ID Verified Qualification</b> | Method: ${req.method}</small>
-                            ${proofImg}
-                            <div class="grid" style="margin-top:10px;">
-                                <button class="btn btn-green" style="padding:6px;" onclick="approveAgentPay('${uId}')">Approve ID</button>
-                                <button class="btn btn-red" style="padding:6px;" onclick="rejectAgentPay('${uId}')">Reject</button>
+                    container.innerHTML += `
+                        <div class="notif-card">
+                            <div class="notif-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                            <div class="notif-content" style="width: 100%;">
+                                <h4>${title}</h4>
+                                <p>${message}</p>
+                                ${mediaElement}
+                                <span class="notif-time" style="display:block; margin-top:6px;">${time}</span>
                             </div>
-                        </div>`;
-                    }
-                });
-
-                usersArray.sort((a, b) => b.gp - a.gp);
-
-                let html = "";
-                usersArray.forEach(u => {
-                    html += `<div class="user-item">
-                        <div>
-                            <b>${u.name}</b> <small style="color:#94a3b8;">(${u.id})</small> ${u.banned ? '<span class="badge-banned">BANNED</span>' : ''}<br>
-                            <small>${u.gp.toLocaleString()} GP</small>
                         </div>
-                        <button class="btn btn-blue" style="width:auto; padding:5px 12px;" onclick="openUser('${u.id}', '${u.name.replace(/'/g, "\\'")}', ${u.gp}, ${u.banned})">Manage</button>
-                    </div>`;
+                    `;
                 });
-
-                document.getElementById('st-users').innerText = count;
-                document.getElementById('st-active').innerText = activeCount;
-                document.getElementById('st-banned').innerText = banned;
-                document.getElementById('st-total-gp').innerText = totalGP.toLocaleString();
-                document.getElementById('user-list').innerHTML = html || "No users found.";
-                document.getElementById('boost-req-list').innerHTML = boostHtml || "No pending mining payment proofs.";
-                document.getElementById('agent-pay-req-list').innerHTML = agentPayHtml || "No pending ID verified payment proofs.";
-            });
-
-            db.ref('withdraw_requests').on('value', snap => {
-                let pending = 0;
-                let html = "";
-                snap.forEach(c => {
-                    let r = c.val();
-                    if(r.status === 'pending') {
-                        pending++;
-                        html += `<div class="list-item" style="border-left-color: var(--blue);">
-                            <b>ID: ${r.userId} - ${r.amount} GP</b><br>
-                            <small>Method: ${r.method} | Addr: ${r.address || r.number}</small>
-                            <div class="grid" style="margin-top:10px;">
-                                <button class="btn btn-green" style="padding:5px;" onclick="updateWD('${c.key}', 'approved', '${r.userId}', ${r.amount})">Accept</button>
-                                <button class="btn btn-red" style="padding:5px;" onclick="updateWD('${c.key}', 'rejected', '${r.userId}', ${r.amount})">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('st-pending').innerText = pending;
-                document.getElementById('wd-list').innerHTML = html || "No Pending Withdraw Requests.";
-            });
-        }
-
-        // Agent GP Sale Approvals
-        function approveAgentReq(reqKey, targetUserId, amount) {
-            db.ref('sell_requests/' + reqKey).update({ status: "Approved" }).then(() => {
-                db.ref('users/' + targetUserId + '/notifications').push({
-                    text: `🎉 Congratulations! Your GP sale request for ${amount} GP has been approved.`,
-                    date: new Date().toLocaleString()
-                });
-                alert("GP Sale Request Approved!");
-            });
-        }
-
-        function rejectAgentReq(reqKey) {
-            if(confirm("Reject request?")) {
-                db.ref('sell_requests/' + reqKey).update({ status: "Rejected" }).then(() => alert("Rejected."));
+            } else {
+                container.innerHTML = `<div class="no-notif">No notifications found!</div>`;
             }
-        }
+        });
 
-        // Image Viewer
         function viewImage(imgSrc) {
             document.getElementById('modalImage').src = imgSrc;
             document.getElementById('imageModal').style.display = 'flex';
         }
-        function closeImageModal() { document.getElementById('imageModal').style.display = 'none'; }
-
-        // Mining Boost Proof Approvals
-        function approveBoost(uid, coinId) {
-            let expireTime = Date.now() + (15 * 24 * 60 * 60 * 1000);
-            db.ref(`users/${uid}`).update({
-                [`boosts/${coinId}/expireTime`]: expireTime,
-                [`pending_boosts/${coinId}`]: null
-            }).then(() => {
-                db.ref('users/' + uid + '/notifications').push({ text: `🎉 Mining boost activated for ${coinId.toUpperCase()}!`, date: new Date().toLocaleString() });
-                alert("Mining Boost Activated!");
-            });
+        function closeImageModal() {
+            document.getElementById('imageModal').style.display = 'none';
         }
-        function rejectBoost(uid, coinId) {
-            if(confirm("Reject proof?")) {
-                db.ref(`users/${uid}/pending_boosts/${coinId}`).remove().then(() => alert("Proof Rejected."));
-            }
-        }
-
-        // ID Verified / Agent Direct Payment Proof Approvals
-        function approveAgentPay(uid) {
-            db.ref(`users/${uid}/pending_agent_pay`).update({ status: "Approved" }).then(() => {
-                db.ref('users/' + uid + '/notifications').push({ text: `🎉 Your ID Verification / Agent Paid service has been approved by Admin!`, date: new Date().toLocaleString() });
-                alert("ID Verification Payment Approved Successfully!");
-            });
-        }
-        function rejectAgentPay(uid) {
-            if(confirm("Reject this payment?")) {
-                db.ref(`users/${uid}/pending_agent_pay`).remove().then(() => alert("Payment Proof Rejected."));
-            }
-        }
-
-        // User Management Controls
-        function openUser(id, name, gp, isBanned) {
-            window.targetU = id;
-            window.targetBanned = isBanned;
-            document.getElementById('m-name-label').innerText = "Name: " + name;
-            document.getElementById('m-uid-label').innerText = "ID: " + id;
-            document.getElementById('m-gp').value = gp;
-            document.getElementById('ban-btn').innerText = isBanned ? "Unban User" : "Ban User";
-            document.getElementById('ban-btn').className = isBanned ? "btn btn-green" : "btn btn-red";
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('modal').style.display = 'block';
-        }
-
-        function updateUserGP() {
-            let gp = parseInt(document.getElementById('m-gp').value) || 0;
-            db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
-        }
-
-        function makeGPZero() {
-            if(confirm("Are you sure you want to make this user's GP 0?")) {
-                document.getElementById('m-gp').value = 0;
-                db.ref('users/' + window.targetU).update({ gp: 0, points: 0 }).then(() => { alert("User GP set to 0!"); closeModal(); });
-            }
-        }
-
-        function resetUserData() {
-            if(confirm("Warning: This will reset user's boosts and pending requests! Proceed?")) {
-                db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
-                    alert("User data reset successfully!");
-                    closeModal();
-                });
-            }
-        }
-
-        function toggleBan() {
-            let newState = !window.targetBanned;
-            db.ref('users/' + window.targetU + '/banned').set(newState).then(() => { alert(newState ? "User Banned!" : "User Unbanned!"); closeModal(); });
-        }
-
-        function updateWD(key, status, uid, amt) {
-            if(confirm(`Confirm ${status}?`)) {
-                db.ref('withdraw_requests/' + key).update({ status: status }).then(() => {
-                    if(status === 'rejected') { 
-                        db.ref('users/' + uid).transaction(u => {
-                            if(u) { u.gp = (u.gp || 0) + amt; u.points = (u.points || 0) + amt; }
-                            return u;
-                        }); 
-                    }
-                    db.ref('users/' + uid + '/notifications').push({ text: `Your withdraw of ${amt} GP was ${status}.`, date: new Date().toLocaleString() });
-                    alert("Request Updated!");
-                });
-            }
-        }
-
-        function filterUsers() {
-            let q = document.getElementById('user-search').value.toLowerCase();
-            document.querySelectorAll('.user-item').forEach(it => {
-                it.style.display = it.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-            });
-        }
-
-        function closeModal() { document.getElementById('overlay').style.display='none'; document.getElementById('modal').style.display='none'; }
     </script>
 </body>
 </html>
