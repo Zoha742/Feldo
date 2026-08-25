@@ -130,7 +130,7 @@
         }
         .menu-row.admin-row .menu-row-text h5 { color: #ef4444; }
 
-        /* শুধুমাত্র Home, Mining (hotcake.html) এবং Profile অপশনসহ নেভিগেশন বার */
+        /* ৩টি অপশনসহ নেভিগেশন বার */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 480px; background: var(--card-bg);
@@ -248,7 +248,7 @@
         </div>
     </div>
 
-    <!-- সঠিক ৩টি অপশনসহ নেভিগেশন বার -->
+    <!-- সঠিক ৩টি অপশনসহ নেভিগেশন বার (Home, Mining, Profile) -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Mining</a>
@@ -316,6 +316,28 @@
                 document.getElementById('tasks-done-count').innerText = "0";
             }
         });
+
+        // সোয়াইপ জেসচার লজিক (Swipe Right করলে হোমে যাবে, Swipe Left করলে মাইনিংয়ে যাবে)
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        window.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        window.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleProfileSwipe();
+        });
+
+        function handleProfileSwipe() {
+            let swipeThreshold = 50;
+            if (touchEndX > touchStartX + swipeThreshold) {
+                window.location.href = "index.html"; // ডান দিকে টানলে Home এ যাবে
+            } else if (touchEndX < touchStartX - swipeThreshold) {
+                window.location.href = "hotcake.html"; // বাম দিকে টানলে Mining এ যাবে
+            }
+        }
     </script>
 </body>
 </html>
