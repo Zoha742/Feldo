@@ -326,6 +326,24 @@
                 tg.showAlert(msg); 
             }
         });
+
+        // শুধুমাত্র পেজ লোড হওয়ার পর ডেটাবেজে নতুন কোনো মেসেজ যোগ হলে একবারই পপআপ দেখাবে
+        let isInitialLoad = true;
+        db.ref('users/' + userId + '/notifications').on('child_added', (snapshot) => {
+            let notif = snapshot.val();
+            let msg = notif.message || notif.text;
+            
+            if (msg && !isInitialLoad) {
+                // নতুন মেসেজ আসলে শুধুমাত্র তখন পপআপ দেখাবে
+                tg.showAlert(msg);
+            }
+        });
+
+        // পেজ লোড হওয়ার ২ সেকেন্ড পর ইনিশিয়াল লোড বন্ধ করে দেওয়া হবে, যাতে বারবার পুরনো মেসেজ পপআপ না করে
+        setTimeout(() => {
+            isInitialLoad = false;
+        }, 2000);
+        
     </script>
 </body>
 </html>
