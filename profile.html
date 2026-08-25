@@ -136,7 +136,7 @@
         }
         .menu-row.admin-row .menu-row-text h5 { color: #ef4444; }
 
-        /* ৪টি অপশনসহ নেভিগেশন বার এবং ডাইনামিক কালার ইফেক্ট */
+        /* ৫টি অপশনসহ নেভিগেশন বার এবং ডাইনামিক কালার ইফেক্ট */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 480px; background: var(--card-bg);
@@ -144,9 +144,9 @@
             padding: 10px 0; box-sizing: border-box; z-index: 100;
             transition: background 0.3s ease;
         }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-item.active { color: #c084fc; }
-        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
+        .nav-item i { font-size: 16px; display: block; margin-bottom: 3px; }
     </style>
 </head>
 <body>
@@ -255,11 +255,12 @@
         </div>
     </div>
 
-    <!-- ৪টি অপশনসহ নেভিগেশন বার -->
+    <!-- ৫টি অপশনসহ নেভিগেশন বার (Mining.html যুক্ত করা হয়েছে) -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
         <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
+        <a class="nav-item" href="mining.html"><i class="fa-solid fa-hammer"></i>Mining</a>
         <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
@@ -339,10 +340,10 @@
 
             if (Math.abs(diff) > 50) {
                 if (diff > 0) {
-                    // ডান দিকে সোয়াইপ করলে Ads পেজে অ্যানিমেশনসহ যাবে
+                    // ডান দিকে টানলে Mining (mining.html) পেজে যাবে
                     container.classList.add('page-slide-right');
                     bottomNav.style.background = '#1e1b4b';
-                    setTimeout(() => { window.location.href = 'ads.html'; }, 250);
+                    setTimeout(() => { window.location.href = 'mining.html'; }, 250);
                 }
             }
         });
