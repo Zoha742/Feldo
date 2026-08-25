@@ -123,6 +123,32 @@
         }
         .no-msg { text-align: center; color: var(--text-muted); font-size: 12px; padding: 20px; }
 
+        /* নিচে সেন্টারে ব্যাক অ্যারো বাটন স্টাইল */
+        .center-back-container {
+            text-align: center;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .center-back-icon-btn {
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border: 1px solid #9333ea;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .center-back-icon-btn:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
         /* ৫টি অপশনসহ নেভিগেশন বার */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
@@ -163,6 +189,13 @@
         <div class="history-title"><i class="fa-solid fa-comments"></i> Your Messages:</div>
         <div id="msg-list">
             <div class="no-msg">Loading messages...</div>
+        </div>
+
+        <!-- নিচে সেন্টারে ব্যাক অ্যারো বাটন -->
+        <div class="center-back-container">
+            <button class="center-back-icon-btn" onclick="location.href='profile.html'" title="Back to Profile">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
         </div>
     </div>
 
@@ -246,25 +279,17 @@
             listContainer.innerHTML = html;
         });
 
-        // সোয়াইপ অ্যানিমেশন লজিক
+        // সোয়াইপ অ্যানিমেশন লজিক (যেকোনো দিকে টানলেই প্রোফাইলে যাবে)
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
             let touchEndX = e.changedTouches[0].screenX;
             let diff = touchEndX - touchStartX;
             const container = document.getElementById('mainContainer');
-            const bottomNav = document.getElementById('bottomNav');
 
             if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    container.classList.add('page-slide-right');
-                    bottomNav.style.background = '#064e3b';
-                    setTimeout(() => { window.location.href = "ads.html"; }, 250);
-                } else {
-                    container.classList.add('page-slide-left');
-                    bottomNav.style.background = '#1e1b4b';
-                    setTimeout(() => { window.location.href = "profile.html"; }, 250);
-                }
+                container.classList.add('page-slide-left');
+                setTimeout(() => { window.location.href = "profile.html"; }, 250);
             }
         });
     </script>
