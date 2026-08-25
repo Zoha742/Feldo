@@ -15,7 +15,6 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
-            --orange-btn: linear-gradient(135deg, #f59e0b, #d97706);
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -38,6 +37,15 @@
         /* সোয়াইপ অ্যানিমেশন ক্লাস */
         .page-slide-left { transform: translateX(-100px); opacity: 0; }
         .page-slide-right { transform: translateX(100px); opacity: 0; }
+
+        .header { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 20px; 
+        }
+        .header h3 { margin: 0; font-size: 18px; color: #fbbf24; }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
 
         .balance-section {
             text-align: center;
@@ -161,6 +169,11 @@
 <body>
 
     <div class="container" id="mainContainer">
+        <div class="header">
+            <button class="back-btn" onclick="location.href='profile.html'"><i class="fas fa-arrow-left"></i></button>
+            <h3>Withdraw Center</h3>
+        </div>
+
         <!-- Balance Section -->
         <div class="balance-section">
             <p>Current Balance</p>
@@ -238,7 +251,6 @@
         let userBalance = 0;
         let savedUids = {};
 
-        // Fetch User Data & History
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
             if (data) {
@@ -311,7 +323,6 @@
                 date: new Date().toLocaleString()
             };
 
-            // Save to withdraw requests and deduct balance
             let withdrawRef = db.ref('withdraw_requests').push();
             withdrawRef.set(withdrawData).then(() => {
                 userRef.update({ points: newBalance, gp: newBalance }).then(() => {
