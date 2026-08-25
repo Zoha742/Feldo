@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyCen - Home</title>
-    <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -66,7 +64,6 @@
         .bonus-card .icon { font-size: 18px; margin-bottom: 6px; color: #22c55e; }
         .bonus-card .reward { font-size: 11px; font-weight: 700; }
         
-        /* Task Cards */
         .task-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .task-left { display: flex; align-items: center; gap: 12px; }
         .task-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
@@ -93,10 +90,9 @@
 <body>
 
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <div class="user-info">
-                <h2>Hello, <span id="username">Arefin</span> 👋</h2>
+                <h2>Hello, <span id="username">User</span> 👋</h2>
                 <p>Complete tasks, watch ads & earn points</p>
             </div>
             <div class="header-icons">
@@ -105,7 +101,6 @@
             </div>
         </div>
 
-        <!-- Points Card -->
         <div class="points-card">
             <div class="points-title">Your Points (GP)</div>
             <div class="points-value" id="balance">0</div>
@@ -113,7 +108,6 @@
             <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
         </div>
 
-        <!-- Quick Menu -->
         <div class="quick-menu">
             <div class="menu-item" onclick="claimDailyBonus()">
                 <div class="menu-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-check"></i></div>
@@ -133,20 +127,17 @@
             </div>
         </div>
 
-        <!-- Daily Bonus -->
         <div class="section-header">
             <div class="section-title">Daily Bonus</div>
             <div class="streak-badge" id="streak-text"><i class="fa-solid fa-fire"></i> 1 Days Streak</div>
         </div>
         <div class="bonus-scroll" id="daily-bonus-container"></div>
 
-        <!-- Available Tasks -->
         <div class="section-header">
             <div class="section-title">Available Tasks</div>
             <a href="task.html" style="font-size: 12px; color: #6366f1; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
-        <!-- Task 1 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #8b5cf6;"><i class="fa-solid fa-file-lines"></i></div>
@@ -156,10 +147,9 @@
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +150</div>
                 </div>
             </div>
-            <button class="action-btn purple" onclick="completeTask('Complete Survey', 150)">Start</button>
+            <button class="action-btn purple" onclick="showComingSoon()">Start</button>
         </div>
 
-        <!-- Task 2 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-download"></i></div>
@@ -169,10 +159,9 @@
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +100</div>
                 </div>
             </div>
-            <button class="action-btn green" onclick="completeTask('Download App', 100)">Start</button>
+            <button class="action-btn green" onclick="showComingSoon()">Start</button>
         </div>
 
-        <!-- Task 3 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #3b82f6;"><i class="fa-solid fa-rectangle-ad"></i></div>
@@ -182,10 +171,9 @@
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +80</div>
                 </div>
             </div>
-            <button class="action-btn" onclick="completeTask('Banner Ads View', 80)">Start</button>
+            <button class="action-btn" onclick="showComingSoon()">Start</button>
         </div>
 
-        <!-- Task 4 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #f97316;"><i class="fa-solid fa-gift"></i></div>
@@ -195,10 +183,9 @@
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +500</div>
                 </div>
             </div>
-            <button class="action-btn orange" onclick="completeTask('Weekly Special Offer', 500)">Claim</button>
+            <button class="action-btn orange" onclick="showComingSoon()">Claim</button>
         </div>
 
-        <!-- Task 5 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #0ea5e9;"><i class="fa-brands fa-telegram"></i></div>
@@ -208,10 +195,9 @@
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +60</div>
                 </div>
             </div>
-            <button class="action-btn" onclick="completeTask('Join Telegram Channel', 60)">Join</button>
+            <button class="action-btn" onclick="showComingSoon()">Join</button>
         </div>
 
-        <!-- Task 6 -->
         <div class="task-card">
             <div class="task-left">
                 <div class="task-icon" style="background: #ef4444;"><i class="fa-solid fa-rotate"></i></div>
@@ -221,10 +207,9 @@
                     <div class="task-reward"><i class="fa-solid fa-coins"></i> +200</div>
                 </div>
             </div>
-            <button class="action-btn red" onclick="completeTask('Daily Lucky Spin', 200)">Spin</button>
+            <button class="action-btn red" onclick="showComingSoon()">Spin</button>
         </div>
 
-        <!-- Promo Banner -->
         <div class="promo-banner" style="margin-top: 20px;">
             <div>
                 <h3>Watch Ads & Earn More!</h3>
@@ -234,39 +219,23 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation (Rewards renamed to Mining) -->
     <div class="bottom-nav">
-        <a class="nav-item active" href="index.html">
-            <i class="fa-solid fa-house"></i>
-            Home
-        </a>
-        <a class="nav-item" href="task.html">
-            <i class="fa-solid fa-list-check"></i>
-            Tasks
-        </a>
-        <a class="nav-item" href="ads.html">
-            <i class="fa-solid fa-play"></i>
-            Watch Ads
-        </a>
-        <a class="nav-item" href="agent.html">
-            <i class="fa-solid fa-handshake"></i>
-            Agent
-        </a>
-        <a class="nav-item" href="profile.html">
-            <i class="fa-solid fa-user"></i>
-            Profile
-        </a>
+        <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Watch Ads</a>
+        <a class="nav-item" href="store.html"><i class="fa-solid fa-hammer"></i>Mining</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
-            databaseURL: "https://heycan-9a9d8-default-rtdb.firebaseio.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
             projectId: "heycen-9a9d8",
             storageBucket: "heycen-9a9d8.firebasestorage.app",
             messagingSenderId: "442359961958",
@@ -282,7 +251,7 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id.toString() : "7757851056";
-        let username = user ? (user.first_name || "Arefin") : "Arefin";
+        let username = user ? (user.first_name || "User") : "User";
 
         document.getElementById('username').innerText = username;
         if (user && user.photo_url) {
@@ -290,16 +259,16 @@
         }
 
         let userRef = db.ref('users/' + userId);
-        let userData = { points: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, lastSeen: Date.now() };
+        let userData = { points: 0, gp: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, lastSeen: Date.now() };
 
-        // ফায়ারবেসে ইউজারের ডেটা চেক করা এবং নতুন অ্যাকাউন্ট হলে অটো-ক্রিয়েট করা
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
-            if (data && (data.points !== undefined || data.gp !== undefined)) {
+            if (data) {
                 userData = data;
-                userData.points = data.points !== undefined ? data.points : (data.gp || 0);
+                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                userData.points = currentPoints;
+                userData.gp = currentPoints;
                 updateUI();
-                // প্রতিবার অ্যাপে ঢুকলে ইউজার নেম ও লাস্ট সিন আপডেট হবে (যাতে অ্যাডমিন প্যানেলে শো করে)
                 userRef.update({ name: username, username: username, lastSeen: Date.now() });
             } else {
                 userData = { points: 0, gp: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, username: username, lastSeen: Date.now() };
@@ -359,18 +328,10 @@
             });
         }
 
-        function completeTask(taskName, points) {
-            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
-            userData.points = currentPoints + points;
-            userData.gp = userData.points;
-            userData.tasksDone = (userData.tasksDone || 0) + 1;
-            
-            userRef.set(userData).then(() => {
-                tg.showAlert(`Task "${taskName}" completed! +${points} GP added.`);
-            });
+        function showComingSoon() {
+            tg.showAlert("Coming Soon!");
         }
 
-        // নোটিফিকেশন অ্যালার্ট চেক
         db.ref('users/' + userId + '/notifications').on('child_added', (snapshot) => {
             let notif = snapshot.val();
             let msg = notif.message || notif.text;
