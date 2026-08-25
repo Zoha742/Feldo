@@ -23,7 +23,7 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 90px 0;
+            padding: 0 0 100px 0;
             display: flex;
             justify-content: center;
             overflow-x: hidden;
@@ -60,13 +60,14 @@
         .icon-btn {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            width: 36px; height: 36px;
+            width: 38px; height: 38px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            color: var(--text-main); font-size: 14px; cursor: pointer;
+            color: var(--text-main); font-size: 15px; cursor: pointer;
             box-shadow: 0 0 10px var(--purple-glow);
         }
 
+        /* প্রফাইল টপ কার্ড */
         .profile-card {
             background: linear-gradient(135deg, #16102a 0%, #1e1b4b 100%);
             border: 1px solid #7c3aed;
@@ -78,7 +79,7 @@
         }
         .profile-left { display: flex; align-items: center; gap: 14px; width: 100%; }
         .avatar-container {
-            width: 60px; height: 60px; border-radius: 50%; padding: 2px;
+            width: 65px; height: 65px; border-radius: 50%; padding: 2px;
             background: linear-gradient(135deg, #c084fc, #7c3aed);
             flex-shrink: 0; box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
         }
@@ -87,92 +88,150 @@
         .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; }
         .profile-info h3 i { color: #a855f7; font-size: 13px; }
         
-        .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+        .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
         .user-id-badge {
             font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block;
             background: rgba(124, 58, 237, 0.15); padding: 1px 6px; border-radius: 6px;
-            border: 1px dashed rgba(192, 132, 252, 0.4);
+            border: 1px dashed rgba(192, 132, 252, 0.4); margin-bottom: 6px;
         }
         .level-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .level-badge { background: rgba(124, 58, 237, 0.3); color: #d8b4fe; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
         .xp-text { font-size: 11px; color: var(--text-muted); }
-        .xp-bar-container { width: 100%; background: #1e1b4b; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
-        .xp-bar-fill { background: linear-gradient(90deg, #c084fc, #7c3aed); height: 100%; width: 0%; }
+        .xp-bar-container { width: 100%; background: #1e1b4b; height: 6px; border-radius: 3px; overflow: hidden; }
+        .xp-bar-fill { background: linear-gradient(90deg, #c084fc, #7c3aed); height: 100%; width: 45%; }
 
-        /* কালারফুল ও ডাইনামিক গ্রিড লেআউট */
-        .dashboard-grid {
+        /* ৪ কলামের স্ট্যাটাস গ্রিড কার্ড (স্ক্রিনশটের আদলে) */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
             margin-bottom: 16px;
         }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 12px 6px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .stat-card .stat-icon {
+            width: 32px; height: 32px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 8px auto; font-size: 14px; color: #fff;
+        }
+        .stat-card .stat-value { font-size: 13px; font-weight: 800; margin-bottom: 2px; color: #fff; }
+        .stat-card .stat-label { font-size: 9px; color: var(--text-muted); line-height: 1.2; }
 
-        .dashboard-card {
+        /* লেভেল প্রোগ্রেস বড় কার্ড */
+        .level-progress-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 18px;
             padding: 16px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-main);
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .level-progress-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .level-title-area { display: flex; align-items: center; gap: 10px; }
+        .level-icon-box {
+            width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px;
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.4);
+        }
+        .level-title-area h4 { margin: 0; font-size: 14px; font-weight: 700; color: #fff; }
+        .level-title-area p { margin: 2px 0 0 0; font-size: 11px; color: #fbbf24; }
+        .level-progress-top span { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .level-progress-bar-bg { width: 100%; background: #0b0f19; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+        .level-progress-bar-fill { background: linear-gradient(90deg, #7c3aed, #c084fc); height: 100%; width: 62%; }
+        .level-progress-footer { font-size: 11px; color: var(--text-muted); text-align: right; }
+        .level-progress-footer span { color: #c084fc; font-weight: 700; }
+
+        /* লিস্ট মেনু অপশনসমূহ */
+        .menu-list {
             display: flex;
             flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .menu-row-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 12px 16px;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-            transition: all 0.3s ease;
+            justify-content: space-between;
+            text-decoration: none;
+            color: var(--text-main);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
         }
-        .dashboard-card:hover {
-            transform: translateY(-3px);
-            border-color: rgba(192, 132, 252, 0.6);
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
-        }
-
-        .dashboard-card .card-icon {
-            width: 44px; height: 44px;
-            border-radius: 14px;
+        .menu-row-item:hover { border-color: rgba(192, 132, 252, 0.5); transform: translateY(-2px); }
+        .menu-row-left { display: flex; align-items: center; gap: 14px; }
+        .menu-row-icon {
+            width: 38px; height: 38px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-size: 15px; color: #fff;
         }
-        .dashboard-card .card-title {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .dashboard-card .card-desc {
-            font-size: 10px;
-            color: var(--text-muted);
-        }
+        .menu-row-info h5 { margin: 0 0 2px 0; font-size: 13px; font-weight: 700; }
+        .menu-row-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .menu-row-right { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 13px; }
+        .badge-count { background: rgba(124, 58, 237, 0.2); color: #d8b4fe; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
 
-        .admin-full-card {
-            grid-column: span 2;
-            background: linear-gradient(135deg, rgba(127, 29, 29, 0.3), rgba(69, 10, 10, 0.4));
+        /* অ্যাডমিন প্যানেল বাটন */
+        .admin-row-item {
+            background: linear-gradient(135deg, rgba(127, 29, 29, 0.25), rgba(69, 10, 10, 0.35));
             border: 1px solid #ef4444;
             display: none;
         }
-        .admin-full-card .card-icon { background: linear-gradient(135deg, #ef4444, #991b1b); }
-        .admin-full-card .card-title { color: #f87171; }
-        .admin-full-card .card-desc { color: #fca5a5; }
+        .admin-row-item .menu-row-icon { background: linear-gradient(135deg, #ef4444, #991b1b); }
+        .admin-row-item .menu-row-info h5 { color: #f87171; }
+        .admin-row-item .menu-row-info p { color: #fca5a5; }
 
-        /* ৫টি অপশনসহ নেভিগেশন বার */
+        /* উইথড্র ইউএসডি ব্যানার (স্ক্রিনশটের মতো) */
+        .crypto-promo-banner {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            border: 1px solid #2a1b4e;
+            border-radius: 18px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        .crypto-promo-left { display: flex; align-items: center; gap: 14px; }
+        .crypto-icon {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 20px; flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+        .crypto-info h4 { margin: 0 0 3px 0; font-size: 13px; font-weight: 700; color: #34d399; }
+        .crypto-info p { margin: 0; font-size: 10px; color: var(--text-muted); line-height: 1.3; max-width: 220px; }
+        .coming-soon-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #fff; padding: 6px 12px; border-radius: 20px;
+            font-size: 10px; font-weight: 600; white-space: nowrap;
+        }
+
+        /* বড় এবং সুন্দর নেভিগেশন বার */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 480px; background: var(--card-bg);
             border-top: 1px solid var(--card-border); display: flex; justify-content: space-around;
-            padding: 10px 0; box-sizing: border-box; z-index: 100;
+            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
             transition: background 0.3s ease;
         }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 10px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-item.active { color: #c084fc; }
-        .nav-item i { font-size: 16px; display: block; margin-bottom: 3px; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
@@ -189,6 +248,7 @@
             </div>
         </div>
 
+        <!-- টপ ইউজার কার্ড -->
         <div class="profile-card">
             <div class="profile-left">
                 <div class="avatar-container">
@@ -198,79 +258,145 @@
                     <h3 id="profile-name">User <i class="fa-solid fa-circle-check"></i></h3>
                     <div class="username-text" id="profile-username">@user</div>
                     <div><span class="user-id-badge" id="profile-id">ID: Loading... 📋</span></div>
-                    <div class="level-row" style="margin-top: 6px;">
+                    <div class="level-row">
                         <span class="level-badge">Level 1</span>
-                        <span class="xp-text">0 / 1,000 XP</span>
+                        <span class="xp-text">6,250 / 10,000 XP</span>
                     </div>
                     <div class="xp-bar-container"><div class="xp-bar-fill"></div></div>
                 </div>
             </div>
         </div>
 
-        <!-- কালারফুল ও ডাইনামিক গ্রিড মেনু -->
-        <div class="dashboard-grid">
-            <!-- Total GP -->
-            <div class="dashboard-card">
-                <div class="card-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-coins"></i></div>
-                <div class="card-title" id="total-points">0</div>
-                <div class="card-desc">Total GP</div>
+        <!-- ৪ কলামের স্ট্যাটাস গ্রিড (স্ক্রিনশটের আদলে) -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-coins"></i></div>
+                <div class="stat-value" id="total-points">0</div>
+                <div class="stat-label">Total Points</div>
             </div>
-
-            <!-- Task Done -->
-            <div class="dashboard-card">
-                <div class="card-icon" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-circle-check"></i></div>
-                <div class="card-title" id="tasks-done-count">0</div>
-                <div class="card-desc">Task Done</div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="stat-value" id="points-earned-week">1,250</div>
+                <div class="stat-label">This Week</div>
             </div>
-
-            <!-- Refer Friends -->
-            <div class="dashboard-card" onclick="tg.showAlert('Referral system coming soon!')">
-                <div class="card-icon" style="background: linear-gradient(135deg, #ec4899, #db2777);"><i class="fa-solid fa-user-plus"></i></div>
-                <div class="card-title">Refer Friends</div>
-                <div class="card-desc">Get GP Rewards</div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-wallet"></i></div>
+                <div class="stat-value" id="pending-points">2,340</div>
+                <div class="stat-label">Pending</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: linear-gradient(135deg, #a855f7, #7c3aed);"><i class="fa-solid fa-gift"></i></div>
+                <div class="stat-value" id="withdrawn-points">10,200</div>
+                <div class="stat-label">Withdrawn</div>
+            </div>
+        </div>
 
-            <!-- Earn More -->
-            <a class="dashboard-card" href="ads.html">
-                <div class="card-icon" style="background: linear-gradient(135deg, #a855f7, #7c3aed);"><i class="fa-solid fa-gem"></i></div>
-                <div class="card-title">Earn More</div>
-                <div class="card-desc">Extra Offers</div>
+        <!-- লেভেল প্রোগ্রেস বড় কার্ড -->
+        <div class="level-progress-card">
+            <div class="level-progress-top">
+                <div class="level-title-area">
+                    <div class="level-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+                    <div>
+                        <h4>Level 12</h4>
+                        <p>Rising Star ⭐</p>
+                    </div>
+                </div>
+                <span>6,250 / 10,000 XP</span>
+            </div>
+            <div class="level-progress-bar-bg">
+                <div class="level-progress-bar-fill"></div>
+            </div>
+            <div class="level-progress-footer">
+                <span>3,750 XP</span> to Level 13
+            </div>
+        </div>
+
+        <!-- লিস্ট মেনু অপশনসমূহ -->
+        <div class="menu-list">
+            <a class="menu-row-item" href="withdraw.html">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #14b8a6, #0d9488);"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <div class="menu-row-info">
+                        <h5>Withdraw Cashout</h5>
+                        <p>Convert GP & withdraw safely</p>
+                    </div>
+                </div>
+                <div class="menu-row-right"><i class="fa-solid fa-chevron-right"></i></div>
             </a>
 
-            <!-- Wallet Setup -->
-            <a class="dashboard-card" href="wallet.html">
-                <div class="card-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-wallet"></i></div>
-                <div class="card-title">Wallet Setup</div>
-                <div class="card-desc">Bitget & Binance UIDs</div>
+            <a class="menu-row-item" href="wallet.html">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="menu-row-info">
+                        <h5>Wallet Setup</h5>
+                        <p>Bitget & Binance UIDs configuration</p>
+                    </div>
+                </div>
+                <div class="menu-row-right"><i class="fa-solid fa-chevron-right"></i></div>
             </a>
 
-            <!-- Withdraw -->
-            <a class="dashboard-card" href="withdraw.html">
-                <div class="card-icon" style="background: linear-gradient(135deg, #14b8a6, #0d9488);"><i class="fa-solid fa-money-bill-transfer"></i></div>
-                <div class="card-title">Withdraw</div>
-                <div class="card-desc">GP Cashout</div>
-            </a>
-
-            <!-- History -->
-            <div class="dashboard-card" onclick="tg.showAlert('History feature coming soon!')">
-                <div class="card-icon" style="background: linear-gradient(135deg, #6366f1, #4f46e5);"><i class="fa-solid fa-list-ul"></i></div>
-                <div class="card-title">History</div>
-                <div class="card-desc">Log Details</div>
+            <div class="menu-row-item" onclick="tg.showAlert('Referral system coming soon!')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #ec4899, #db2777);"><i class="fa-solid fa-user-plus"></i></div>
+                    <div class="menu-row-info">
+                        <h5>Referrals</h5>
+                        <p>Invite friends and earn more points</p>
+                    </div>
+                </div>
+                <div class="menu-row-right">
+                    <span class="badge-count">12 Referrals</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
             </div>
 
-            <!-- Support -->
-            <a class="dashboard-card" href="support.html">
-                <div class="card-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);"><i class="fa-solid fa-headset"></i></div>
-                <div class="card-title">Support</div>
-                <div class="card-desc">Get Help</div>
+            <div class="menu-row-item" onclick="tg.showAlert('Achievements coming soon!')">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="menu-row-info">
+                        <h5>Achievements</h5>
+                        <p>See your badges and achievements</p>
+                    </div>
+                </div>
+                <div class="menu-row-right">
+                    <span class="badge-count">8/24</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
+            </div>
+
+            <a class="menu-row-item" href="support.html">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);"><i class="fa-solid fa-headset"></i></div>
+                    <div class="menu-row-info">
+                        <h5>Help & Support</h5>
+                        <p>Get help and contact admin</p>
+                    </div>
+                </div>
+                <div class="menu-row-right"><i class="fa-solid fa-chevron-right"></i></div>
             </a>
 
             <!-- Admin Panel (Visible ONLY to ID: 7757851056) -->
-            <a class="dashboard-card admin-full-card" id="admin-panel-btn" href="admin.html">
-                <div class="card-icon"><i class="fa-solid fa-user-shield"></i></div>
-                <div class="card-title">Admin Panel</div>
-                <div class="card-desc">Control Center (Secret)</div>
+            <a class="menu-row-item admin-row-item" id="admin-panel-btn" href="admin.html">
+                <div class="menu-row-left">
+                    <div class="menu-row-icon"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="menu-row-info">
+                        <h5>Admin Panel</h5>
+                        <p>Control center & management</p>
+                    </div>
+                </div>
+                <div class="menu-row-right" style="color:#f87171;"><i class="fa-solid fa-chevron-right"></i></div>
             </a>
+        </div>
+
+        <!-- উইথড্র ইউএসডি ব্যানার (স্ক্রিনশটের মতো) -->
+        <div class="crypto-promo-banner">
+            <div class="crypto-promo-left">
+                <div class="crypto-icon"><i class="fa-solid fa-coins"></i></div>
+                <div class="crypto-info">
+                    <h4>Withdraw with USDT</h4>
+                    <p>Soon you'll be able to convert your points to USDT and withdraw to your wallet.</p>
+                </div>
+            </div>
+            <div class="coming-soon-btn">Coming Soon</div>
         </div>
     </div>
 
@@ -337,11 +463,9 @@
             if (data) {
                 let userPoints = data.points !== undefined ? data.points : (data.gp || 0);
                 document.getElementById('total-points').innerText = userPoints.toLocaleString();
-                document.getElementById('tasks-done-count').innerText = (data.tasksDone || 0).toLocaleString();
             } else {
                 userRef.set({ name: firstName, username: username, points: 0, gp: 0, tasksDone: 0, lastSeen: Date.now() });
                 document.getElementById('total-points').innerText = "0";
-                document.getElementById('tasks-done-count').innerText = "0";
             }
         });
 
