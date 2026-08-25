@@ -26,6 +26,7 @@
             padding: 0 0 90px 0;
             display: flex;
             justify-content: center;
+            overflow-x: hidden;
         }
 
         .container {
@@ -33,7 +34,12 @@
             max-width: 480px;
             padding: 16px;
             box-sizing: border-box;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
+
+        /* সোয়াইপ অ্যানিমেশন ক্লাস */
+        .page-slide-left { transform: translateX(-100px); opacity: 0; }
+        .page-slide-right { transform: translateX(100px); opacity: 0; }
 
         .top-header {
             display: flex;
@@ -130,12 +136,13 @@
         }
         .menu-row.admin-row .menu-row-text h5 { color: #ef4444; }
 
-        /* ৩টি অপশনসহ নেভিগেশন বার */
+        /* ৪টি অপশনসহ নেভিগেশন বার এবং ডাইনামিক কালার ইফেক্ট */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 480px; background: var(--card-bg);
             border-top: 1px solid var(--card-border); display: flex; justify-content: space-around;
             padding: 10px 0; box-sizing: border-box; z-index: 100;
+            transition: background 0.3s ease;
         }
         .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-item.active { color: #c084fc; }
@@ -144,7 +151,7 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="top-header">
             <div>
                 <h1>Profile</h1>
@@ -248,10 +255,11 @@
         </div>
     </div>
 
-    <!-- সঠিক ৩টি অপশনসহ নেভিগেশন বার (Home, Mining, Profile) -->
-    <div class="bottom-nav">
+    <!-- ৪টি অপশনসহ নেভিগেশন বার -->
+    <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
-        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Mining</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
         <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
@@ -317,13 +325,25 @@
             }
         });
 
-        // সোয়াইপ লজিক: প্রোফাইল থেকে ডানে টানলে Mining (`hotcake.html`) এ যাবে
+        // সোয়াইপ অ্যানিমেশন এবং ডাইনামিক কালার পরিবর্তনের লজিক
         let touchStartX = 0;
-        window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+        window.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
         window.addEventListener('touchend', e => {
             let touchEndX = e.changedTouches[0].screenX;
-            if (touchEndX > touchStartX + 50) {
-                window.location.href = "hotcake.html";
+            let diff = touchEndX - touchStartX;
+            const container = document.getElementById('mainContainer');
+            const bottomNav = document.getElementById('bottomNav');
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    // ডান দিকে সোয়াইপ করলে Ads পেজে অ্যানিমেশনসহ যাবে
+                    container.classList.add('page-slide-right');
+                    bottomNav.style.background = '#1e1b4b';
+                    setTimeout(() => { window.location.href = 'ads.html'; }, 250);
+                }
             }
         });
     </script>
