@@ -97,7 +97,7 @@
             </div>
             <div class="header-icons">
                 <button class="notification-btn"><i class="fa-regular fa-bell"></i></button>
-                <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User" onclick="location.href='profile.html'">
+                <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User" onclick="navigate('profile.html')">
             </div>
         </div>
 
@@ -105,7 +105,7 @@
             <div class="points-title">Your Points (GP)</div>
             <div class="points-value" id="balance">0</div>
             <div class="usd-badge" id="usd-value">≈ $0.00</div>
-            <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+            <button class="history-btn" onclick="navigate('profile.html')"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
         </div>
 
         <div class="quick-menu">
@@ -113,15 +113,15 @@
                 <div class="menu-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-check"></i></div>
                 <div class="menu-label">Daily Check-in</div>
             </div>
-            <div class="menu-item" onclick="location.href='ads.html'">
+            <div class="menu-item" onclick="navigate('ads.html')">
                 <div class="menu-icon" style="background: #ef4444;"><i class="fa-solid fa-play"></i></div>
                 <div class="menu-label">Watch Ads</div>
             </div>
-            <a href="task.html" class="menu-item">
+            <div class="menu-item" onclick="navigate('task.html')">
                 <div class="menu-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
                 <div class="menu-label">Tasks</div>
-            </a>
-            <div class="menu-item" onclick="location.href='agent.html'">
+            </div>
+            <div class="menu-item" onclick="navigate('agent.html')">
                 <div class="menu-icon" style="background: #3b82f6;"><i class="fa-solid fa-handshake"></i></div>
                 <div class="menu-label">Agent</div>
             </div>
@@ -135,7 +135,7 @@
 
         <div class="section-header">
             <div class="section-title">Available Tasks</div>
-            <a href="task.html" style="font-size: 12px; color: #6366f1; text-decoration: none; font-weight: 600;">View All</a>
+            <a href="javascript:void(0);" onclick="navigate('task.html')" style="font-size: 12px; color: #6366f1; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
         <div class="task-card">
@@ -215,17 +215,17 @@
                 <h3>Watch Ads & Earn More!</h3>
                 <p>Watch ads and earn unlimited points</p>
             </div>
-            <button class="promo-btn" onclick="location.href='ads.html'"><i class="fa-solid fa-play"></i> Watch Now</button>
+            <button class="promo-btn" onclick="navigate('ads.html')"><i class="fa-solid fa-play"></i> Watch Now</button>
         </div>
     </div>
 
-    <!-- Bottom Navigation (hotcake.html Link Set Correctly) -->
+    <!-- Bottom Navigation (Optimized Safe Links for hotcake.html) -->
     <div class="bottom-nav">
-        <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Watch Ads</a>
-        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Mining</a>
-        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+        <a class="nav-item active" href="javascript:void(0);" onclick="navigate('index.html')"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="javascript:void(0);" onclick="navigate('task.html')"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <a class="nav-item" href="javascript:void(0);" onclick="navigate('ads.html')"><i class="fa-solid fa-play"></i>Watch Ads</a>
+        <a class="nav-item" href="javascript:void(0);" onclick="navigate('hotcake.html')"><i class="fa-solid fa-hammer"></i>Mining</a>
+        <a class="nav-item" href="javascript:void(0);" onclick="navigate('profile.html')"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -256,6 +256,11 @@
         document.getElementById('username').innerText = username;
         if (user && user.photo_url) {
             document.getElementById('user-avatar').src = user.photo_url;
+        }
+
+        // Smooth Safe Navigation Handler to prevent cache/routing glitch
+        function navigate(pageUrl) {
+            window.location.href = pageUrl;
         }
 
         let userRef = db.ref('users/' + userId);
