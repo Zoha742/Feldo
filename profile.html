@@ -130,13 +130,14 @@
         }
         .menu-row.admin-row .menu-row-text h5 { color: #ef4444; }
 
+        /* শুধুমাত্র Home, Mining (hotcake.html) এবং Profile অপশনসহ নেভিগেশন বার */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 480px; background: var(--card-bg);
             border-top: 1px solid var(--card-border); display: flex; justify-content: space-around;
             padding: 10px 0; box-sizing: border-box; z-index: 100;
         }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-item.active { color: #c084fc; }
         .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
     </style>
@@ -247,11 +248,10 @@
         </div>
     </div>
 
+    <!-- সঠিক ৩টি অপশনসহ নেভিগেশন বার -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Watch Ads</a>
-        <a class="nav-item" href="store.html"><i class="fa-solid fa-hammer"></i>Mining</a>
+        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Mining</a>
         <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
