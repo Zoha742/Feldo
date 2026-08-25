@@ -24,13 +24,20 @@
             padding: 0 0 90px 0;
             display: flex;
             justify-content: center;
+            overflow-x: hidden;
         }
         .container {
             width: 100%;
             max-width: 480px;
             padding: 16px;
             box-sizing: border-box;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
+
+        /* সোয়াইপ অ্যানিমেশন ক্লাস */
+        .page-slide-left { transform: translateX(-100px); opacity: 0; }
+        .page-slide-right { transform: translateX(100px); opacity: 0; }
+
         .header-banner {
             background: var(--primary-gradient);
             border-radius: 16px;
@@ -80,6 +87,7 @@
             line-height: 1.4;
         }
 
+        /* ৫টি অপশনসহ নেভিগেশন বার এবং ডাইনামিক কালার ইফেক্ট */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -94,22 +102,24 @@
             padding: 10px 0;
             box-sizing: border-box;
             z-index: 100;
+            transition: background 0.3s ease;
         }
         .nav-item {
             text-align: center;
             color: var(--text-muted);
             text-decoration: none;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 600;
             cursor: pointer;
+            flex: 1;
         }
         .nav-item.active { color: #c084fc; }
-        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
+        .nav-item i { font-size: 16px; display: block; margin-bottom: 3px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="header-banner">
             <h2>💎 TON Wallet & Payments</h2>
             <p>Connect your TON wallet to pay or receive crypto instantly</p>
@@ -124,16 +134,16 @@
         </div>
 
         <div class="info-box">
-            <i class="fa-solid fa-circle-info"></i> Note: If you don't want to pay via wallet, you can freely earn GP points by watching ads and selling them through the Agent option!
+            <i class="fa-solid fa-circle-info"></i> Note: If you don't want to pay via wallet, you can freely earn GP points by watching ads and selling them through the Agent option![cite: 10]
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
-    <div class="bottom-nav">
+    <!-- ৫টি অপশনসহ নেভিগেশন বার -->
+    <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Watch Ads</a>
-        <a class="nav-item" href="agent.html"><i class="fa-solid fa-handshake"></i>Agent</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
+        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Mining</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
@@ -142,8 +152,32 @@
         tg.expand();
 
         function connectWallet() {
-            tg.showAlert("TON Connect SDK initializing... Wallet integration will be active soon!");
+            tg.showAlert("TON Connect SDK initializing... Wallet integration will be active soon!");[cite: 10]
         }
+
+        // সোয়াইপ অ্যানিমেশন এবং ডাইনামিক কালার পরিবর্তনের লজিক
+        let touchStartX = 0;
+        window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+        window.addEventListener('touchend', e => {
+            let touchEndX = e.changedTouches[0].screenX;
+            let diff = touchEndX - touchStartX;
+            const container = document.getElementById('mainContainer');
+            const bottomNav = document.getElementById('bottomNav');
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    // ডান দিকে টানলে Task পেজে যাবে
+                    container.classList.add('page-slide-right');
+                    bottomNav.style.background = '#064e3b';
+                    setTimeout(() => { window.location.href = "task.html"; }, 250);
+                } else {
+                    // বাম দিকে টানলে Ads পেজে যাবে
+                    container.classList.add('page-slide-left');
+                    bottomNav.style.background = '#1e1b4b';
+                    setTimeout(() => { window.location.href = "ads.html"; }, 250);
+                }
+            }
+        });
     </script>
 </body>
 </html>
