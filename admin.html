@@ -1,318 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Agent & GP Exchange</title>
+    <title>HeyCen - Master Admin Control Center</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #131c2e;
-            --card-border: #2a1b4e;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
-            --orange-btn: linear-gradient(135deg, #f59e0b, #d97706);
-            --green-btn: linear-gradient(135deg, #10b981, #059669);
-            --modal-bg: #0b132b;
+        :root { 
+            --bg: #050a18; --card: #121e36; --border: #1e2d4d; 
+            --blue: #3b82f6; --green: #22c55e; --red: #ef4444; 
+            --orange: #f59e0b; --purple: #a855f7; --primary: #fbbin24;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0 0 90px 0;
-            display: flex;
-            justify-content: center;
-            overflow-x: hidden;
-        }
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 16px;
-            box-sizing: border-box;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        /* সোয়াইপ অ্যানিমেশন ক্লাস */
-        .page-slide-left { transform: translateX(-100px); opacity: 0; }
-        .page-slide-right { transform: translateX(100px); opacity: 0; }
-
-        .header-banner {
-            background: var(--primary-gradient);
-            border-radius: 16px;
-            padding: 20px;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
-        }
-        .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
-        .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-        }
-        .card h3 { margin: 0 0 10px 0; font-size: 16px; color: #c084fc; }
-        .card p { margin: 0 0 16px 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 12px; margin-bottom: 6px; color: var(--text-muted); }
-        .form-control {
-            width: 100%;
-            background: #0b0f19;
-            border: 1px solid var(--card-border);
-            padding: 12px;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
-
-        .info-box {
-            background: rgba(124, 58, 237, 0.1);
-            border: 1px dashed #7c3aed;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-            font-size: 13px;
-            color: #c084fc;
-        }
-        .info-box span { display: block; margin-bottom: 4px; }
-
-        .submit-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: #fff;
-            border: none;
-            width: 100%;
-            padding: 14px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-        .submit-btn:hover { opacity: 0.9; }
-
-        .btn-boost { background: var(--green-btn); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
-
-        /* Modal Popups */
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--modal-bg);
-            border: 2px solid #7c3aed;
-            border-radius: 22px;
-            padding: 24px;
-            width: 90%;
-            max-width: 400px;
-            z-index: 1001;
-            box-sizing: border-box;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.3);
-        }
-        .modal h3 { margin: 0 0 8px 0; font-size: 18px; color: #fbbf24; font-weight: 800; }
-        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; display: flex; justify-content: center; }
         
-        .modal-btn {
-            background: #111c38;
-            border: 1px solid #2a3b68;
-            color: white;
-            padding: 13px;
-            border-radius: 14px;
-            width: 100%;
-            margin-bottom: 10px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .modal-btn:hover { background: #1e293b; border-color: #7c3aed; }
+        .container { padding: 15px; width: 100%; max-width: 480px; box-sizing: border-box; }
         
-        .uid-box {
-            background: #050a14;
-            border: 1px dashed #fbbf24;
-            padding: 12px;
-            border-radius: 12px;
-            font-size: 13px;
-            color: #fbbf24;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .copy-uid-btn { background: #fbbf24; color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .header { background: var(--card); padding: 15px; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 100; display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-radius: 0 0 12px 12px; }
+        .back-nav { font-size: 20px; color: white; cursor: pointer; padding: 5px; }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
         
-        .input-label { text-align: left; font-size: 11px; color: #c084fc; margin-bottom: 5px; font-weight: 600; }
+        .card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         
-        .form-input {
-            width: 100%;
-            background: #050a14;
-            border: 1px solid #2a3b68;
-            padding: 12px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 13px;
-            box-sizing: border-box;
-            margin-bottom: 16px;
-            outline: none;
-        }
+        .stat-box { background: #0a1226; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border); }
+        .stat-box h2 { margin: 5px 0; font-size: 20px; color: var(--blue); }
 
-        input[type="file"] { color: #94a3b8; background: #050a14; }
-        input[type="file"]::file-selector-button {
-            background: linear-gradient(135deg, #7c3aed, #4c1d95);
-            color: white; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-right: 10px;
-        }
+        .input-box { width: 100%; padding: 12px; margin: 8px 0; background: #0a1226; color: white; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 14px; }
+        .btn { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-blue { background: var(--blue); color: white; }
+        .btn-green { background: var(--green); color: white; }
+        .btn-red { background: var(--red); color: white; }
+        .btn-orange { background: var(--orange); color: white; }
+        .btn-purple { background: var(--purple); color: white; }
 
-        .btn-submit-proof {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: #ffffff; border: none; width: 100%; padding: 13px; border-radius: 12px; font-size: 14px; font-weight: 700; cursor: pointer;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-        }
-        .cancel-text { color: #ef4444; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 12px; display: inline-block; }
-
-        /* ৫টি অপশনসহ নেভিগেশন বার এবং ডাইনামিক কালার ইফেক্ট */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: var(--card-bg);
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-sizing: border-box;
-            z-index: 100;
-            transition: background 0.3s ease;
-        }
-        .nav-item {
-            text-align: center;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            flex: 1;
-        }
-        .nav-item.active { color: #c084fc; }
-        .nav-item i { font-size: 16px; display: block; margin-bottom: 3px; }
+        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); }
+        .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
+        
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
+        
+        .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
+        .proof-img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; margin-top: 8px; display: block; }
+        .img-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; flex-direction: column; }
+        .img-modal img { max-width: 90%; max-height: 80vh; border-radius: 10px; border: 2px solid var(--primary); }
     </style>
 </head>
 <body>
 
-    <div class="container" id="mainContainer">
-        <div class="header-banner">
-            <h2>🤝 Agent & GP Qualification</h2>
-            <p>Qualify for paid service via GP or Direct Payment</p>
+    <div class="container" id="admin-panel">
+        <div class="header">
+            <i class="fas fa-arrow-left back-nav" onclick="location.href='profile.html'"></i>
+            <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> HeyCen Master Admin</h3>
         </div>
 
-        <!-- কার্ড ১: জিপি সেল করে কোয়ালিফিকেশন -->
+        <div class="grid">
+            <div class="stat-box"><small>Total Users</small><h2 id="st-users">0</h2></div>
+            <div class="stat-box"><small>Active (Live)</small><h2 id="st-active" style="color: var(--green);">0</h2></div>
+            <div class="stat-box"><small>Pending Req</small><h2 id="st-pending" style="color: var(--orange);">0</h2></div>
+            <div class="stat-box"><small>Total GP</small><h2 id="st-total-gp" style="color: var(--green);">0</h2></div>
+            <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
+        </div>
+
+        <!-- ১. জিপি সেল ও এজেন্ট রিকোয়েস্ট -->
+        <div class="card" style="border-color: var(--purple);">
+            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests (Agent Qualification)</h4>
+            <div id="agent-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading GP sale requests...</div>
+        </div>
+
+        <!-- ২. মাইনিং বুস্ট পেমেন্ট প্রুফ (পেমেন্ট প্রুফ সিস্টেম ১) -->
+        <div class="card" style="border-color: var(--orange);">
+            <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> 1. Mining Boost Payment Proofs</h4>
+            <div id="boost-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading mining proofs...</div>
+        </div>
+
+        <!-- ৩. আইডি ভেরিফাইড / এজেন্ট পেইড পেমেন্ট প্রুফ (পেমেন্ট প্রুফ সিস্টেম ২) -->
+        <div class="card" style="border-color: var(--green);">
+            <h4><i class="fas fa-id-card" style="color:var(--green);"></i> 2. ID Verified / Agent Paid Proofs</h4>
+            <div id="agent-pay-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading ID verification proofs...</div>
+        </div>
+
+        <div class="card" style="border-color: var(--blue);">
+            <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Management</h4>
+            <div id="wd-list">Loading withdrawals...</div>
+        </div>
+
         <div class="card">
-            <h3>GP Sale & Qualification</h3>
-            <p>Your Telegram details are auto-detected. Exactly 10,000 GP will be deducted from your wallet to submit this qualification request[cite: 13].</p>
-            
-            <div class="form-group">
-                <label>Your Telegram Name & ID (Auto)</label>
-                <div class="info-box" id="auto-user-info">
-                    <span><strong>Name:</strong> <span id="display-name">Loading...</span></span>
-                    <span><strong>ID:</strong> <span id="display-id">Loading...</span></span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Your Available GP Balance</label>
-                <input type="text" id="user-balance" class="form-control" value="0 GP" disabled>
-            </div>
-            
-            <div class="form-group">
-                <label>Required GP for Paid Service Qualification</label>
-                <input type="text" id="sell-amount" class="form-control" value="10,000 GP" disabled style="background:#070a14; color:#fbbf24; font-weight:bold;">
-            </div>
-
-            <button class="submit-btn" onclick="submitSellRequest()">Submit Sale Request</button>
-        </div>
-
-        <!-- কার্ড ২: নতুন পেইড সিস্টেম (Direct Payment & Screenshot Proof) -->
-        <div class="card" style="border-color: #3b82f6;">
-            <h3><i class="fas fa-crown" style="color: #fbbf24;"></i> Direct Paid Qualification ($2.5)</h3>
-            <p>Don't have enough GP? Pay directly using Binance Pay or Bitget Wallet and upload screenshot for instant qualification[cite: 13].</p>
-            
-            <button class="submit-btn btn-boost" onclick="openPaymentModal()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
-                <i class="fas fa-wallet"></i> Pay & Qualify Directly ($2.5)
-            </button>
+            <h4><i class="fas fa-user-shield"></i> User Search & Management</h4>
+            <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
+            <div id="user-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;"></div>
         </div>
     </div>
 
-    <!-- Overlay & Modals -->
-    <div class="overlay" id="overlay" onclick="closeModals()"></div>
-
-    <!-- Modal 1: Select Payment Method -->
-    <div class="modal" id="paymentMethodModal">
-        <h3>Select Payment Method ($2.5)</h3>
-        <p>Choose your preferred payment method to proceed securely.</p>
-        <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
-            <i class="fa-solid fa-wallet" style="color: #f59e0b; font-size: 18px;"></i> Binance Pay
-        </button>
-        <button class="modal-btn" onclick="openProofModal('Bitget Wallet', '521132367')">
-            <i class="fa-solid fa-shield-halved" style="color: #38bdf8; font-size: 18px;"></i> Bitget Wallet
-        </button>
-        <span class="cancel-text" onclick="closeModals()">Cancel</span>
+    <!-- Image Viewer Modal -->
+    <div class="img-modal" id="imageModal" onclick="closeImageModal()">
+        <span style="color:white; position:absolute; top:20px; right:30px; font-size:30px; cursor:pointer;">&times;</span>
+        <img id="modalImage" src="" alt="Payment Proof">
+        <p style="color:#94a3b8; font-size:12px; margin-top:15px;">Click anywhere to close</p>
     </div>
 
-    <!-- Modal 2: Submit Proof -->
-    <div class="modal" id="proofModal">
-        <h3 id="proof-title">Payment Proof</h3>
-        <p>Copy admin UID to pay, then check your Telegram User ID and upload screenshot.</p>
+    <!-- User Management Modal -->
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <div class="modal" id="modal">
+        <h3 id="m-title">Manage User</h3>
+        <p id="m-name-label" style="font-size: 14px; color: #fbbf24; margin: 5px 0; font-weight: bold;"></p>
+        <p id="m-uid-label" style="font-size: 12px; color: var(--blue); margin-bottom: 10px;"></p>
+        <hr border="0" style="height:1px; background:var(--border); margin:10px 0;">
         
-        <div class="uid-box">
-            <span id="admin-uid-text">UID - 9950270208</span>
-            <button class="copy-uid-btn" onclick="copyAdminUid()">Copy</button>
+        <label style="font-size:12px;">Balance (GP)</label>
+        <input type="number" id="m-gp" class="input-box">
+        
+        <div class="grid" style="margin-top:5px;">
+            <button class="btn btn-blue" onclick="updateUserGP()">Update GP</button>
+            <button class="btn btn-orange" onclick="makeGPZero()">Set GP to 0</button>
         </div>
 
-        <div class="input-label">Telegram User ID:</div>
-        <input type="text" id="user-tg-id" class="form-input" readonly style="color: #fbbf24; font-weight: bold;">
+        <div class="grid" style="margin-top:5px;">
+            <button class="btn btn-purple" onclick="resetUserData()">Reset Profile Data</button>
+            <button class="btn btn-red" id="ban-btn" onclick="toggleBan()">Ban User</button>
+        </div>
 
-        <div class="input-label">Upload Payment Proof / Screenshot:</div>
-        <input type="file" id="proof-file" class="form-input" accept="image/*">
-
-        <button class="btn-submit-proof" onclick="submitDirectPayProof()">Submit Proof</button>
-        <br>
-        <span class="cancel-text" onclick="closeModals()">Cancel</span>
+        <button class="btn" style="background:#334155; margin-top:10px;" onclick="closeModal()">Cancel</button>
     </div>
-
-    <!-- ৫টি অপশনসহ নেভিগেশন বার (mining.html সহ) -->
-    <div class="bottom-nav" id="bottomNav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home[cite: 13]</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks[cite: 13]</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads[cite: 13]</a>
-        <a class="nav-item active" href="mining.html"><i class="fa-solid fa-hammer"></i>Mining</a>
-        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile[cite: 13]</a>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
             databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
             projectId: "heycen-9a9d8",
@@ -330,134 +147,256 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id.toString() : "7757851056";
-        let userName = user ? (user.first_name || "Zoha") : "Zoha";
+        const ADMIN_ID = "7757851056";
 
-        document.getElementById('display-name').innerText = userName;
-        document.getElementById('display-id').innerText = userId;
-
-        let userRef = db.ref('users/' + userId);
-        let userPoints = 0;
-        let selectedMethod = "";
-        let currentAdminUid = "";
-
-        userRef.on('value', (snapshot) => {
-            let data = snapshot.val();
-            if (data && data.points !== undefined) {
-                userPoints = data.points;
-                document.getElementById('user-balance').value = userPoints.toLocaleString() + " GP";
-            } else if (data && data.gp !== undefined) {
-                userPoints = data.gp;
-                document.getElementById('user-balance').value = userPoints.toLocaleString() + " GP";
-            }
-        });
-
-        function submitSellRequest() {
-            let fixedAmount = 10000;
-
-            if (userPoints < fixedAmount) {
-                tg.showAlert("You need at least 10,000 GP in your wallet to submit this request!");
-                return;
-            }
-
-            let newPoints = userPoints - fixedAmount;
-
-            let requestRef = db.ref('sell_requests').push();
-            requestRef.set({
-                userId: userId,
-                userName: userName,
-                amount: fixedAmount,
-                status: "Pending",
-                timestamp: Date.now()
-            }).then(() => {
-                userRef.update({ points: newPoints, gp: newPoints });
-                tg.showAlert("GP sale request submitted successfully! Admin will check your ID and Name for approval.");
-            });
+        if (userId !== ADMIN_ID && userId !== "7757851056") {
+            alert("Access Denied! Unauthorized User.");
+            window.location.href = "index.html";
+        } else {
+            initAdmin();
         }
 
-        // Direct Payment Modal Functions
-        function openPaymentModal() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('paymentMethodModal').style.display = 'block';
-        }
-
-        function openProofModal(method, adminUid) {
-            selectedMethod = method;
-            currentAdminUid = adminUid;
-            document.getElementById('paymentMethodModal').style.display = 'none';
-            
-            document.getElementById('proof-title').innerText = `${method} Qualification Proof`;
-            document.getElementById('admin-uid-text').innerText = `UID - ${adminUid}`;
-            document.getElementById('user-tg-id').value = userId;
-            document.getElementById('proof-file').value = "";
-
-            document.getElementById('proofModal').style.display = 'block';
-        }
-
-        function copyAdminUid() {
-            navigator.clipboard.writeText(currentAdminUid).then(() => {
-                tg.showAlert(`Admin UID copied: ${currentAdminUid}`);
-            });
-        }
-
-        function submitDirectPayProof() {
-            let fileInput = document.getElementById('proof-file');
-            if (fileInput.files.length === 0) {
-                tg.showAlert("Please upload payment proof screenshot!");
-                return;
-            }
-
-            let file = fileInput.files[0];
-            let reader = new FileReader();
-            reader.onloadend = function() {
-                let base64Image = reader.result;
-
-                let directPayRequest = {
-                    userId: userId,
-                    userName: userName,
-                    method: selectedMethod,
-                    screenshot: base64Image,
-                    status: "Pending",
-                    timestamp: Date.now(),
-                    dateTime: new Date().toLocaleString()
-                };
-
-                db.ref(`users/${userId}/pending_agent_pay`).set(directPayRequest).then(() => {
-                    closeModals();
-                    tg.showAlert("Direct payment proof submitted successfully! Admin will verify and approve your qualification.");
+        function initAdmin() {
+            // ১. GP Sale Requests
+            db.ref('sell_requests').on('value', snap => {
+                let html = "";
+                snap.forEach(c => {
+                    let req = c.val();
+                    if(req.status === "Pending") {
+                        html += `<div class="list-item" style="border-left-color: var(--purple);">
+                            <b>User Name: ${req.userName || 'Unknown'}</b><br>
+                            <small>Telegram ID: <b>${req.userId}</b> | Selling: <span style="color:#fbbf24; font-weight:bold;">${req.amount} GP</span></small>
+                            <div class="grid" style="margin-top:10px;">
+                                <button class="btn btn-green" style="padding:6px;" onclick="approveAgentReq('${c.key}', '${req.userId}', ${req.amount})">Approve & Qualify</button>
+                                <button class="btn btn-red" style="padding:6px;" onclick="rejectAgentReq('${c.key}')">Reject</button>
+                            </div>
+                        </div>`;
+                    }
                 });
-            };
-            reader.readAsDataURL(file);
+                document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
+            });
+
+            // ২. Users Data, Mining Boosts & ID Verified Agent Direct Pays
+            db.ref('users').on('value', snap => {
+                let count = snap.numChildren();
+                let banned = 0, totalGP = 0, activeCount = 0;
+                let currentTime = Date.now();
+                let usersArray = [];
+                let boostHtml = "";
+                let agentPayHtml = "";
+                
+                snap.forEach(c => {
+                    let u = c.val();
+                    let uId = c.key;
+                    let uName = u.username || u.name || "Unknown";
+                    if(u.banned) banned++;
+                    
+                    let userPoints = u.points !== undefined ? u.points : (u.gp || 0);
+                    totalGP += userPoints;
+
+                    if (u.lastSeen && (currentTime - u.lastSeen) < (5 * 60 * 1000)) { 
+                        activeCount++; 
+                    }
+
+                    usersArray.push({ id: uId, name: uName, gp: userPoints, banned: u.banned || false });
+
+                    // Mining Boost Payment Proofs
+                    if(u.pending_boosts) {
+                        Object.keys(u.pending_boosts).forEach(coinId => {
+                            let req = u.pending_boosts[coinId];
+                            if(req && req.status === true) {
+                                let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
+                                boostHtml += `<div class="list-item">
+                                    <b>User: ${uId} (${req.userName || 'N/A'})</b><br>
+                                    <small>Mining Coin: <b>${coinId.toUpperCase()}</b> | Method: ${req.method || 'Wallet'}</small>
+                                    ${proofImg}
+                                    <div class="grid" style="margin-top:10px;">
+                                        <button class="btn btn-green" style="padding:6px;" onclick="approveBoost('${uId}', '${coinId}')">Approve</button>
+                                        <button class="btn btn-red" style="padding:6px;" onclick="rejectBoost('${uId}', '${coinId}')">Reject</button>
+                                    </div>
+                                </div>`;
+                            }
+                        });
+                    }
+
+                    // ID Verified / Agent Direct Paid Proofs (পেমেন্ট প্রুফ সিস্টেম ২)
+                    if(u.pending_agent_pay && u.pending_agent_pay.status === "Pending") {
+                        let req = u.pending_agent_pay;
+                        let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
+                        agentPayHtml += `<div class="list-item" style="border-left-color: var(--green);">
+                            <b>User: ${uId} (${req.userName || 'N/A'})</b><br>
+                            <small>Service: <b>ID Verified Qualification</b> | Method: ${req.method}</small>
+                            ${proofImg}
+                            <div class="grid" style="margin-top:10px;">
+                                <button class="btn btn-green" style="padding:6px;" onclick="approveAgentPay('${uId}')">Approve ID</button>
+                                <button class="btn btn-red" style="padding:6px;" onclick="rejectAgentPay('${uId}')">Reject</button>
+                            </div>
+                        </div>`;
+                    }
+                });
+
+                usersArray.sort((a, b) => b.gp - a.gp);
+
+                let html = "";
+                usersArray.forEach(u => {
+                    html += `<div class="user-item">
+                        <div>
+                            <b>${u.name}</b> <small style="color:#94a3b8;">(${u.id})</small> ${u.banned ? '<span class="badge-banned">BANNED</span>' : ''}<br>
+                            <small>${u.gp.toLocaleString()} GP</small>
+                        </div>
+                        <button class="btn btn-blue" style="width:auto; padding:5px 12px;" onclick="openUser('${u.id}', '${u.name.replace(/'/g, "\\'")}', ${u.gp}, ${u.banned})">Manage</button>
+                    </div>`;
+                });
+
+                document.getElementById('st-users').innerText = count;
+                document.getElementById('st-active').innerText = activeCount;
+                document.getElementById('st-banned').innerText = banned;
+                document.getElementById('st-total-gp').innerText = totalGP.toLocaleString();
+                document.getElementById('user-list').innerHTML = html || "No users found.";
+                document.getElementById('boost-req-list').innerHTML = boostHtml || "No pending mining payment proofs.";
+                document.getElementById('agent-pay-req-list').innerHTML = agentPayHtml || "No pending ID verified payment proofs.";
+            });
+
+            db.ref('withdraw_requests').on('value', snap => {
+                let pending = 0;
+                let html = "";
+                snap.forEach(c => {
+                    let r = c.val();
+                    if(r.status === 'pending') {
+                        pending++;
+                        html += `<div class="list-item" style="border-left-color: var(--blue);">
+                            <b>ID: ${r.userId} - ${r.amount} GP</b><br>
+                            <small>Method: ${r.method} | Addr: ${r.address || r.number}</small>
+                            <div class="grid" style="margin-top:10px;">
+                                <button class="btn btn-green" style="padding:5px;" onclick="updateWD('${c.key}', 'approved', '${r.userId}', ${r.amount})">Accept</button>
+                                <button class="btn btn-red" style="padding:5px;" onclick="updateWD('${c.key}', 'rejected', '${r.userId}', ${r.amount})">Reject</button>
+                            </div>
+                        </div>`;
+                    }
+                });
+                document.getElementById('st-pending').innerText = pending;
+                document.getElementById('wd-list').innerHTML = html || "No Pending Withdraw Requests.";
+            });
         }
 
-        function closeModals() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('paymentMethodModal').style.display = 'none';
-            document.getElementById('proofModal').style.display = 'none';
+        // Agent GP Sale Approvals
+        function approveAgentReq(reqKey, targetUserId, amount) {
+            db.ref('sell_requests/' + reqKey).update({ status: "Approved" }).then(() => {
+                db.ref('users/' + targetUserId + '/notifications').push({
+                    text: `🎉 Congratulations! Your GP sale request for ${amount} GP has been approved.`,
+                    date: new Date().toLocaleString()
+                });
+                alert("GP Sale Request Approved!");
+            });
         }
 
-        // সোয়াইপ অ্যানিমেশন এবং ডাইনামিক কালার পরিবর্তনের লজিক
-        let touchStartX = 0;
-        window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
-        window.addEventListener('touchend', e => {
-            let touchEndX = e.changedTouches[0].screenX;
-            let diff = touchEndX - touchStartX;
-            const container = document.getElementById('mainContainer');
-            const bottomNav = document.getElementById('bottomNav');
-
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    // ডান দিকে টানলে Ads পেজে যাবে[cite: 13]
-                    container.classList.add('page-slide-right');
-                    bottomNav.style.background = '#064e3b';
-                    setTimeout(() => { window.location.href = "ads.html"; }, 250);
-                } else {
-                    // বাম দিকে টানলে Profile পেজে যাবে[cite: 13]
-                    container.classList.add('page-slide-left');
-                    bottomNav.style.background = '#1e1b4b';
-                    setTimeout(() => { window.location.href = "profile.html"; }, 250);
-                }
+        function rejectAgentReq(reqKey) {
+            if(confirm("Reject request?")) {
+                db.ref('sell_requests/' + reqKey).update({ status: "Rejected" }).then(() => alert("Rejected."));
             }
-        });
+        }
+
+        // Image Viewer
+        function viewImage(imgSrc) {
+            document.getElementById('modalImage').src = imgSrc;
+            document.getElementById('imageModal').style.display = 'flex';
+        }
+        function closeImageModal() { document.getElementById('imageModal').style.display = 'none'; }
+
+        // Mining Boost Proof Approvals
+        function approveBoost(uid, coinId) {
+            let expireTime = Date.now() + (15 * 24 * 60 * 60 * 1000);
+            db.ref(`users/${uid}`).update({
+                [`boosts/${coinId}/expireTime`]: expireTime,
+                [`pending_boosts/${coinId}`]: null
+            }).then(() => {
+                db.ref('users/' + uid + '/notifications').push({ text: `🎉 Mining boost activated for ${coinId.toUpperCase()}!`, date: new Date().toLocaleString() });
+                alert("Mining Boost Activated!");
+            });
+        }
+        function rejectBoost(uid, coinId) {
+            if(confirm("Reject proof?")) {
+                db.ref(`users/${uid}/pending_boosts/${coinId}`).remove().then(() => alert("Proof Rejected."));
+            }
+        }
+
+        // ID Verified / Agent Direct Payment Proof Approvals
+        function approveAgentPay(uid) {
+            db.ref(`users/${uid}/pending_agent_pay`).update({ status: "Approved" }).then(() => {
+                db.ref('users/' + uid + '/notifications').push({ text: `🎉 Your ID Verification / Agent Paid service has been approved by Admin!`, date: new Date().toLocaleString() });
+                alert("ID Verification Payment Approved Successfully!");
+            });
+        }
+        function rejectAgentPay(uid) {
+            if(confirm("Reject this payment?")) {
+                db.ref(`users/${uid}/pending_agent_pay`).remove().then(() => alert("Payment Proof Rejected."));
+            }
+        }
+
+        // User Management Controls
+        function openUser(id, name, gp, isBanned) {
+            window.targetU = id;
+            window.targetBanned = isBanned;
+            document.getElementById('m-name-label').innerText = "Name: " + name;
+            document.getElementById('m-uid-label').innerText = "ID: " + id;
+            document.getElementById('m-gp').value = gp;
+            document.getElementById('ban-btn').innerText = isBanned ? "Unban User" : "Ban User";
+            document.getElementById('ban-btn').className = isBanned ? "btn btn-green" : "btn btn-red";
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function updateUserGP() {
+            let gp = parseInt(document.getElementById('m-gp').value) || 0;
+            db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
+        }
+
+        // নতুন ফিচার: জিপি এক ক্লিকে ০ (Zero) করা
+        function makeGPZero() {
+            if(confirm("Are you sure you want to make this user's GP 0?")) {
+                document.getElementById('m-gp').value = 0;
+                db.ref('users/' + window.targetU).update({ gp: 0, points: 0 }).then(() => { alert("User GP set to 0!"); closeModal(); });
+            }
+        }
+
+        // নতুন ফিচার: ইউজারের সব বুস্ট বা ডাটা রিসেট করা
+        function resetUserData() {
+            if(confirm("Warning: This will reset user's boosts and pending requests! Proceed?")) {
+                db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
+                    alert("User data reset successfully!");
+                    closeModal();
+                });
+            }
+        }
+
+        function toggleBan() {
+            let newState = !window.targetBanned;
+            db.ref('users/' + window.targetU + '/banned').set(newState).then(() => { alert(newState ? "User Banned!" : "User Unbanned!"); closeModal(); });
+        }
+
+        function updateWD(key, status, uid, amt) {
+            if(confirm(`Confirm ${status}?`)) {
+                db.ref('withdraw_requests/' + key).update({ status: status }).then(() => {
+                    if(status === 'rejected') { 
+                        db.ref('users/' + uid).transaction(u => {
+                            if(u) { u.gp = (u.gp || 0) + amt; u.points = (u.points || 0) + amt; }
+                            return u;
+                        }); 
+                    }
+                    db.ref('users/' + uid + '/notifications').push({ text: `Your withdraw of ${amt} GP was ${status}.`, date: new Date().toLocaleString() });
+                    alert("Request Updated!");
+                });
+            }
+        }
+
+        function filterUsers() {
+            let q = document.getElementById('user-search').value.toLowerCase();
+            document.querySelectorAll('.user-item').forEach(it => {
+                it.style.display = it.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
+        }
+
+        function closeModal() { document.getElementById('overlay').style.display='none'; document.getElementById('modal').style.display='none'; }
     </script>
 </body>
 </html>
