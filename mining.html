@@ -1,1 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyCen - Crypto Mining</title>
+    <!-- Telegram Web App Script -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #1e2d4d;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+            --orange-btn: linear-gradient(135deg, #f59e0b, #d97706);
+            --green-btn: linear-gradient(135deg, #10b981, #059669);
+            --blue-btn: linear-gradient(135deg, #3b82f6, #1d4ed8);
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 90px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .top-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .back-btn { font-size: 18px; color: #fbbf24; cursor: pointer; }
+        .title { font-size: 18px; font-weight: 800; color: #fbbf24; text-align: center; letter-spacing: 0.5px; }
+        
+        .sub-banner {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* Mining Cards */
+        .mining-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .mining-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+        .coin-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fbbf24;
+            background: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #fbbf24;
+            flex-shrink: 0;
+        }
+        .coin-info h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: #fff; }
+        .coin-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
+
+        .mining-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .btn-claim { background: var(--orange-btn); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+        .btn-boost { background: var(--green-btn); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+        .btn-boosted { background: var(--blue-btn); cursor: default; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+
+        /* Modal Popups */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(4px); }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #131c2e;
+            border: 2px solid #3b82f6;
+            border-radius: 20px;
+            padding: 24px;
+            width: 88%;
+            max-width: 380px;
+            z-index: 1001;
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal h3 { margin: 0 0 8px 0; font-size: 18px; color: #fbbf24; }
+        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+        
+        .modal-btn {
+            background: #1e293b;
+            border: 1px solid var(--card-border);
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .modal-btn:hover { background: #2563eb; border-color: #3b82f6; }
+        
+        .uid-box {
+            background: #0a1226;
+            border: 1px dashed #fbbf24;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #fbbf24;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .copy-uid-btn { background: #fbbf24; color: #000; border: none; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+        
+        .file-input {
+            width: 100%;
+            background: #0a1226;
+            border: 1px solid var(--card-border);
+            padding: 10px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 12px;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+        }
+
+        .cancel-text { color: #ef4444; font-size: 13px; font-weight: bold; cursor: pointer; margin-top: 10px; display: inline-block; }
+
+        /* Bottom Navigation Bar */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%;
+            transform: translateX(-50%);
+            width: 100%; max-width: 480px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--card-border);
+            display: flex; justify-content: space-around;
+            padding: 10px 0; box-sizing: border-box; z-index: 100;
+        }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .nav-item.active { color: #c084fc; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Top Header -->
+        <div class="top-header">
+            <i class="fa-solid fa-arrow-left back-btn" onclick="location.href='index.html'"></i>
+            <div class="title">CRYPTO MINING</div>
+            <div style="width: 18px;"></div>
+        </div>
+        <div class="sub-banner">ACTIVE MINING RIGS (12 HOURS INTERVAL)</div>
+
+        <!-- 16 Mining Rigs Container -->
+        <div id="mining-list-container"></div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeModals()"></div>
+
+    <!-- Modal 1: Select Payment Method -->
+    <div class="modal" id="paymentMethodModal">
+        <h3>Select Payment Method ($2.5)</h3>
+        <p>Choose your preferred payment method to proceed securely.</p>
+        <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
+            <i class="fa-solid fa-wallet" style="color: #f59e0b;"></i> Binance Pay
+        </button>
+        <button class="modal-btn" onclick="openProofModal('Bitget Wallet', '521132367')">
+            <i class="fa-solid fa-shield-halved" style="color: #38bdf8;"></i> Bitget Wallet
+        </button>
+        <span class="cancel-text" onclick="closeModals()">Cancel</span>
+    </div>
+
+    <!-- Modal 2: Submit Proof -->
+    <div class="modal" id="proofModal">
+        <h3 id="proof-title">Payment Proof</h3>
+        <p>Copy admin UID to pay, then check your Telegram User ID and upload screenshot.</p>
+        
+        <div class="uid-box">
+            <span id="admin-uid-text">UID - 9950270208</span>
+            <button class="copy-uid-btn" onclick="copyAdminUid()">Copy</button>
+        </div>
+
+        <div style="text-align: left; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Telegram User ID:</div>
+        <input type="text" id="user-tg-id" class="file-input" readonly style="color: #fbbf24; font-weight: bold;">
+
+        <div style="text-align: left; font-size: 11px; color: var(--text-muted); margin-bottom: 4px;">Upload Payment Proof / Screenshot:</div>
+        <input type="file" id="proof-file" class="file-input" accept="image/*">
+
+        <button class="btn btn-green" onclick="submitBoostProof()" style="width: 100%; margin-top: 4px;">Submit Proof</button>
+        <span class="cancel-text" onclick="closeModals()">Cancel</span>
+    </div>
+
+    <!-- Bottom Navigation Bar -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Watch Ads</a>
+        <a class="nav-item active" href="mining.html"><i class="fa-solid fa-hammer"></i>Mining</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id.toString() : "7757851056";
+        let userName = user ? (user.first_name || "User") : "User";
+        let userRef = db.ref('users/' + userId);
+
+        let userData = { points: 0, gp: 0, boosts: {}, pending_boosts: {} };
+        let selectedCoin = "";
+        let selectedMethod = "";
+        let currentAdminUid = "";
+
+        userRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            if (data) {
+                userData = data;
+                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                userData.points = currentPoints;
+                userData.gp = currentPoints;
+            } else {
+                userRef.set({ points: 0, gp: 0, boosts: {}, pending_boosts: {}, name: userName });
+            }
+            renderMiningRigs();
+        });
+
+        // 16 Mining Coins List
+        const coins = [
+            { id: "btc", name: "Bitcoin (BTC)", icon: "fa-brands fa-bitcoin" },
+            { id: "bnb", name: "Binance (BNB)", icon: "fa-solid fa-coins" },
+            { id: "gram", name: "Gram Token (GRAM)", icon: "fa-solid fa-circle-nodes" },
+            { id: "avax", name: "Avalanche (AVAX)", icon: "fa-solid fa-triangle-exclamation" },
+            { id: "eth", name: "Ethereum (ETH)", icon: "fa-brands fa-ethereum" },
+            { id: "sol", name: "Solana (SOL)", icon: "fa-solid fa-bolt" },
+            { id: "usdt", name: "Tether (USDT)", icon: "fa-solid fa-dollar-sign" },
+            { id: "ton", name: "Toncoin (TON)", icon: "fa-solid fa-gem" },
+            { id: "doge", name: "Dogecoin (DOGE)", icon: "fa-solid fa-dog" },
+            { id: "xrp", name: "XRP Ledger", icon: "fa-solid fa-water" },
+            { id: "ada", name: "Cardano (ADA)", icon: "fa-solid fa-circle-dot" },
+            { id: "trx", name: "TRON (TRX)", icon: "fa-solid fa-network-wired" },
+            { id: "matic", name: "Polygon (MATIC)", icon: "fa-solid fa-shapes" },
+            { id: "ltc", name: "Litecoin (LTC)", icon: "fa-solid fa-litecoin-sign" },
+            { id: "shib", name: "Shiba Inu (SHIB)", icon: "fa-solid fa-paw" },
+            { id: "pepe", name: "Pepe Coin (PEPE)", icon: "fa-solid fa-frog" }
+        ];
+
+        function renderMiningRigs() {
+            const container = document.getElementById('mining-list-container');
+            container.innerHTML = '';
+
+            coins.forEach(coin => {
+                let boostsData = userData.boosts || {};
+                let pendingBoosts = userData.pending_boosts || {};
+                
+                let isBoosted = boostsData[coin.id] && boostsData[coin.id].expireTime > Date.now();
+                let isPending = pendingBoosts[coin.id] && pendingBoosts[coin.id].status === true;
+
+                let boostBtnHTML = '';
+                if (isBoosted) {
+                    boostBtnHTML = `<button class="btn btn-boosted">Boosted (Active)</button>`;
+                } else if (isPending) {
+                    boostBtnHTML = `<button class="btn" style="background:#f59e0b; cursor:default;">Verification Pending</button>`;
+                } else {
+                    boostBtnHTML = `<button class="btn btn-boost" onclick="openPaymentModal('${coin.id}')">Boost ($2.5)</button>`;
+                }
+
+                container.innerHTML += `
+                    <div class="mining-card">
+                        <div class="mining-top">
+                            <div class="coin-icon"><i class="${coin.icon}"></i></div>
+                            <div class="coin-info">
+                                <h4>${coin.name}</h4>
+                                <p>Normal: 50 GP | Boosted: 500 GP ($2.5 / 15 Days)</p>
+                            </div>
+                        </div>
+                        <div class="mining-actions">
+                            <button class="btn btn-claim" onclick="claimMiningReward('${coin.id}', ${isBoosted ? 500 : 50})">Claim ${isBoosted ? 500 : 50} GP</button>
+                            ${boostBtnHTML}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function claimMiningReward(coinId, rewardAmount) {
+            let lastClaimKey = `lastClaim_${coinId}`;
+            let lastClaimTime = userData[lastClaimKey] || 0;
+            let cooldownTime = 12 * 60 * 60 * 1000; // 12 Hours
+
+            if (Date.now() - lastClaimTime < cooldownTime) {
+                let remainingHours = Math.ceil((cooldownTime - (Date.now() - lastClaimTime)) / (60 * 60 * 1000));
+                tg.showAlert(`Please wait! Next claim available in ${remainingHours} hours.`);
+                return;
+            }
+
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            userData.points = currentPoints + rewardAmount;
+            userData.gp = userData.points;
+            userData[lastClaimKey] = Date.now();
+            userData.tasksDone = (userData.tasksDone || 0) + 1;
+
+            userRef.set(userData).then(() => {
+                tg.showAlert(`Successfully claimed +${rewardAmount} GP from ${coinId.toUpperCase()} mining!`);
+                renderMiningRigs();
+            });
+        }
+
+        function openPaymentModal(coinId) {
+            selectedCoin = coinId;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('paymentMethodModal').style.display = 'block';
+        }
+
+        function openProofModal(method, adminUid) {
+            selectedMethod = method;
+            currentAdminUid = adminUid;
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            
+            document.getElementById('proof-title').innerText = `${method} Proof`;
+            document.getElementById('admin-uid-text').innerText = `UID - ${adminUid}`;
+            document.getElementById('user-tg-id').value = userId;
+            document.getElementById('proof-file').value = "";
+
+            document.getElementById('proofModal').style.display = 'block';
+        }
+
+        function copyAdminUid() {
+            navigator.clipboard.writeText(currentAdminUid).then(() => {
+                tg.showAlert(`Admin UID copied: ${currentAdminUid}`);
+            });
+        }
+
+        function submitBoostProof() {
+            let fileInput = document.getElementById('proof-file');
+            if (fileInput.files.length === 0) {
+                tg.showAlert("Please upload payment proof screenshot!");
+                return;
+            }
+
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+            reader.onloadend = function() {
+                let base64Image = reader.result;
+
+                let boostRequestData = {
+                    userName: userName,
+                    method: selectedMethod,
+                    screenshot: base64Image,
+                    status: true,
+                    dateTime: new Date().toLocaleString()
+                };
+
+                db.ref(`users/${userId}/pending_boosts/${selectedCoin}`).set(boostRequestData).then(() => {
+                    closeModals();
+                    tg.showAlert("Payment proof submitted successfully! Admin will verify soon.");
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function closeModals() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            document.getElementById('proofModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
