@@ -171,14 +171,20 @@
 
             if (snapshot.exists()) {
                 let notifs = snapshot.val();
-                let keys = Object.keys(notifs).reverse(); // নতুন মেসেজগুলো সবার উপরে দেখানোর জন্য রিভার্স করা হয়েছে
+                let keys = Object.keys(notifs).reverse(); // নতুন মেসেজগুলো সবার উপরে দেখানোর জন্য
+
+                // ইউজার এই পেজে আসায় সবগুলো মেসেজ 'Read' বা পঠিত করে দেওয়া হলো (যাতে বেল আইকন ভাইব্রেশন বন্ধ হয়ে যায়)
+                let updates = {};
+                keys.forEach(key => {
+                    updates[key + '/isRead'] = true;
+                });
+                notifRef.update(updates);
 
                 keys.forEach(key => {
                     let item = notifs[key];
                     let title = item.title || "Admin Update";
                     let message = item.message || item.text || "";
                     
-                    // তারিখ এবং সময় ফরম্যাট করার লজিক
                     let dateObj = item.timestamp ? new Date(item.timestamp) : new Date();
                     let dateStr = dateObj.toLocaleDateString();
                     let timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
