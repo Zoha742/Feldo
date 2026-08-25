@@ -13,7 +13,7 @@
         :root { 
             --bg: #050a18; --card: #121e36; --border: #1e2d4d; 
             --blue: #3b82f6; --green: #22c55e; --red: #ef4444; 
-            --orange: #f59e0b; --purple: #a855f7; --primary: #fbbin24;
+            --orange: #f59e0b; --purple: #a855f7; --primary: #fbbf24;
         }
         body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; display: flex; justify-content: center; }
         
@@ -72,13 +72,13 @@
             <div id="agent-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading GP sale requests...</div>
         </div>
 
-        <!-- ২. মাইনিং বুস্ট পেমেন্ট প্রুফ (পেমেন্ট প্রুফ সিস্টেম ১) -->
+        <!-- ২. মাইনিং বুস্ট পেমেন্ট প্রুফ -->
         <div class="card" style="border-color: var(--orange);">
             <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> 1. Mining Boost Payment Proofs</h4>
             <div id="boost-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading mining proofs...</div>
         </div>
 
-        <!-- ৩. আইডি ভেরিফাইড / এজেন্ট পেইড পেমেন্ট প্রুফ (পেমেন্ট প্রুফ সিস্টেম ২) -->
+        <!-- ৩. আইডি ভেরিফাইড / এজেন্ট পেইড পেমেন্ট প্রুফ -->
         <div class="card" style="border-color: var(--green);">
             <h4><i class="fas fa-id-card" style="color:var(--green);"></i> 2. ID Verified / Agent Paid Proofs</h4>
             <div id="agent-pay-req-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">Loading ID verification proofs...</div>
@@ -219,7 +219,7 @@
                         });
                     }
 
-                    // ID Verified / Agent Direct Paid Proofs (পেমেন্ট প্রুফ সিস্টেম ২)
+                    // ID Verified / Agent Direct Paid Proofs
                     if(u.pending_agent_pay && u.pending_agent_pay.status === "Pending") {
                         let req = u.pending_agent_pay;
                         let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
@@ -351,7 +351,6 @@
             db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
         }
 
-        // নতুন ফিচার: জিপি এক ক্লিকে ০ (Zero) করা
         function makeGPZero() {
             if(confirm("Are you sure you want to make this user's GP 0?")) {
                 document.getElementById('m-gp').value = 0;
@@ -359,7 +358,6 @@
             }
         }
 
-        // নতুন ফিচার: ইউজারের সব বুস্ট বা ডাটা রিসেট করা
         function resetUserData() {
             if(confirm("Warning: This will reset user's boosts and pending requests! Proceed?")) {
                 db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
