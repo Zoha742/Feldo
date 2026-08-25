@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyCen - Profile</title>
-    <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -37,7 +35,6 @@
             box-sizing: border-box;
         }
 
-        /* Top Header */
         .top-header {
             display: flex;
             justify-content: space-between;
@@ -52,288 +49,101 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .top-header p {
-            margin: 0;
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        .header-icons {
-            display: flex;
-            gap: 8px;
-        }
+        .top-header p { margin: 0; font-size: 13px; color: var(--text-muted); }
+        .header-icons { display: flex; gap: 8px; }
         .icon-btn {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            width: 36px;
-            height: 36px;
+            width: 36px; height: 36px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-main);
-            font-size: 14px;
-            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-main); font-size: 14px; cursor: pointer;
             box-shadow: 0 0 10px var(--purple-glow);
         }
 
-        /* User Profile Card with Purple Gradient */
         .profile-card {
             background: linear-gradient(135deg, #16102a 0%, #1e1b4b 100%);
             border: 1px solid #7c3aed;
             border-radius: 20px;
             padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 16px;
             box-shadow: 0 8px 25px rgba(124, 58, 237, 0.2);
         }
-        .profile-left {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            width: 100%;
-        }
+        .profile-left { display: flex; align-items: center; gap: 14px; width: 100%; }
         .avatar-container {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            padding: 2px;
+            width: 60px; height: 60px; border-radius: 50%; padding: 2px;
             background: linear-gradient(135deg, #c084fc, #7c3aed);
-            flex-shrink: 0;
-            box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
+            flex-shrink: 0; box-shadow: 0 0 12px rgba(192, 132, 252, 0.4);
         }
-        .avatar-container img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .profile-info {
-            width: 100%;
-        }
-        .profile-info h3 {
-            margin: 0 0 2px 0;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .profile-info h3 i {
-            color: #a855f7;
-            font-size: 13px;
-        }
+        .avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .profile-info { width: 100%; }
+        .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; }
+        .profile-info h3 i { color: #a855f7; font-size: 13px; }
         
-        /* Separate Username and ID styling */
-        .username-text {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-bottom: 2px;
-        }
+        .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
         .user-id-badge {
-            font-size: 11px;
-            color: #c084fc;
-            font-weight: 650;
-            cursor: pointer;
-            display: inline-block;
-            background: rgba(124, 58, 237, 0.15);
-            padding: 1px 6px;
-            border-radius: 6px;
+            font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block;
+            background: rgba(124, 58, 237, 0.15); padding: 1px 6px; border-radius: 6px;
             border: 1px dashed rgba(192, 132, 252, 0.4);
-            transition: background 0.2s;
         }
-        .user-id-badge:hover {
-            background: rgba(124, 58, 237, 0.3);
-        }
+        .level-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .level-badge { background: rgba(124, 58, 237, 0.3); color: #d8b4fe; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .xp-text { font-size: 11px; color: var(--text-muted); }
+        .xp-bar-container { width: 100%; background: #1e1b4b; height: 6px; border-radius: 3px; overflow: hidden; margin-bottom: 4px; }
+        .xp-bar-fill { background: linear-gradient(90deg, #c084fc, #7c3aed); height: 100%; width: 0%; }
 
-        .level-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 4px;
-        }
-        .level-badge {
-            background: rgba(124, 58, 237, 0.3);
-            color: #d8b4fe;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
-        }
-        .xp-text {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-        .xp-bar-container {
-            width: 100%;
-            background: #1e1b4b;
-            height: 6px;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 4px;
-        }
-        .xp-bar-fill {
-            background: linear-gradient(90deg, #c084fc, #7c3aed);
-            height: 100%;
-            width: 0%;
-        }
-
-        /* Stats Grid (4 columns) with Purple accents */
         .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 14px 8px;
-            margin-bottom: 16px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 20px; padding: 14px 8px; margin-bottom: 16px; text-align: center;
         }
         .stat-item .stat-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 6px auto;
-            font-size: 14px;
-            color: #fff;
-            box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+            width: 32px; height: 32px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 6px auto; font-size: 14px; color: #fff;
         }
-        .stat-item .value {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-        .stat-item .label {
-            font-size: 9px;
-            color: var(--text-muted);
-            line-height: 1.2;
-        }
+        .stat-item .value { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+        .stat-item .label { font-size: 9px; color: var(--text-muted); }
 
-        /* Menu List Options */
         .menu-list {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            overflow: hidden;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            background: var(--card-bg); border: 1px solid var(--card-border);
+            border-radius: 20px; overflow: hidden; margin-bottom: 16px;
         }
         .menu-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 16px;
-            border-bottom: 1px solid var(--card-border);
-            cursor: pointer;
-            text-decoration: none;
-            color: var(--text-main);
-            transition: background 0.2s;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; border-bottom: 1px solid var(--card-border);
+            cursor: pointer; text-decoration: none; color: var(--text-main);
         }
-        .menu-row:hover {
-            background: rgba(124, 58, 237, 0.05);
-        }
-        .menu-row:last-child {
-            border-bottom: none;
-        }
-        .menu-row-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .menu-row:last-child { border-bottom: none; }
+        .menu-row-left { display: flex; align-items: center; gap: 12px; }
         .menu-row-icon {
-            width: 34px;
-            height: 34px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 15px;
-            box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+            width: 34px; height: 34px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; color: #fff; font-size: 15px;
         }
-        .menu-row-text h5 {
-            margin: 0 0 2px 0;
-            font-size: 13px;
-        }
-        .menu-row-text p {
-            margin: 0;
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-        .menu-row-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-        .badge-count {
-            background: rgba(124, 58, 237, 0.2);
-            color: #d8b4fe;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .arrow-icon {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
+        .menu-row-text h5 { margin: 0 0 2px 0; font-size: 13px; }
+        .menu-row-text p { margin: 0; font-size: 10px; color: var(--text-muted); }
+        .arrow-icon { color: var(--text-muted); font-size: 13px; }
 
-        /* Admin Panel Menu Style */
         .menu-row.admin-row {
-            border-top: 1px solid #7f1d1d;
-            background: rgba(127, 29, 29, 0.15);
-            display: none; 
+            border-top: 1px solid #7f1d1d; background: rgba(127, 29, 29, 0.15); display: none; 
         }
-        .menu-row.admin-row .menu-row-text h5 {
-            color: #ef4444;
-        }
+        .menu-row.admin-row .menu-row-text h5 { color: #ef4444; }
 
-        /* Bottom Navigation Bar */
         .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 480px;
-            background: var(--card-bg);
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            box-sizing: border-box;
-            z-index: 100;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.3);
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 480px; background: var(--card-bg);
+            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around;
+            padding: 10px 0; box-sizing: border-box; z-index: 100;
         }
-        .nav-item {
-            text-align: center;
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .nav-item.active {
-            color: #c084fc;
-        }
-        .nav-item i {
-            font-size: 18px;
-            display: block;
-            margin-bottom: 3px;
-        }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .nav-item.active { color: #c084fc; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 3px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Top Header -->
         <div class="top-header">
             <div>
                 <h1>Profile</h1>
@@ -341,11 +151,10 @@
             </div>
             <div class="header-icons">
                 <button class="icon-btn" onclick="tg.showAlert('No new notifications')"><i class="fa-regular fa-bell"></i></button>
-                <button class="icon-btn" onclick="tg.showAlert('Settings options coming soon')"><i class="fa-solid fa-gear"></i></button>
+                <button class="icon-btn" onclick="tg.showAlert('Settings coming soon')"><i class="fa-solid fa-gear"></i></button>
             </div>
         </div>
 
-        <!-- Profile Card -->
         <div class="profile-card">
             <div class="profile-left">
                 <div class="avatar-container">
@@ -354,111 +163,72 @@
                 <div class="profile-info">
                     <h3 id="profile-name">User <i class="fa-solid fa-circle-check"></i></h3>
                     <div class="username-text" id="profile-username">@user</div>
-                    <div>
-                        <span class="user-id-badge" id="profile-id" title="Tap to copy ID">ID: Loading... 📋</span>
-                    </div>
+                    <div><span class="user-id-badge" id="profile-id">ID: Loading... 📋</span></div>
                     <div class="level-row" style="margin-top: 6px;">
                         <span class="level-badge">Level 1</span>
                         <span class="xp-text">0 / 1,000 XP</span>
                     </div>
-                    <div class="xp-bar-container">
-                        <div class="xp-bar-fill"></div>
-                    </div>
+                    <div class="xp-bar-container"><div class="xp-bar-fill"></div></div>
                 </div>
             </div>
         </div>
 
-        <!-- Stats Grid (4 Cards) -->
         <div class="stats-grid">
             <div class="stat-item">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #7c3aed, #4c1d95);"><i class="fa-solid fa-coins"></i></div>
+                <div class="stat-icon" style="background: #7c3aed;"><i class="fa-solid fa-coins"></i></div>
                 <div class="value" id="total-points">0</div>
                 <div class="label">Total GP</div>
             </div>
             <div class="stat-item">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-icon" style="background: #10b981;"><i class="fa-solid fa-circle-check"></i></div>
                 <div class="value" id="tasks-done-count">0</div>
                 <div class="label">Task Done</div>
             </div>
             <div class="stat-item">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-wallet"></i></div>
+                <div class="stat-icon" style="background: #3b82f6;"><i class="fa-solid fa-wallet"></i></div>
                 <div class="value">0</div>
                 <div class="label">Pending GP</div>
             </div>
             <div class="stat-item">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #ec4899, #be185d);"><i class="fa-solid fa-gift"></i></div>
+                <div class="stat-icon" style="background: #ec4899;"><i class="fa-solid fa-gift"></i></div>
                 <div class="value">0</div>
                 <div class="label">Withdrawn</div>
             </div>
         </div>
 
-        <!-- Menu Options List -->
         <div class="menu-list">
-            <a class="menu-row" onclick="tg.showAlert('Activity details coming soon')">
+            <a class="menu-row" onclick="tg.showAlert('Coming Soon!')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-heart-pulse"></i></div>
-                    <div class="menu-row-text">
-                        <h5>My Activity</h5>
-                        <p>View your earnings and activities</p>
-                    </div>
+                    <div class="menu-row-icon" style="background: #10b981;"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <div class="menu-row-text"><h5>My Activity</h5><p>View your earnings</p></div>
                 </div>
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
-
-            <a class="menu-row" onclick="tg.showAlert('Transaction history is empty')">
+            <a class="menu-row" onclick="tg.showAlert('Coming Soon!')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-file-invoice"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Transaction History</h5>
-                        <p>Check your points history</p>
-                    </div>
+                    <div class="menu-row-icon" style="background: #3b82f6;"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div class="menu-row-text"><h5>Transaction History</h5><p>Check points history</p></div>
                 </div>
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
-
-            <a class="menu-row" onclick="tg.showAlert('Referral link copied! Invite friends to earn more.')">
+            <a class="menu-row" onclick="tg.showAlert('Coming Soon!')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #f59e0b, #b45309);"><i class="fa-solid fa-user-group"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Refer Friends</h5>
-                        <p>Invite friends and earn GP rewards</p>
-                    </div>
-                </div>
-                <div class="menu-row-right">
-                    <span class="badge-count">0 Referrals</span>
-                    <i class="fa-solid fa-chevron-right arrow-icon"></i>
-                </div>
-            </a>
-
-            <a class="menu-row" onclick="tg.showAlert('TON Connect integration coming soon!')">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #7c3aed, #5b21b6);"><i class="fa-solid fa-wallet"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Wallet Setup</h5>
-                        <p>TON Connect</p>
-                    </div>
+                    <div class="menu-row-icon" style="background: #f59e0b;"><i class="fa-solid fa-user-group"></i></div>
+                    <div class="menu-row-text"><h5>Refer Friends</h5><p>Invite and earn GP</p></div>
                 </div>
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
-
-            <a class="menu-row" onclick="tg.showAlert('Withdrawals will open soon.')">
+            <a class="menu-row" onclick="tg.showAlert('Coming Soon!')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #ef4444, #991b1b);"><i class="fa-solid fa-money-bill-transfer"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Withdraw</h5>
-                        <p>GP Cashout</p>
-                    </div>
+                    <div class="menu-row-icon" style="background: #7c3aed;"><i class="fa-solid fa-wallet"></i></div>
+                    <div class="menu-row-text"><h5>Wallet Setup</h5><p>TON Connect</p></div>
                 </div>
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
-
-            <a class="menu-row" onclick="tg.showAlert('Contact support at @heycan_support')">
+            <a class="menu-row" onclick="tg.showAlert('Coming Soon!')">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #06b6d4, #0e7490);"><i class="fa-solid fa-headset"></i></div>
-                    <div class="menu-row-text">
-                        <h5>Support</h5>
-                        <p>Get help and support</p>
-                    </div>
+                    <div class="menu-row-icon" style="background: #ef4444;"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <div class="menu-row-text"><h5>Withdraw</h5><p>GP Cashout</p></div>
                 </div>
                 <i class="fa-solid fa-chevron-right arrow-icon"></i>
             </a>
@@ -466,10 +236,10 @@
             <!-- Admin Panel (Visible ONLY to ID: 7757851056) -->
             <a class="menu-row admin-row" id="admin-panel-btn" href="admin.html">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #ef4444, #7f1d1d);"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="menu-row-icon" style="background: #7f1d1d;"><i class="fa-solid fa-user-shield"></i></div>
                     <div class="menu-row-text">
                         <h5 style="color: #ef4444;">Admin Panel</h5>
-                        <p style="color: #fca5a5;">Control Center (Secret)</p>
+                        <p style="color: #fca5a5;">Control Center</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right arrow-icon" style="color: #ef4444;"></i>
@@ -477,39 +247,22 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
-        <a class="nav-item" href="index.html">
-            <i class="fa-solid fa-house"></i>
-            Home
-        </a>
-        <a class="nav-item" href="task.html">
-            <i class="fa-solid fa-list-check"></i>
-            Tasks
-        </a>
-        <a class="nav-item" href="ads.html">
-            <i class="fa-solid fa-play"></i>
-            Watch Ads
-        </a>
-        <a class="nav-item" href="agent.html">
-            <i class="fa-solid fa-handshake"></i>
-            Agent
-        </a>
-        <a class="nav-item active" href="profile.html">
-            <i class="fa-solid fa-user"></i>
-            Profile
-        </a>
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Watch Ads</a>
+        <a class="nav-item" href="store.html"><i class="fa-solid fa-hammer"></i>Mining</a>
+        <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyBeekTPKMLpOhBH_FMB3eIqWgGy8APQFa8",
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
             authDomain: "heycen-9a9d8.firebaseapp.com",
-            databaseURL: "https://heycan-9a9d8-default-rtdb.firebaseio.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
             projectId: "heycen-9a9d8",
             storageBucket: "heycen-9a9d8.firebasestorage.app",
             messagingSenderId: "442359961958",
@@ -530,7 +283,6 @@
 
         const ADMIN_USER_ID = "7757851056";
 
-        // Set User Name, Username and ID
         document.getElementById('profile-name').innerHTML = `${firstName} <i class="fa-solid fa-circle-check"></i>`;
         document.getElementById('profile-username').innerText = username;
         
@@ -539,7 +291,7 @@
 
         idBadgeElement.onclick = function() {
             navigator.clipboard.writeText(userId).then(() => {
-                tg.showAlert(`ID copied successfully: ${userId}`);
+                tg.showAlert(`ID copied: ${userId}`);
             });
         };
 
@@ -551,28 +303,15 @@
             document.getElementById('user-avatar').src = user.photo_url;
         }
 
-        // Fetch User Data from Firebase (Supports both 'points' and 'gp')
         let userRef = db.ref('users/' + userId);
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
             if (data) {
                 let userPoints = data.points !== undefined ? data.points : (data.gp || 0);
-                let tasksDone = data.tasksDone || 0;
-                
                 document.getElementById('total-points').innerText = userPoints.toLocaleString();
-                document.getElementById('tasks-done-count').innerText = tasksDone.toLocaleString();
+                document.getElementById('tasks-done-count').innerText = (data.tasksDone || 0).toLocaleString();
             } else {
-                let defaultData = {
-                    name: firstName,
-                    username: username,
-                    points: 0,
-                    gp: 0,
-                    tasksDone: 0,
-                    streakDay: 1,
-                    lastCheckInDate: "",
-                    lastSeen: Date.now()
-                };
-                userRef.set(defaultData);
+                userRef.set({ name: firstName, username: username, points: 0, gp: 0, tasksDone: 0, lastSeen: Date.now() });
                 document.getElementById('total-points').innerText = "0";
                 document.getElementById('tasks-done-count').innerText = "0";
             }
