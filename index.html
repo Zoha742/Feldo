@@ -317,12 +317,13 @@
             }
         });
 
-        db.ref('users/' + userId + '/notifications').on('child_added', (snapshot) => {
+        // নোটিফিকেশন অ্যালার্ট দেখানোর লজিক (মেসেজ ডিলিট না করে সংরক্ষণ করা হয়েছে)[cite: 19]
+        db.ref('users/' + userId + '/notifications').limitToLast(1).on('child_added', (snapshot) => {
             let notif = snapshot.val();
             let msg = notif.message || notif.text;
             if (msg) {
-                tg.showAlert(msg);
-                snapshot.ref.remove();
+                // পপআপ অ্যালার্ট দেখাবে কিন্তু ডাটাবেজ থেকে ডিলিট হবে না, ফলে notification.html এ সেভ থাকবে
+                tg.showAlert(msg); 
             }
         });
     </script>
