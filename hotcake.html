@@ -17,6 +17,7 @@
             --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
             --orange-btn: linear-gradient(135deg, #f59e0b, #d97706);
             --green-btn: linear-gradient(135deg, #10b981, #059669);
+            --blue-btn: linear-gradient(135deg, #3b82f6, #1d4ed8);
             --modal-bg: #0b132b;
         }
 
@@ -43,65 +44,88 @@
         .page-slide-left { transform: translateX(-100px); opacity: 0; }
         .page-slide-right { transform: translateX(100px); opacity: 0; }
 
-        .header-banner {
-            background: var(--primary-gradient);
-            border-radius: 16px;
-            padding: 20px;
-            color: #fff;
+        .top-title {
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+            color: #fbbf24;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
-        .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
-        .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
+        .sub-title {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
 
-        .hotcake-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+        .hotcake-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
             margin-bottom: 20px;
         }
 
-        .coin-card {
+        .hotcake-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 16px;
-            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .card-top {
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
         }
 
         .coin-icon {
-            width: 45px; height: 45px;
+            width: 48px; height: 48px;
             background: rgba(124, 58, 237, 0.2);
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 10px auto;
-            color: #c084fc;
-            font-size: 20px;
-            border: 1px solid #7c3aed;
+            color: #fbbf24;
+            font-size: 22px;
+            border: 1.5px solid #fbbf24;
+            flex-shrink: 0;
         }
 
-        .coin-card h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; }
-        .coin-card p { margin: 0 0 12px 0; font-size: 11px; color: var(--text-muted); }
+        .coin-info h4 { margin: 0 0 3px 0; font-size: 16px; font-weight: 700; color: #fff; }
+        .coin-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
 
-        .boost-btn {
-            background: var(--orange-btn);
-            color: #fff;
+        .card-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .action-btn {
             border: none;
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 11px;
+            padding: 11px 8px;
+            border-radius: 12px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            text-align: center;
+            color: #fff;
             transition: 0.2s;
         }
-        .boost-btn.active {
+        .claim-btn {
+            background: var(--orange-btn);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .claim-btn:active { transform: scale(0.97); }
+
+        .boost-action-btn {
             background: var(--green-btn);
             box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .boost-action-btn.active {
+            background: var(--blue-btn);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         /* Modal Popups */
@@ -202,12 +226,10 @@
 <body>
 
     <div class="container" id="mainContainer">
-        <div class="header-banner">
-            <h2>🔥 Hotcake & Boost</h2>
-            <p>Boost your Hotcake speed & earn passive rewards</p>
-        </div>
+        <div class="top-title">HOTCAKE RIGS</div>
+        <div class="sub-title">ACTIVE HOTCAKE RIGS (12 HOURS INTERVAL)</div>
 
-        <div class="hotcake-grid" id="coins-container">
+        <div class="hotcake-list" id="hotcakes-container">
             <!-- Populated via JS -->
         </div>
     </div>
@@ -217,7 +239,7 @@
 
     <!-- Modal 1: Select Payment Method -->
     <div class="modal" id="paymentMethodModal">
-        <h3>Boost <span id="modal-coin-name">Coin</span> ($1.5)</h3>
+        <h3>Boost <span id="modal-coin-name">Coin</span> ($2.5)</h3>
         <p>Choose your preferred payment method to boost Hotcake speed for 15 days.</p>
         <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
             <i class="fa-solid fa-wallet" style="color: #f59e0b; font-size: 18px;"></i> Binance Pay
@@ -284,17 +306,17 @@
         let userName = user ? (user.first_name || "User") : "User";
         let userRef = db.ref('users/' + userId);
 
-        let coins = [
-            { id: 'btc', name: 'Bitcoin', icon: 'fa-bitcoin-sign' },
-            { id: 'eth', name: 'Ethereum', icon: 'fa-ethereum' },
-            { id: 'ton', name: 'TON Coin', icon: 'fa-gem' },
-            { id: 'sol', name: 'Solana', icon: 'fa-coins' },
-            { id: 'doge', name: 'Dogecoin', icon: 'fa-dog' },
-            { id: 'pepe', name: 'Pepe', icon: 'fa-frog' }
+        let hotcakes = [
+            { id: 'btc', name: 'Bitcoin (BTC)', icon: 'fa-bitcoin-sign', normalGp: 50, boostedGp: 500 },
+            { id: 'bnb', name: 'Binance (BNB)', icon: 'fa-coins', normalGp: 50, boostedGp: 500 },
+            { id: 'gram', name: 'Gram Token (GRAM)', icon: 'fa-gem', normalGp: 50, boostedGp: 500 },
+            { id: 'avax', name: 'Avalanche (AVAX)', icon: 'fa-fire', normalGp: 50, boostedGp: 500 },
+            { id: 'sol', name: 'Solana (SOL)', icon: 'fa-bolt', normalGp: 50, boostedGp: 500 },
+            { id: 'doge', name: 'Dogecoin (DOGE)', icon: 'fa-dog', normalGp: 50, boostedGp: 500 }
         ];
 
         let userBoosts = {};
-        let selectedCoinId = "";
+        let selectedHotcakeId = "";
         let selectedMethod = "";
         let currentAdminUid = "";
 
@@ -303,41 +325,60 @@
             if (data && data.boosts) {
                 userBoosts = data.boosts;
             }
-            renderCoins();
+            renderHotcakes();
         });
 
-        function renderCoins() {
-            const container = document.getElementById('coins-container');
+        function renderHotcakes() {
+            const container = document.getElementById('hotcakes-container');
             container.innerHTML = '';
             let currentTime = Date.now();
 
-            coins.forEach(coin => {
+            hotcakes.forEach(item => {
                 let isBoosted = false;
-                let btnText = "Boost ($1.5)";
-                let btnClass = "boost-btn";
+                let rewardGp = item.normalGp;
+                let boostBtnText = "Boost ($2.5)";
+                let boostBtnClass = "action-btn boost-action-btn";
 
-                if (userBoosts[coin.id] && userBoosts[coin.id].expireTime > currentTime) {
+                if (userBoosts[item.id] && userBoosts[item.id].expireTime > currentTime) {
                     isBoosted = true;
-                    btnText = "Boosted ✓";
-                    btnClass = "boost-btn active";
+                    rewardGp = item.boostedGp;
+                    boostBtnText = "Boosted (Active)";
+                    boostBtnClass = "action-btn boost-action-btn active";
                 }
 
                 container.innerHTML += `
-                    <div class="coin-card">
-                        <div>
-                            <div class="coin-icon"><i class="fa-solid ${coin.icon}"></i></div>
-                            <h4>${coin.name}</h4>
-                            <p>${isBoosted ? 'Speed 5x Active' : 'Standard Speed'}</p>
+                    <div class="hotcake-card">
+                        <div class="card-top">
+                            <div class="coin-icon"><i class="fa-solid ${item.icon}"></i></div>
+                            <div class="coin-info">
+                                <h4>${item.name}</h4>
+                                <p>Normal: ${item.normalGp} GP | Boosted: ${item.boostedGp} GP ($2.5 / 15 Days)</p>
+                            </div>
                         </div>
-                        <button class="${btnClass}" onclick="openPaymentModal('${coin.id}', '${coin.name}')">${btnText}</button>
+                        <div class="card-buttons">
+                            <button class="action-btn claim-btn" onclick="claimReward('${item.id}', ${rewardGp})">Claim ${rewardGp} GP</button>
+                            <button class="${boostBtnClass}" onclick="openPaymentModal('${item.id}', '${item.name}')">${boostBtnText}</button>
+                        </div>
                     </div>
                 `;
             });
         }
 
-        function openPaymentModal(coinId, coinName) {
-            selectedCoinId = coinId;
-            document.getElementById('modal-coin-name').innerText = coinName;
+        function claimReward(id, gp) {
+            userRef.once('value').then((snapshot) => {
+                let data = snapshot.val() || { points: 0, gp: 0 };
+                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                let newPoints = currentPoints + gp;
+
+                userRef.update({ points: newPoints, gp: newPoints }).then(() => {
+                    tg.showAlert(`Successfully claimed ${gp} GP!`);
+                });
+            });
+        }
+
+        function openPaymentModal(hotcakeId, hotcakeName) {
+            selectedHotcakeId = hotcakeId;
+            document.getElementById('modal-coin-name').innerText = hotcakeName;
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('paymentMethodModal').style.display = 'block';
         }
@@ -382,7 +423,7 @@
                     timestamp: Date.now()
                 };
 
-                db.ref(`users/${userId}/pending_boosts/${selectedCoinId}`).set(boostRequest).then(() => {
+                db.ref(`users/${userId}/pending_boosts/${selectedHotcakeId}`).set(boostRequest).then(() => {
                     closeModals();
                     tg.showAlert("Boost payment proof submitted successfully! Admin will review and activate your boost.");
                 });
@@ -407,12 +448,10 @@
 
             if (Math.abs(diff) > 50) {
                 if (diff > 0) {
-                    // ডান দিকে টানলে Ads পেজে যাবে
                     container.classList.add('page-slide-right');
                     bottomNav.style.background = '#064e3b';
                     setTimeout(() => { window.location.href = "ads.html"; }, 250);
                 } else {
-                    // বাম দিকে টানলে Profile পেজে যাবে
                     container.classList.add('page-slide-left');
                     bottomNav.style.background = '#1e1b4b';
                     setTimeout(() => { window.location.href = "profile.html"; }, 250);
