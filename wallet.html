@@ -38,23 +38,25 @@
         .page-slide-left { transform: translateX(-100px); opacity: 0; }
         .page-slide-right { transform: translateX(100px); opacity: 0; }
 
-        .top-title {
-            text-align: center;
-            color: #fbbf24;
-            font-size: 18px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
+        .header { 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 20px; 
         }
+        .header h3 { margin: 0; font-size: 18px; color: #fbbf24; }
+        .back-btn { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
 
         .wallet-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 18px;
+            border-radius: 18px;
+            padding: 20px;
             margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            transition: 0.3s ease;
         }
+        .wallet-card:hover { border-color: rgba(192, 132, 252, 0.5); }
 
         .wallet-title {
             font-size: 14px;
@@ -63,38 +65,70 @@
             margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
-        .wallet-title i { color: #f59e0b; }
+        .wallet-title .icon-box {
+            width: 32px; height: 32px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff;
+            font-size: 14px;
+        }
 
         .wallet-input {
             width: 100%;
             background: #050a14;
             border: 1px solid #2a3b68;
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
             color: #fff;
             font-size: 13px;
             box-sizing: border-box;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             outline: none;
         }
         .wallet-input:focus { border-color: #7c3aed; }
 
         .save-btn {
-            background: #2563eb;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
             color: #fff;
             border: none;
             width: 100%;
             padding: 12px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
             transition: 0.2s;
         }
-        .save-btn:hover { background: #1d4ed8; }
+        .save-btn:hover { opacity: 0.9; }
+
+        /* নিচে সেন্টারে ব্যাক অ্যারো বাটন স্টাইল */
+        .center-back-container {
+            text-align: center;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .center-back-icon-btn {
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            border: 1px solid #9333ea;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .center-back-icon-btn:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
 
         /* ৫টি অপশনসহ নেভিগেশন বার */
         .bottom-nav {
@@ -129,12 +163,16 @@
 <body>
 
     <div class="container" id="mainContainer">
-        <div class="top-title">My Crypto UIDs</div>
+        <div class="header">
+            <button class="back-btn" onclick="location.href='profile.html'"><i class="fas fa-arrow-left"></i></button>
+            <h3>Wallet Setup (Crypto UIDs)</h3>
+        </div>
 
         <!-- Bitget UID Card -->
         <div class="wallet-card">
             <div class="wallet-title">
-                <i class="fa-solid fa-shield-halved" style="color: #38bdf8;"></i> Bitget UID
+                <div class="icon-box" style="background: linear-gradient(135deg, #38bdf8, #0284c7);"><i class="fa-solid fa-shield-halved"></i></div>
+                Bitget UID
             </div>
             <input type="text" id="bitget-uid" class="wallet-input" placeholder="Enter Bitget UID">
             <button class="save-btn" onclick="saveUid('bitget')">Save Bitget UID</button>
@@ -143,10 +181,18 @@
         <!-- Binance UID Card -->
         <div class="wallet-card">
             <div class="wallet-title">
-                <i class="fa-solid fa-wallet"></i> Binance UID
+                <div class="icon-box" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-wallet"></i></div>
+                Binance UID
             </div>
             <input type="text" id="binance-uid" class="wallet-input" placeholder="Enter Binance UID">
             <button class="save-btn" onclick="saveUid('binance')">Save Binance UID</button>
+        </div>
+
+        <!-- নিচে সেন্টারে ব্যাক অ্যারো বাটন -->
+        <div class="center-back-container">
+            <button class="center-back-icon-btn" onclick="location.href='profile.html'" title="Back to Profile">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
         </div>
     </div>
 
@@ -228,18 +274,10 @@
             let touchEndX = e.changedTouches[0].screenX;
             let diff = touchEndX - touchStartX;
             const container = document.getElementById('mainContainer');
-            const bottomNav = document.getElementById('bottomNav');
 
             if (Math.abs(diff) > 50) {
-                if (diff > 0) {
-                    container.classList.add('page-slide-right');
-                    bottomNav.style.background = '#064e3b';
-                    setTimeout(() => { window.location.href = "task.html"; }, 250);
-                } else {
-                    container.classList.add('page-slide-left');
-                    bottomNav.style.background = '#1e1b4b';
-                    setTimeout(() => { window.location.href = "ads.html"; }, 250);
-                }
+                container.classList.add('page-slide-left');
+                setTimeout(() => { window.location.href = "profile.html"; }, 250);
             }
         });
     </script>
