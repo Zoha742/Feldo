@@ -213,12 +213,10 @@
 
             if (Math.abs(diff) > 50) {
                 if (diff > 0) {
-                    // ডান দিকে টানলে Task পেজে যাবে
                     container.classList.add('page-slide-right');
                     bottomNav.style.background = '#064e3b';
                     setTimeout(() => { window.location.href = "task.html"; }, 250);
                 } else {
-                    // বাম দিকে টানলে Mining (hotcake.html) পেজে যাবে
                     container.classList.add('page-slide-left');
                     bottomNav.style.background = '#1e1b4b';
                     setTimeout(() => { window.location.href = "hotcake.html"; }, 250);
