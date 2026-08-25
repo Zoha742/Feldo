@@ -261,7 +261,44 @@
                     savedUids = data.uids;
                 }
                 updateWalletDisplay();
-                loadHistory();
+            }
+        });
+
+        // Load History safely without indexing issues
+        db.ref('withdraw_requests').on('value', (snapshot) => {
+            let historyContainer = document.getElementById('history-container');
+            historyContainer.innerHTML = '';
+
+            if (!snapshot.exists()) {
+                historyContainer.innerHTML = "No history found.";
+                return;
+            }
+
+            let html = "";
+            let hasHistory = false;
+
+            snapshot.forEach((childSnapshot) => {
+                let req = childSnapshot.val();
+                if (req.userId === userId) {
+                    hasHistory = true;
+                    let statusColor = req.status === 'Pending' ? '#f59e0b' : (req.status === 'Approved' ? '#10b981' : '#ef4444');
+
+                    html += `
+                        <div class="history-item">
+                            <div>
+                                <span>${req.amountGP.toLocaleString()} GP ($${req.amountUSD})</span>
+                                <small style="color:var(--text-muted);">${req.method} (${req.uid}) - ${req.date}</small>
+                            </div>
+                            <span style="color: ${statusColor}; font-weight:bold; font-size:11px;">${req.status}</span>
+                        </div>
+                    `;
+                }
+            });
+
+            if (hasHistory) {
+                historyContainer.innerHTML = html;
+            } else {
+                historyContainer.innerHTML = "No history found.";
             }
         });
 
@@ -328,33 +365,6 @@
                 userRef.update({ points: newBalance, gp: newBalance }).then(() => {
                     tg.showAlert("Withdrawal request submitted successfully!");
                     document.getElementById('withdraw-amount').value = "";
-                });
-            });
-        }
-
-        function loadHistory() {
-            db.ref('withdraw_requests').orderByChild('userId').equalTo(userId).on('value', (snapshot) => {
-                let historyContainer = document.getElementById('history-container');
-                historyContainer.innerHTML = '';
-
-                if (!snapshot.exists()) {
-                    historyContainer.innerHTML = "No history found.";
-                    return;
-                }
-
-                snapshot.forEach((childSnapshot) => {
-                    let req = childSnapshot.val();
-                    let statusColor = req.status === 'Pending' ? '#f59e0b' : (req.status === 'Approved' ? '#10b981' : '#ef4444');
-
-                    historyContainer.innerHTML += `
-                        <div class="history-item">
-                            <div>
-                                <span>${req.amountGP.toLocaleString()} GP ($${req.amountUSD})</span>
-                                <small style="color:var(--text-muted);">${req.method} (${req.uid}) - ${req.date}</small>
-                            </div>
-                            <span style="color: ${statusColor}; font-weight:bold; font-size:11px;">${req.status}</span>
-                        </div>
-                    `;
                 });
             });
         }
