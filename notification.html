@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyCen - Notifications</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #2a1b4e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 100px 0;
+            display: flex;
+            justify-content: center;
+            overflow-x: hidden;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .header-banner {
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(124, 58, 237, 0.25);
+        }
+        .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
+        .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
+
+        .notif-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .notif-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .notif-icon {
+            width: 38px; height: 38px;
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid #7c3aed;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: #c084fc; font-size: 16px; flex-shrink: 0;
+        }
+        .notif-content h4 { margin: 0 0 4px 0; font-size: 14px; color: #fff; font-weight: 700; }
+        .notif-content p { margin: 0 0 6px 0; font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        .notif-time { font-size: 10px; color: #64748b; }
+
+        .no-notif {
+            text-align: center;
+            color: var(--text-muted);
+            margin-top: 50px;
+            font-size: 13px;
+        }
+
+        /* বড় এবং সুন্দর নেভিগেশন বার */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 480px; background: var(--card-bg); 
+            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; 
+            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; 
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item.active { color: #c084fc; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-banner">
+            <h2>🔔 Notifications</h2>
+            <p>Check all announcements & messages from admin</p>
+        </div>
+
+        <div class="notif-list" id="notifications-container">
+            <div class="no-notif">Loading notifications...</div>
+        </div>
+    </div>
+
+    <!-- নেভিগেশন বার -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
+        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id.toString() : "7757851056"; 
+
+        // ইউজারের নোটিফিকেশন ফায়ারবেস থেকে ফেচ করা
+        let notifRef = db.ref('users/' + userId + '/notifications');
+        notifRef.on('value', (snapshot) => {
+            const container = document.getElementById('notifications-container');
+            container.innerHTML = '';
+
+            if (snapshot.exists()) {
+                let notifs = snapshot.val();
+                let keys = Object.keys(notifs).reverse(); // নতুন নোটিফিকেশন আগে দেখানোর জন্য
+
+                keys.forEach(key => {
+                    let item = notifs[key];
+                    let title = item.title || "Admin Notice";
+                    let message = item.message || item.text || "";
+                    let time = item.timestamp ? new Date(item.timestamp).toLocaleString() : "Just now";
+
+                    container.innerHTML += `
+                        <div class="notif-card">
+                            <div class="notif-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                            <div class="notif-content">
+                                <h4>${title}</h4>
+                                <p>${message}</p>
+                                <span class="notif-time">${time}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                container.innerHTML = `<div class="no-notif">No notifications found!</div>`;
+            }
+        });
+    </script>
+</body>
+</html>
