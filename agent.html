@@ -227,7 +227,7 @@
         <!-- কার্ড ১: জিপি সেল করে কোয়ালিফিকেশন -->
         <div class="card">
             <h3>GP Sale & Qualification</h3>
-            <p>Your Telegram details are auto-detected. Exactly 10,000 GP will be deducted from your wallet to submit this qualification request[cite: 13].</p>
+            <p>Your Telegram details are auto-detected. Exactly 10,000 GP will be deducted from your wallet to submit this qualification request[cite: 15].</p>
             
             <div class="form-group">
                 <label>Your Telegram Name & ID (Auto)</label>
@@ -253,7 +253,7 @@
         <!-- কার্ড ২: নতুন পেইড সিস্টেম (Direct Payment & Screenshot Proof) -->
         <div class="card" style="border-color: #3b82f6;">
             <h3><i class="fas fa-crown" style="color: #fbbf24;"></i> Direct Paid Qualification ($2.5)</h3>
-            <p>Don't have enough GP? Pay directly using Binance Pay or Bitget Wallet and upload screenshot for instant qualification[cite: 13].</p>
+            <p>Don't have enough GP? Pay directly using Binance Pay or Bitget Wallet and upload screenshot for instant qualification[cite: 15].</p>
             
             <button class="submit-btn btn-boost" onclick="openPaymentModal()" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
                 <i class="fas fa-wallet"></i> Pay & Qualify Directly ($2.5)
@@ -267,7 +267,7 @@
     <!-- Modal 1: Select Payment Method -->
     <div class="modal" id="paymentMethodModal">
         <h3>Select Payment Method ($2.5)</h3>
-        <p>Choose your preferred payment method to proceed securely.</p>
+        <p>Choose your preferred payment method to proceed securely[cite: 15].</p>
         <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
             <i class="fa-solid fa-wallet" style="color: #f59e0b; font-size: 18px;"></i> Binance Pay
         </button>
@@ -280,7 +280,7 @@
     <!-- Modal 2: Submit Proof -->
     <div class="modal" id="proofModal">
         <h3 id="proof-title">Payment Proof</h3>
-        <p>Copy admin UID to pay, then check your Telegram User ID and upload screenshot.</p>
+        <p>Copy admin UID to pay, then check your Telegram User ID and upload screenshot[cite: 15].</p>
         
         <div class="uid-box">
             <span id="admin-uid-text">UID - 9950270208</span>
@@ -300,11 +300,11 @@
 
     <!-- ৫টি অপশনসহ নেভিগেশন বার (mining.html সহ) -->
     <div class="bottom-nav" id="bottomNav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home[cite: 13]</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks[cite: 13]</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads[cite: 13]</a>
-        <a class="nav-item active" href="mining.html"><i class="fa-solid fa-hammer"></i>Mining</a>
-        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile[cite: 13]</a>
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home[cite: 15]</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Tasks[cite: 15]</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads[cite: 15]</a>
+        <a class="nav-item" href="mining.html"><i class="fa-solid fa-hammer"></i>Mining</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile[cite: 15]</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -446,12 +446,12 @@
 
             if (Math.abs(diff) > 50) {
                 if (diff > 0) {
-                    // ডান দিকে টানলে Ads পেজে যাবে[cite: 13]
+                    // ডান দিকে টানলে Ads পেজে যাবে[cite: 15]
                     container.classList.add('page-slide-right');
                     bottomNav.style.background = '#064e3b';
                     setTimeout(() => { window.location.href = "ads.html"; }, 250);
                 } else {
-                    // বাম দিকে টানলে Profile পেজে যাবে[cite: 13]
+                    // বাম দিকে টানলে Profile পেজে যাবে[cite: 15]
                     container.classList.add('page-slide-left');
                     bottomNav.style.background = '#1e1b4b';
                     setTimeout(() => { window.location.href = "profile.html"; }, 250);
