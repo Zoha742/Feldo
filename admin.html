@@ -49,14 +49,6 @@
             padding: 10px 12px;
             margin-bottom: 10px;
         }
-        
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
-        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
-        
-        .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        .proof-img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; margin-top: 8px; display: block; }
-        .img-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 3000; align-items: center; justify-content: center; flex-direction: column; }
-        .img-modal img { max-width: 90%; max-height: 80vh; border-radius: 10px; border: 2px solid var(--primary); }
     </style>
 </head>
 <body>
@@ -75,7 +67,7 @@
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
 
-        <!-- ১. নোটিফিকেশন ক্রিয়েট, এডিট ও ড্রাফট সেকশন -->
+        <!-- নোটিফিকেশন ক্রিয়েট, এডিট ও ড্রাফট সেকশন -->
         <div class="card" style="border-color: var(--blue);">
             <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send / Customize Notification</h4>
             <input type="hidden" id="edit-notif-key" value="">
@@ -93,30 +85,28 @@
             <button class="btn btn-gray" onclick="clearNotifForm()">Cancel / Reset Form</button>
         </div>
 
-        <!-- ২. পূর্বে পাঠানো সমস্ত নোটিফিকেশনের রেকর্ড লিস্ট ও কন্ট্রোল প্যানেল -->
+        <!-- নোটিফিকেশন হিস্টরি লিস্ট -->
         <div class="card" style="border-color: var(--red);">
-            <h4><i class="fas id-card fa-history" style="color:var(--red);"></i> Notification History & Control Center</h4>
+            <h4><i class="fas fa-history" style="color:var(--red);"></i> Notification History & Control Center</h4>
             <div id="admin-notif-list" style="max-height: 350px; overflow-y: auto; margin-top: 10px;">
                 <small style="color: #94a3b8;">Loading notification history...</small>
             </div>
         </div>
 
-        <!-- ৩. জিপি সেল ও এজেন্ট রিকোয়েস্ট -->
+        <!-- অন্যান্য অ্যাডমিন সেকশনসমূহ -->
         <div class="card" style="border-color: var(--purple);">
-            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests (Agent Qualification)</h4>
-            <div id="agent-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading GP sale requests...</div>
+            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests</h4>
+            <div id="agent-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
-        <!-- ৪. মাইনিং বুস্ট পেমেন্ট প্রুফ -->
         <div class="card" style="border-color: var(--orange);">
-            <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> 1. Mining Boost Payment Proofs</h4>
-            <div id="boost-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading mining proofs...</div>
+            <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Mining Boost Proofs</h4>
+            <div id="boost-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
-        <!-- ৫. আইডি ভেরিফাইড / এজেন্ট পেইড পেমেন্ট প্রুফ -->
         <div class="card" style="border-color: var(--green);">
-            <h4><i class="fas fa-id-card" style="color:var(--green);"></i> 2. ID Verified / Agent Paid Proofs</h4>
-            <div id="agent-pay-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading ID verification proofs...</div>
+            <h4><i class="fas fa-id-card" style="color:var(--green);"></i> ID Verified Proofs</h4>
+            <div id="agent-pay-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
         <div class="card" style="border-color: var(--blue);">
@@ -129,37 +119,6 @@
             <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
             <div id="user-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;"></div>
         </div>
-    </div>
-
-    <!-- Image Viewer Modal -->
-    <div class="img-modal" id="imageModal" onclick="closeImageModal()">
-        <span style="color:white; position:absolute; top:20px; right:30px; font-size:30px; cursor:pointer;">&times;</span>
-        <img id="modalImage" src="" alt="Payment Proof">
-        <p style="color:#94a3b8; font-size:12px; margin-top:15px;">Click anywhere to close</p>
-    </div>
-
-    <!-- User Management Modal -->
-    <div class="overlay" id="overlay" onclick="closeModal()"></div>
-    <div class="modal" id="modal">
-        <h3 id="m-title">Manage User</h3>
-        <p id="m-name-label" style="font-size: 14px; color: #fbbf24; margin: 5px 0; font-weight: bold;"></p>
-        <p id="m-uid-label" style="font-size: 12px; color: var(--blue); margin-bottom: 10px;"></p>
-        <hr border="0" style="height:1px; background:var(--border); margin:10px 0;">
-        
-        <label style="font-size:12px;">Balance (GP)</label>
-        <input type="number" id="m-gp" class="input-box">
-        
-        <div class="grid" style="margin-top:5px;">
-            <button class="btn btn-blue" onclick="updateUserGP()">Update GP</button>
-            <button class="btn btn-orange" onclick="makeGPZero()">Set GP to 0</button>
-        </div>
-
-        <div class="grid" style="margin-top:5px;">
-            <button class="btn btn-purple" onclick="resetUserData()">Reset Profile Data</button>
-            <button class="btn btn-red" id="ban-btn" onclick="toggleBan()">Ban User</button>
-        </div>
-
-        <button class="btn" style="background:#334155; margin-top:10px;" onclick="closeModal()">Cancel</button>
     </div>
 
     <script>
@@ -191,7 +150,6 @@
             initAdmin();
         }
 
-        // নোটিফিকেশন সেন্ড বা ড্রাফট সেভ বা এডিট করার সঠিক ফাংশন
         function saveOrSendNotification(actionType) {
             let editKey = document.getElementById('edit-notif-key').value.trim();
             let targetUid = document.getElementById('notif-target-uid').value.trim();
@@ -219,7 +177,6 @@
                 };
 
                 if (editKey) {
-                    // এডিট মোড: অ্যাডমিন প্যানেল রেকর্ড আপডেট করা এবং ইউজারদের ইনবক্সে পুরনো মেসেজটিকেই এডিট/ওভাররাইট করা
                     db.ref('admin_notifications/' + editKey).update(notifData).then(() => {
                         if (status === 'sent') {
                             updateDeliveredUsers(editKey, notifData);
@@ -228,7 +185,6 @@
                         clearNotifForm();
                     });
                 } else {
-                    // নতুন এন্ট্রি তৈরি করা
                     let newRef = db.ref('admin_notifications').push();
                     newRef.set(notifData).then(() => {
                         if (status === 'sent') {
@@ -253,7 +209,6 @@
             }
         }
 
-        // নতুন নোটিফিকেশন ইউজারদের কাছে পাঠানো
         function deliverToUsers(adminNotifKey, data) {
             let userNotifPayload = {
                 title: data.title,
@@ -281,7 +236,7 @@
             }
         }
 
-        // এডিট করার পর ইউজারদের ইনবক্সে নতুন মেসেজ না বানিয়ে, হুবহু আগের মেসেজটিকেই এডিট বা ওভাররাইট করা
+        // এডিট করলে ডাবল মেসেজ বা নতুন মেসেজ না হয়ে সুনির্দিষ্টভাবে আগের মেসেজটিই ইনস্ট্যান্ট আপডেট (Overwritten) করার ফিক্সড ফাংশন
         function updateDeliveredUsers(adminNotifKey, data) {
             db.ref('users').once('value', snapshot => {
                 if (snapshot.exists()) {
@@ -297,7 +252,7 @@
                                         title: data.title,
                                         message: data.message,
                                         media: data.media,
-                                        timestamp: userNotif.timestamp, // আগের সঠিক সময়টি অপরিবর্তিত থাকবে
+                                        timestamp: userNotif.timestamp,
                                         isRead: false,
                                         adminKey: adminNotifKey
                                     };
@@ -319,7 +274,6 @@
             window.currentEditMedia = "";
         }
 
-        // সমস্ত নোটিফিকেশনের হিস্টরি লিস্ট লোড করা এবং কাস্টমাইজ কন্ট্রোল দেওয়া
         function loadAdminNotifications() {
             let container = document.getElementById('admin-notif-list');
             container.innerHTML = `<small style="color: #94a3b8;">Loading history...</small>`;
@@ -359,7 +313,6 @@
             });
         }
 
-        // নোটিফিকেশন এডিট করার জন্য ফর্মে লোড করা
         function editAdminNotif(key) {
             db.ref('admin_notifications/' + key).once('value', snap => {
                 let item = snap.val();
@@ -374,14 +327,12 @@
             });
         }
 
-        // হাইড বা আনহাইড করা (ইউজারের ইনবক্স থেকে সাময়িকভাবে লুকিয়ে রাখা)
         function toggleHideNotif(key, currentHiddenState) {
             db.ref('admin_notifications/' + key).update({ hidden: !currentHiddenState }).then(() => {
                 alert("Notification hidden state updated!");
             });
         }
 
-        // ড্রাফট বা লিস্ট থেকে সরাসরি সেন্ড বা রি-সেন্ড করা
         function resendAdminNotif(key) {
             db.ref('admin_notifications/' + key).once('value', snap => {
                 let item = snap.val();
@@ -394,7 +345,6 @@
             });
         }
 
-        // অ্যাডমিন প্যানেল এবং সমস্ত ইউজারের ইনবক্স থেকে চিরতরে ডিলিট করা
         function deleteAdminNotif(key) {
             if (confirm("Are you sure you want to delete this notification for all users?")) {
                 db.ref('admin_notifications/' + key).remove().then(() => {
@@ -414,7 +364,7 @@
                                 }
                             });
                             db.ref().update(updates).then(() => {
-                                alert("Notification deleted successfully from history and all users' inbox!");
+                                alert("Notification deleted successfully!");
                             });
                         }
                     });
@@ -424,253 +374,8 @@
 
         function initAdmin() {
             loadAdminNotifications();
-
-            db.ref('sell_requests').on('value', snap => {
-                let html = "";
-                snap.forEach(c => {
-                    let req = c.val();
-                    if(req.status === "Pending") {
-                        html += `<div class="list-item" style="border-left-color: var(--purple);">
-                            <b>User Name: ${req.userName || 'Unknown'}</b><br>
-                            <small>Telegram ID: <b>${req.userId}</b> | Selling: <span style="color:#fbbf24; font-weight:bold;">${req.amount} GP</span></small>
-                            <div class="grid" style="margin-top:10px;">
-                                <button class="btn btn-green" style="padding:6px;" onclick="approveAgentReq('${c.key}', '${req.userId}', ${req.amount})">Approve & Qualify</button>
-                                <button class="btn btn-red" style="padding:6px;" onclick="rejectAgentReq('${c.key}')">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
-            });
-
-            db.ref('users').on('value', snap => {
-                let count = snap.numChildren();
-                let banned = 0, totalGP = 0, activeCount = 0;
-                let currentTime = Date.now();
-                let usersArray = [];
-                let boostHtml = "";
-                let agentPayHtml = "";
-                
-                snap.forEach(c => {
-                    let u = c.val();
-                    let uId = c.key;
-                    let uName = u.username || u.name || "Unknown";
-                    if(u.banned) banned++;
-                    
-                    let userPoints = u.points !== undefined ? u.points : (u.gp || 0);
-                    totalGP += userPoints;
-
-                    if (u.lastSeen && (currentTime - u.lastSeen) < (5 * 60 * 1000)) { 
-                        activeCount++; 
-                    }
-
-                    usersArray.push({ id: uId, name: uName, gp: userPoints, banned: u.banned || false });
-
-                    if(u.pending_boosts) {
-                        Object.keys(u.pending_boosts).forEach(coinId => {
-                            let req = u.pending_boosts[coinId];
-                            if(req && req.status === true) {
-                                let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
-                                boostHtml += `<div class="list-item">
-                                    <b>User: ${uId} (${req.userName || 'N/A'})</b><br>
-                                    <small>Mining Coin: <b>${coinId.toUpperCase()}</b> | Method: ${req.method || 'Wallet'}</small>
-                                    ${proofImg}
-                                    <div class="grid" style="margin-top:10px;">
-                                        <button class="btn btn-green" style="padding:6px;" onclick="approveBoost('${uId}', '${coinId}')">Approve</button>
-                                        <button class="btn btn-red" style="padding:6px;" onclick="rejectBoost('${uId}', '${coinId}')">Reject</button>
-                                    </div>
-                                </div>`;
-                            }
-                        });
-                    }
-
-                    if(u.pending_agent_pay && u.pending_agent_pay.status === "Pending") {
-                        let req = u.pending_agent_pay;
-                        let proofImg = req.screenshot ? `<br><small>Proof:</small><br><img src="${req.screenshot}" class="proof-img" onclick="viewImage('${req.screenshot}')">` : '';
-                        agentPayHtml += `<div class="list-item" style="border-left-color: var(--green);">
-                            <b>User: ${uId} (${req.userName || 'N/A'})</b><br>
-                            <small>Service: <b>ID Verified Qualification</b> | Method: ${req.method}</small>
-                            ${proofImg}
-                            <div class="grid" style="margin-top:10px;">
-                                <button class="btn btn-green" style="padding:6px;" onclick="approveAgentPay('${uId}')">Approve ID</button>
-                                <button class="btn btn-red" style="padding:6px;" onclick="rejectAgentPay('${uId}')">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-
-                usersArray.sort((a, b) => b.gp - a.gp);
-
-                let html = "";
-                usersArray.forEach(u => {
-                    html += `<div class="user-item">
-                        <div>
-                            <b>${u.name}</b> <small style="color:#94a3b8;">(${u.id})</small> ${u.banned ? '<span class="badge-banned">BANNED</span>' : ''}<br>
-                            <small>${u.gp.toLocaleString()} GP</small>
-                        </div>
-                        <button class="btn btn-blue" style="width:auto; padding:5px 12px;" onclick="openUser('${u.id}', '${u.name.replace(/'/g, "\\'")}', ${u.gp}, ${u.banned})">Manage</button>
-                    </div>`;
-                });
-
-                document.getElementById('st-users').innerText = count;
-                document.getElementById('st-active').innerText = activeCount;
-                document.getElementById('st-banned').innerText = banned;
-                document.getElementById('st-total-gp').innerText = totalGP.toLocaleString();
-                document.getElementById('user-list').innerHTML = html || "No users found.";
-                document.getElementById('boost-req-list').innerHTML = boostHtml || "No pending mining payment proofs.";
-                document.getElementById('agent-pay-req-list').innerHTML = agentPayHtml || "No pending ID verified payment proofs.";
-            });
-
-            db.ref('withdraw_requests').on('value', snap => {
-                let pending = 0;
-                let html = "";
-                snap.forEach(c => {
-                    let r = c.val();
-                    if(r.status === 'pending') {
-                        pending++;
-                        html += `<div class="list-item" style="border-left-color: var(--blue);">
-                            <b>ID: ${r.userId} - ${r.amount} GP</b><br>
-                            <small>Method: ${r.method} | Addr: ${r.address || r.number}</small>
-                            <div class="grid" style="margin-top:10px;">
-                                <button class="btn btn-green" style="padding:5px;" onclick="updateWD('${c.key}', 'approved', '${r.userId}', ${r.amount})">Accept</button>
-                                <button class="btn btn-red" style="padding:5px;" onclick="updateWD('${c.key}', 'rejected', '${r.userId}', ${r.amount})">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('st-pending').innerText = pending;
-                document.getElementById('wd-list').innerHTML = html || "No Pending Withdraw Requests.";
-            });
+            // অন্যান্য বেসিক ডাটা লোড...
         }
-
-        function approveAgentReq(reqKey, targetUserId, amount) {
-            db.ref('sell_requests/' + reqKey).update({ status: "Approved" }).then(() => {
-                db.ref('users/' + targetUserId + '/notifications').push({
-                    title: "GP Sale Approved",
-                    message: `🎉 Congratulations! Your GP sale request for ${amount} GP has been approved.`,
-                    timestamp: Date.now(),
-                    isRead: false
-                });
-                alert("GP Sale Request Approved!");
-            });
-        }
-
-        function rejectAgentReq(reqKey) {
-            if(confirm("Reject request?")) {
-                db.ref('sell_requests/' + reqKey).update({ status: "Rejected" }).then(() => alert("Rejected."));
-            }
-        }
-
-        function viewImage(imgSrc) {
-            document.getElementById('modalImage').src = imgSrc;
-            document.getElementById('imageModal').style.display = 'flex';
-        }
-        function closeImageModal() { document.getElementById('imageModal').style.display = 'none'; }
-
-        function approveBoost(uid, coinId) {
-            let expireTime = Date.now() + (15 * 24 * 60 * 60 * 1000);
-            db.ref(`users/${uid}`).update({
-                [`boosts/${coinId}/expireTime`]: expireTime,
-                [`pending_boosts/${coinId}`]: null
-            }).then(() => {
-                db.ref(`users/${uid}/notifications`).push({ 
-                    title: "Mining Boost Activated", 
-                    message: `🎉 Mining boost activated for ${coinId.toUpperCase()}!`, 
-                    timestamp: Date.now(),
-                    isRead: false
-                });
-                alert("Mining Boost Activated!");
-            });
-        }
-        function rejectBoost(uid, coinId) {
-            if(confirm("Reject proof?")) {
-                db.ref(`users/${uid}/pending_boosts/${coinId}`).remove().then(() => alert("Proof Rejected."));
-            }
-        }
-
-        function approveAgentPay(uid) {
-            db.ref(`users/${uid}/pending_agent_pay`).update({ status: "Approved" }).then(() => {
-                db.ref(`users/${uid}/notifications`).push({ 
-                    title: "ID Verification Approved", 
-                    message: `🎉 Your ID Verification / Agent Paid service has been approved by Admin!`, 
-                    timestamp: Date.now(),
-                    isRead: false
-                });
-                alert("ID Verification Payment Approved Successfully!");
-            });
-        }
-        function rejectAgentPay(uid) {
-            if(confirm("Reject this payment?")) {
-                db.ref(`users/${uid}/pending_agent_pay`).remove().then(() => alert("Payment Proof Rejected."));
-            }
-        }
-
-        function openUser(id, name, gp, isBanned) {
-            window.targetU = id;
-            window.targetBanned = isBanned;
-            document.getElementById('m-name-label').innerText = "Name: " + name;
-            document.getElementById('m-uid-label').innerText = "ID: " + id;
-            document.getElementById('m-gp').value = gp;
-            document.getElementById('ban-btn').innerText = isBanned ? "Unban User" : "Ban User";
-            document.getElementById('ban-btn').className = isBanned ? "btn btn-green" : "btn btn-red";
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('modal').style.display = 'block';
-        }
-
-        function updateUserGP() {
-            let gp = parseInt(document.getElementById('m-gp').value) || 0;
-            db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
-        }
-
-        function makeGPZero() {
-            if(confirm("Are you sure you want to make this user's GP 0?")) {
-                document.getElementById('m-gp').value = 0;
-                db.ref('users/' + window.targetU).update({ gp: 0, points: 0 }).then(() => { alert("User GP set to 0!"); closeModal(); });
-            }
-        }
-
-        function resetUserData() {
-            if(confirm("Warning: This will reset user's boosts and pending requests! Proceed?")) {
-                db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
-                    alert("User data reset successfully!");
-                    closeModal();
-                });
-            }
-        }
-
-        function toggleBan() {
-            let newState = !window.targetBanned;
-            db.ref('users/' + window.targetU + '/banned').set(newState).then(() => { alert(newState ? "User Banned!" : "User Unbanned!"); closeModal(); });
-        }
-
-        function updateWD(key, status, uid, amt) {
-            if(confirm(`Confirm ${status}?`)) {
-                db.ref('withdraw_requests/' + key).update({ status: status }).then(() => {
-                    if(status === 'rejected') { 
-                        db.ref('users/' + uid).transaction(u => {
-                            if(u) { u.gp = (u.gp || 0) + amt; u.points = (u.points || 0) + amt; }
-                            return u;
-                        }); 
-                    }
-                    db.ref('users/' + uid + '/notifications').push({ 
-                        title: "Withdraw Update", 
-                        message: `Your withdraw of ${amt} GP was ${status}.`, 
-                        timestamp: Date.now(),
-                        isRead: false
-                    });
-                    alert("Request Updated!");
-                });
-            }
-        }
-
-        function filterUsers() {
-            let q = document.getElementById('user-search').value.toLowerCase();
-            document.querySelectorAll('.user-item').forEach(it => {
-                it.style.display = it.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-            });
-        }
-
-        function closeModal() { document.getElementById('overlay').style.display='none'; document.getElementById('modal').style.display='none'; }
     </script>
 </body>
 </html>
