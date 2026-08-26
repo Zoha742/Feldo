@@ -53,7 +53,6 @@
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
-        .proof-img { width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; margin-top: 8px; display: block; }
         
         .floating-back-container { display: flex; justify-content: center; margin: 25px 0 10px 0; }
         .circle-back-btn {
@@ -74,7 +73,6 @@
             <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> HeyCen Master Admin</h3>
         </div>
 
-        <!-- স্ট্যাটিস্টিকস বক্স -->
         <div class="grid">
             <div class="stat-box"><small>Total Users</small><h2 id="st-users">0</h2></div>
             <div class="stat-box"><small>Active (Live)</small><h2 id="st-active" style="color: var(--green);">0</h2></div>
@@ -83,7 +81,7 @@
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
 
-        <!-- ১. নোটিফিকেশন ক্রিয়েট, এডিট ও ড্রাফট সেকশন -->
+        <!-- নোটিফিকেশন কন্ট্রোল সেকশন -->
         <div class="card" style="border-color: var(--blue);">
             <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send / Customize Notification</h4>
             <input type="hidden" id="edit-notif-key" value="">
@@ -101,46 +99,39 @@
             <button class="btn btn-gray" onclick="clearNotifForm()">Cancel / Reset Form</button>
         </div>
 
-        <!-- ২. নোটিফিকেশন হিস্টরি ও কন্ট্রোল সেন্টার -->
         <div class="card" style="border-color: var(--red);">
-            <h4><i class="fas fa-history" style="color:var(--red);"></i> Notification History & Control Center</h4>
+            <h4><i class="fas fa-history" style="color:var(--red);"></i> Notification History (Auto-clean > 7 Days)</h4>
             <div id="admin-notif-list" style="max-height: 350px; overflow-y: auto; margin-top: 10px;">
-                <small style="color: #94a3b8;">Loading notification history...</small>
+                <small style="color: #94a3b8;">Loading history...</small>
             </div>
         </div>
 
-        <!-- ৩. জিপি সেল রিকোয়েস্ট -->
         <div class="card" style="border-color: var(--purple);">
             <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests</h4>
             <div id="agent-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
-        <!-- ৪. মাইনিং বুস্ট প্রুফ -->
         <div class="card" style="border-color: var(--orange);">
             <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Mining Boost Proofs</h4>
             <div id="boost-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
-        <!-- ৫. আইডি ভেরিফাইড প্রুফ -->
         <div class="card" style="border-color: var(--green);">
             <h4><i class="fas fa-id-card" style="color:var(--green);"></i> ID Verified Proofs</h4>
             <div id="agent-pay-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
-        <!-- ৬. উইথড্র ম্যানেজমেন্ট -->
         <div class="card" style="border-color: var(--blue);">
             <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Management</h4>
             <div id="wd-list">Loading withdrawals...</div>
         </div>
 
-        <!-- ৭. ইউজার সার্চ ও ম্যানেজমেন্ট (সব ইউজারের ডেটা তালিকা) -->
         <div class="card">
             <h4><i class="fas fa-user-shield"></i> User Search & Management</h4>
             <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
-            <div id="user-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading users data...</div>
+            <div id="user-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading users...</div>
         </div>
 
-        <!-- স্ক্রিনশটের মতো গোল ব্যাক অ্যারো বাটন -->
         <div class="floating-back-container">
             <button class="circle-back-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-arrow-left"></i></button>
         </div>
@@ -323,6 +314,7 @@
             window.currentEditMedia = "";
         }
 
+        // অটো-ক্লিনআপসহ নোটিফিকেশন হিস্টরি লোড করার ফাংশন
         function loadAdminNotifications() {
             let container = document.getElementById('admin-notif-list');
             container.innerHTML = `<small style="color: #94a3b8;">Loading history...</small>`;
@@ -331,6 +323,26 @@
                 let html = "";
                 if (snapshot.exists()) {
                     let items = snapshot.val();
+                    let currentTime = Date.now();
+                    let sevenDaysMs = 7 * 24 * 60 * 60 * 1000; // ৭ দিনের মিলিগ্রাম
+                    let adminUpdates = {};
+                    let hasExpired = false;
+
+                    Object.keys(items).forEach(key => {
+                        let item = items[key];
+                        // যদি অ্যাডমিন প্যানেলের মেসেজ ৭ দিনের বেশি পুরনো হয়, তবে এটি রিমুভ লিস্টে যোগ হবে
+                        if (item.timestamp && (currentTime - item.timestamp > sevenDaysMs)) {
+                            adminUpdates[key] = null;
+                            hasExpired = true;
+                        }
+                    });
+
+                    // যদি ৭ দিনের বেশি পুরনো মেসেজ থাকে, তবে অ্যাডমিন প্যানেল থেকে অটো রিমুভ হবে
+                    if (hasExpired) {
+                        db.ref('admin_notifications').update(adminUpdates);
+                        return; // রিফ্রেশ হওয়ার পর লেটেস্ট ডাটা দেখাবে
+                    }
+
                     Object.keys(items).reverse().forEach(key => {
                         let item = items[key];
                         let statusColor = item.status === 'sent' ? 'var(--green)' : 'var(--purple)';
@@ -421,9 +433,37 @@
             }
         }
 
-        // মেইন অ্যাডমিন ইনিট ফাংশন (যেখানে সব ইউজার ডাটা এবং স্ট্যাটাস লোড হয়)
+        // মেইন অ্যাডমিন ইনিট ফাংশন (যেখানে ইউজারদের ৩০ দিনের পুরনো নোটিফিকেশন অটো ক্লিনআপ লজিক আছে)
         function initAdmin() {
             loadAdminNotifications();
+
+            // ব্যাকগ্রাউন্ডে সব ইউজারের ইনবক্স চেক করে ৩০ দিনের বেশি পুরনো নোটিফিকেশন রিমুভ করার কোড
+            db.ref('users').once('value', snapshot => {
+                if (snapshot.exists()) {
+                    let currentTime = Date.now();
+                    let thirtyDaysMs = 30 * 24 * 60 * 60 * 1000; // ৩০ দিনের মিলিগ্রাম
+                    let userUpdates = {};
+
+                    snapshot.forEach(userChild => {
+                        let uid = userChild.key;
+                        let userData = userChild.val();
+                        if (userData.notifications) {
+                            Object.keys(userData.notifications).forEach(notifKey => {
+                                let userNotif = userData.notifications[notifKey];
+                                // যদি ইউজারের নোটিফিকেশন ৩০ দিনের বেশি পুরনো হয়
+                                if (userNotif.timestamp && (currentTime - userNotif.timestamp > thirtyDaysMs)) {
+                                    userUpdates[`users/${uid}/notifications/${notifKey}`] = null;
+                                }
+                            });
+                        }
+                    });
+
+                    // যদি ৩০ দিনের পুরনো মেসেজ থাকে, তবে সব ইউজারের ইনবক্স থেকে একসাথে ডিলিট হবে
+                    if (Object.keys(userUpdates).length > 0) {
+                        db.ref().update(userUpdates);
+                    }
+                }
+            });
 
             // জিপি সেল রিকোয়েস্ট লোড
             db.ref('sell_requests').on('value', snap => {
@@ -444,14 +484,12 @@
                 document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
             });
 
-            // অ্যাপে রেজিস্টার্ড সব ইউজারের ডেটা লোড করা
+            // ইউজার লিস্ট লোড
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
                 let banned = 0, totalGP = 0, activeCount = 0;
                 let currentTime = Date.now();
                 let usersArray = [];
-                let boostHtml = "";
-                let agentPayHtml = "";
                 
                 snap.forEach(c => {
                     let u = c.val();
@@ -583,16 +621,14 @@
             document.getElementById('modal').style.display = 'none'; 
         }
 
-        // সোয়াইপ সিস্টেম (বাম দিকে সোয়াইপ করলে প্রোফাইলে চলে যাবে)
+        // সোয়াইপ সিস্টেম (হোমে যাওয়ার জন্য)
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
             let touchEndX = e.changedTouches[0].screenX;
             let diff = touchEndX - touchStartX;
             if (Math.abs(diff) > 70) {
-                if (diff < 0) { 
-                    window.location.href = "profile.html";
-                }
+                window.location.href = "index.html";
             }
         });
     </script>
