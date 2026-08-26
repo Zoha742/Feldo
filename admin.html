@@ -75,35 +75,29 @@
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
 
-        <!-- ১. নোটিফিকেশন ক্রিয়েট, ড্রাফট ও শিডিউল সেকশন -->
+        <!-- ১. নোটিফিকেশন ক্রিয়েট, এডিট ও ড্রাফট সেকশন -->
         <div class="card" style="border-color: var(--blue);">
-            <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Create / Draft / Schedule Notification</h4>
+            <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send / Customize Notification</h4>
             <input type="hidden" id="edit-notif-key" value="">
             <input type="text" id="notif-target-uid" class="input-box" placeholder="Target Telegram UID (Blank = ALL Users)">
             <input type="text" id="notif-title" class="input-box" placeholder="Update Title (e.g. Hot News)">
             <textarea id="notif-msg" class="input-box" placeholder="Write announcement text..." style="height: 70px; resize: none;"></textarea>
             
-            <label style="font-size:11px; color:#94a3b8; display:block; margin-top:6px;">Schedule Time (Optional - leave blank to send now):</label>
-            <input type="datetime-local" id="notif-schedule-time" class="input-box">
-
             <label style="font-size:11px; color:#94a3b8; display:block; margin-top:6px;">Attach Image/Video (Optional):</label>
             <input type="file" id="notif-media-file" class="input-box" accept="image/*,video/*" style="font-size:12px;">
 
             <div class="grid" style="margin-top: 10px;">
-                <button class="btn btn-blue" onclick="saveOrSendNotification('send')">Send Now</button>
+                <button class="btn btn-blue" onclick="saveOrSendNotification('send')">Send / Update Now</button>
                 <button class="btn btn-purple" onclick="saveOrSendNotification('draft')">Save Draft</button>
             </div>
-            <div class="grid" style="margin-top: 5px;">
-                <button class="btn btn-orange" onclick="saveOrSendNotification('schedule')">Schedule</button>
-                <button class="btn btn-gray" onclick="clearNotifForm()">Cancel / Reset</button>
-            </div>
+            <button class="btn btn-gray" onclick="clearNotifForm()">Cancel / Reset Form</button>
         </div>
 
-        <!-- ২. নোটিফিকেশন ম্যানেজ, এডিট, হাইড, ডিলিট ও ড্রাফট লিস্ট সেকশন -->
+        <!-- ২. পূর্বে পাঠানো সমস্ত নোটিফিকেশনের রেকর্ড লিস্ট ও কন্ট্রোল প্যানেল -->
         <div class="card" style="border-color: var(--red);">
-            <h4><i class="fas fa-tasks" style="color:var(--red);"></i> Manage Sent / Draft Notifications</h4>
+            <h4><i class="fas id-card fa-history" style="color:var(--red);"></i> Notification History & Control Center</h4>
             <div id="admin-notif-list" style="max-height: 350px; overflow-y: auto; margin-top: 10px;">
-                <small style="color: #94a3b8;">Loading notifications list...</small>
+                <small style="color: #94a3b8;">Loading notification history...</small>
             </div>
         </div>
 
@@ -197,13 +191,12 @@
             initAdmin();
         }
 
-        // নোটিফিকেশন সেন্ড, ড্রাফট বা শিডিউল করার ফাংশন
+        // নোটিফিকেশন সেন্ড বা ড্রাফট সেভ করার ফাংশন
         function saveOrSendNotification(actionType) {
             let editKey = document.getElementById('edit-notif-key').value.trim();
             let targetUid = document.getElementById('notif-target-uid').value.trim();
             let title = document.getElementById('notif-title').value.trim() || "HeyCen Update";
             let message = document.getElementById('notif-msg').value.trim();
-            let scheduleTimeStr = document.getElementById('notif-schedule-time').value;
             let fileInput = document.getElementById('notif-media-file');
 
             if (!message && fileInput.files.length === 0) {
@@ -212,8 +205,7 @@
             }
 
             let proceedAction = (mediaUrl = "") => {
-                let status = actionType === 'draft' ? 'draft' : (actionType === 'schedule' ? 'scheduled' : 'sent');
-                let scheduleTimestamp = scheduleTimeStr ? new Date(scheduleTimeStr).getTime() : 0;
+                let status = actionType === 'draft' ? 'draft' : 'sent';
 
                 let notifData = {
                     targetUid: targetUid,
@@ -222,24 +214,27 @@
                     media: mediaUrl,
                     status: status,
                     timestamp: Date.now(),
-                    scheduleTime: scheduleTimestamp,
                     isRead: false,
                     hidden: false
                 };
 
                 if (editKey) {
-                    // যদি এডিট মোড হয়, তবে আপডেট করবে
+                    // এডিট মোড: অ্যাডমিন রেকর্ড আপডেট করা এবং ইউজারের ইনবক্সেও আপডেট পাঠানো
                     db.ref('admin_notifications/' + editKey).update(notifData).then(() => {
+                        if (status === 'sent') {
+                            updateDeliveredUsers(editKey, notifData);
+                        }
                         alert("Notification updated successfully!");
-                        if (status === 'sent') deliverToUsers(editKey, notifData);
                         clearNotifForm();
                     });
                 } else {
-                    // নতুন এন্ট্রি তৈরি করবে
+                    // নতুন এন্ট্রি তৈরি করা
                     let newRef = db.ref('admin_notifications').push();
                     newRef.set(notifData).then(() => {
-                        alert(status === 'draft' ? "Saved as Draft!" : (status === 'scheduled' ? "Scheduled successfully!" : "Notification sent successfully!"));
-                        if (status === 'sent') deliverToUsers(newRef.key, notifData);
+                        if (status === 'sent') {
+                            deliverToUsers(newRef.key, notifData);
+                        }
+                        alert(status === 'draft' ? "Saved as Draft!" : "Notification sent successfully!");
                         clearNotifForm();
                     });
                 }
@@ -253,13 +248,12 @@
                 };
                 reader.readAsDataURL(file);
             } else {
-                // পুরনো মিডিয়া বা ব্ল্যাংক রাখা
                 let existingMedia = window.currentEditMedia || "";
                 proceedAction(existingMedia);
             }
         }
 
-        // ইউজারদের ইনবক্সে নোটিফিকেশন পৌঁছে দেওয়ার ফাংশন
+        // নতুন নোটিফিকেশন ইউজারদের কাছে পাঠানো
         function deliverToUsers(adminNotifKey, data) {
             let userNotifPayload = {
                 title: data.title,
@@ -287,21 +281,50 @@
             }
         }
 
-        // ফর্ম ক্লিয়ার বা রিসেট করার ফাংশন
+        // এডিট করার পর ইউজারদের ইনবক্সে মেসেজ আপডেট করা
+        function updateDeliveredUsers(adminNotifKey, data) {
+            let userNotifPayload = {
+                title: data.title,
+                message: data.message,
+                media: data.media,
+                timestamp: Date.now(),
+                isRead: false,
+                adminKey: adminNotifKey
+            };
+
+            db.ref('users').once('value', snapshot => {
+                if (snapshot.exists()) {
+                    let updates = {};
+                    snapshot.forEach(userChild => {
+                        let uid = userChild.key;
+                        let userData = userChild.val();
+                        if (userData.notifications) {
+                            Object.keys(userData.notifications).forEach(notifKey => {
+                                let userNotif = userData.notifications[notifKey];
+                                if (userNotif.adminKey === adminNotifKey) {
+                                    updates[`users/${uid}/notifications/${notifKey}`] = userNotifPayload;
+                                }
+                            });
+                        }
+                    });
+                    db.ref().update(updates);
+                }
+            });
+        }
+
         function clearNotifForm() {
             document.getElementById('edit-notif-key').value = '';
             document.getElementById('notif-target-uid').value = '';
             document.getElementById('notif-title').value = '';
             document.getElementById('notif-msg').value = '';
-            document.getElementById('notif-schedule-time').value = '';
             document.getElementById('notif-media-file').value = '';
             window.currentEditMedia = "";
         }
 
-        // অ্যাডমিন প্যানেলে সমস্ত নোটিফিকেশন লিস্ট লোড করা (এডিট, ড্রাফট, শিডিউল, হাইড ও ডিলিট অপশনসহ)
+        // সমস্ত নোটিফিকেশনের হিস্টরি লিস্ট লোড করা এবং কাস্টমাইজ কন্ট্রোল দেওয়া
         function loadAdminNotifications() {
             let container = document.getElementById('admin-notif-list');
-            container.innerHTML = `<small style="color: #94a3b8;">Loading notifications...</small>`;
+            container.innerHTML = `<small style="color: #94a3b8;">Loading history...</small>`;
 
             db.ref('admin_notifications').on('value', snapshot => {
                 let html = "";
@@ -309,8 +332,9 @@
                     let items = snapshot.val();
                     Object.keys(items).reverse().forEach(key => {
                         let item = items[key];
-                        let statusColor = item.status === 'sent' ? 'var(--green)' : (item.status === 'scheduled' ? 'var(--orange)' : 'var(--purple)');
+                        let statusColor = item.status === 'sent' ? 'var(--green)' : 'var(--purple)';
                         let hideStatus = item.hidden ? '<span style="color:var(--red); font-size:10px;">[HIDDEN]</span>' : '';
+                        let timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : "";
 
                         html += `
                             <div class="admin-notif-row" style="border-left: 4px solid ${statusColor};">
@@ -319,7 +343,7 @@
                                     <span style="font-size: 10px; background: ${statusColor}; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${item.status}</span>
                                 </div>
                                 <small style="color: #94a3b8; display:block; margin: 4px 0;">${item.message}</small>
-                                <small style="color: #64748b; display:block; font-size:9px;">Target: ${item.targetUid || 'ALL Users'}</small>
+                                <small style="color: #64748b; display:block; font-size:9px;">Target: ${item.targetUid || 'ALL Users'} | Date: ${timeStr}</small>
                                 
                                 <div class="grid" style="margin-top: 8px; grid-template-columns: repeat(4, 1fr);">
                                     <button class="btn btn-blue" style="padding:4px; font-size:10px;" onclick="editAdminNotif('${key}')">Edit</button>
@@ -332,12 +356,12 @@
                     });
                     container.innerHTML = html;
                 } else {
-                    container.innerHTML = `<small style="color: #94a3b8;">No notifications found.</small>`;
+                    container.innerHTML = `<small style="color: #94a3b8;">No notification history found.</small>`;
                 }
             });
         }
 
-        // নোটিফিকেশন এডিট করার জন্য ফর্মে ডাটা লোড করা
+        // নোটিফিকেশন এডিট করার জন্য ফর্মে লোড করা
         function editAdminNotif(key) {
             db.ref('admin_notifications/' + key).once('value', snap => {
                 let item = snap.val();
@@ -347,36 +371,55 @@
                     document.getElementById('notif-title').value = item.title || '';
                     document.getElementById('notif-msg').value = item.message || '';
                     window.currentEditMedia = item.media || '';
-                    alert("Notification loaded into form for editing. Make changes and click 'Send Now' or 'Save Draft'.");
+                    alert("Loaded into form! Edit your message and click 'Send / Update Now'.");
                 }
             });
         }
 
-        // নোটিফিকেশন হাইড বা আনহাইড করা
+        // হাইড বা আনহাইড করা (ইউজারের ইনবক্স থেকে সাময়িকভাবে লুকিয়ে রাখা)
         function toggleHideNotif(key, currentHiddenState) {
             db.ref('admin_notifications/' + key).update({ hidden: !currentHiddenState }).then(() => {
                 alert("Notification hidden state updated!");
             });
         }
 
-        // ড্রাফট বা শিডিউল থেকে সরাসরি সেন্ড করা
+        // ড্রাফট বা লিস্ট থেকে সরাসরি সেন্ড বা রি-সেন্ড করা
         function resendAdminNotif(key) {
             db.ref('admin_notifications/' + key).once('value', snap => {
                 let item = snap.val();
                 if (item) {
                     db.ref('admin_notifications/' + key).update({ status: 'sent' }).then(() => {
                         deliverToUsers(key, item);
-                        alert("Notification sent successfully!");
+                        alert("Notification sent to users successfully!");
                     });
                 }
             });
         }
 
-        // নোটিফিকেশন ডিলিট করা
+        // অ্যাডমিন প্যানেল এবং সমস্ত ইউজারের ইনবক্স থেকে চিরতরে ডিলিট করা
         function deleteAdminNotif(key) {
-            if (confirm("Are you sure you want to delete this notification?")) {
+            if (confirm("Are you sure you want to delete this notification for all users?")) {
                 db.ref('admin_notifications/' + key).remove().then(() => {
-                    alert("Notification deleted successfully!");
+                    db.ref('users').once('value', snapshot => {
+                        if (snapshot.exists()) {
+                            let updates = {};
+                            snapshot.forEach(userChild => {
+                                let uid = userChild.key;
+                                let userData = userChild.val();
+                                if (userData.notifications) {
+                                    Object.keys(userData.notifications).forEach(notifKey => {
+                                        let userNotif = userData.notifications[notifKey];
+                                        if (userNotif.adminKey === key) {
+                                            updates[`users/${uid}/notifications/${notifKey}`] = null;
+                                        }
+                                    });
+                                }
+                            });
+                            db.ref().update(updates).then(() => {
+                                alert("Notification deleted successfully from history and all users' inbox!");
+                            });
+                        }
+                    });
                 });
             }
         }
@@ -532,7 +575,7 @@
                 [`boosts/${coinId}/expireTime`]: expireTime,
                 [`pending_boosts/${coinId}`]: null
             }).then(() => {
-                db.ref('users/' + uid + '/notifications').push({ 
+                db.ref(`users/${uid}/notifications`).push({ 
                     title: "Mining Boost Activated", 
                     message: `🎉 Mining boost activated for ${coinId.toUpperCase()}!`, 
                     timestamp: Date.now(),
@@ -549,7 +592,7 @@
 
         function approveAgentPay(uid) {
             db.ref(`users/${uid}/pending_agent_pay`).update({ status: "Approved" }).then(() => {
-                db.ref('users/' + uid + '/notifications').push({ 
+                db.ref(`users/${uid}/notifications`).push({ 
                     title: "ID Verification Approved", 
                     message: `🎉 Your ID Verification / Agent Paid service has been approved by Admin!`, 
                     timestamp: Date.now(),
@@ -583,7 +626,7 @@
 
         function makeGPZero() {
             if(confirm("Are you sure you want to make this user's GP 0?")) {
-                document.getElementById('m-gp').value = dg.value = 0;
+                document.getElementById('m-gp').value = 0;
                 db.ref('users/' + window.targetU).update({ gp: 0, points: 0 }).then(() => { alert("User GP set to 0!"); closeModal(); });
             }
         }
