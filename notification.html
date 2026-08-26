@@ -97,9 +97,41 @@
             font-size: 14px;
         }
 
-        /* মেসেজ বড় করে দেখানোর পপআপ মোডাল */
-        .msg-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 4000; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
-        .msg-modal-content { background: #1c1c1e; border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 24px; width: 100%; max-width: 420px; max-height: 80vh; overflow-y: auto; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
+        /* মেসেজ বড় করে দেখানোর পপআপ মোডাল (স্মুথ ও স্লো অ্যানিমেশনসহ) */
+        .msg-modal { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0); 
+            z-index: 4000; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+            box-sizing: border-box; 
+            transition: background 0.4s ease;
+        }
+        .msg-modal.show {
+            background: rgba(0,0,0,0.85);
+        }
+        .msg-modal-content { 
+            background: #1c1c1e; 
+            border: 1px solid rgba(255,255,255,0.15); 
+            border-radius: 20px; 
+            padding: 24px; 
+            width: 100%; 
+            max-width: 420px; 
+            max-height: 80vh; 
+            overflow-y: auto; 
+            position: relative; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            transform: scale(0.85);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        }
+        .msg-modal.show .msg-modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
         .msg-modal-content h3 { margin-top: 0; font-size: 18px; color: #fff; }
         .msg-modal-content p { font-size: 15px; color: #d1d1d6; line-height: 1.6; word-break: break-word; }
 
@@ -115,7 +147,7 @@
         .nav-item.active { color: var(--ios-blue); }
         .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
         
-        /* স্ক্রিনশটের মতো গোল বেগুনি ব্যাক অ্যারো বাটন একদম মাঝখানে (Center) */
+        /* গোল বেগুনি ব্যাক অ্যারো বাটন একদম মাঝখানে */
         .center-back-container {
             position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%);
             z-index: 101; text-align: center;
@@ -143,7 +175,7 @@
         </div>
     </div>
 
-    <!-- মেসেজ বড় করে দেখানোর পপআপ মোডাল -->
+    <!-- মেসেজ বড় করে দেখানোর অ্যানিমেটেড পপআপ মোডাল -->
     <div class="msg-modal" id="msgModal" onclick="closeMsgModal()">
         <div class="msg-modal-content" onclick="event.stopPropagation()">
             <span style="color:var(--text-muted); position:absolute; top:15px; right:20px; font-size:26px; cursor:pointer;" onclick="closeMsgModal()">&times;</span>
@@ -154,9 +186,9 @@
         </div>
     </div>
 
-    <!-- স্ক্রিনশট অনুযায়ী ফিক্সড গোল বেগুনি ব্যাক অ্যারো (মাঝখানে) -->
+    <!-- ব্যাক অ্যারো (হোমে যাওয়ার জন্য) -->
     <div class="center-back-container">
-        <button class="circle-back-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-arrow-left"></i></button>
+        <button class="circle-back-btn" onclick="location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
     </div>
 
     <!-- নেভিগেশন বার (শুধু Home এবং Inbox) -->
@@ -246,6 +278,7 @@
             }
         });
 
+        // স্মুথ ও স্লো অ্যানিমেশন দিয়ে মোডাল ওপেন করার ফাংশন
         function openFullMessage(title, msg, media, time) {
             document.getElementById('modalTitle').innerText = decodeURIComponent(title);
             document.getElementById('modalText').innerText = decodeURIComponent(msg);
@@ -262,23 +295,30 @@
                 }
             }
 
-            document.getElementById('msgModal').style.display = 'flex';
+            let modal = document.getElementById('msgModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
         }
 
+        // স্মুথ অ্যানিমেশনসহ মোডাল বন্ধ করার ফাংশন
         function closeMsgModal() {
-            document.getElementById('msgModal').style.display = 'none';
+            let modal = document.getElementById('msgModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 400);
         }
 
-        // সোয়াইপ সিস্টেম (বাম দিকে সোয়াইপ করলে প্রোফাইলে চলে যাবে)
+        // সোয়াইপ সিস্টেম (সোয়াইপ করলেই হোমে চলে যাবে)
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
             let touchEndX = e.changedTouches[0].screenX;
             let diff = touchEndX - touchStartX;
             if (Math.abs(diff) > 70) {
-                if (diff < 0) { // বাম দিকে সোয়াইপ
-                    window.location.href = "profile.html";
-                }
+                window.location.href = "index.html";
             }
         });
     </script>
