@@ -15,7 +15,7 @@
             --blue: #3b82f6; --green: #22c55e; --red: #ef4444; 
             --orange: #f59e0b; --purple: #a855f7; --primary: #fbbf24;
         }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 50px; display: flex; justify-content: center; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 90px; display: flex; justify-content: center; }
         
         .container { padding: 15px; width: 100%; max-width: 480px; box-sizing: border-box; }
         
@@ -49,6 +49,21 @@
             padding: 10px 12px;
             margin-bottom: 10px;
         }
+
+        /* স্ক্রিনশটের মতো গোল বেগুনি ব্যাক অ্যারো বাটন */
+        .floating-back-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 10px 0;
+        }
+        .circle-back-btn {
+            background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+            border: none; color: #fff; width: 50px; height: 50px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 20px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5);
+            transition: 0.2s;
+        }
+        .circle-back-btn:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
@@ -67,7 +82,7 @@
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
 
-        <!-- নোটিফিকেশন ক্রিয়েট, এডিট ও ড্রাফট সেকশন -->
+        <!-- নোটিফিকেশন কন্ট্রোল সেকশন -->
         <div class="card" style="border-color: var(--blue);">
             <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send / Customize Notification</h4>
             <input type="hidden" id="edit-notif-key" value="">
@@ -85,7 +100,6 @@
             <button class="btn btn-gray" onclick="clearNotifForm()">Cancel / Reset Form</button>
         </div>
 
-        <!-- নোটিফিকেশন হিস্টরি লিস্ট -->
         <div class="card" style="border-color: var(--red);">
             <h4><i class="fas fa-history" style="color:var(--red);"></i> Notification History & Control Center</h4>
             <div id="admin-notif-list" style="max-height: 350px; overflow-y: auto; margin-top: 10px;">
@@ -93,31 +107,9 @@
             </div>
         </div>
 
-        <!-- অন্যান্য অ্যাডমিন সেকশনসমূহ -->
-        <div class="card" style="border-color: var(--purple);">
-            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests</h4>
-            <div id="agent-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--orange);">
-            <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Mining Boost Proofs</h4>
-            <div id="boost-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--green);">
-            <h4><i class="fas fa-id-card" style="color:var(--green);"></i> ID Verified Proofs</h4>
-            <div id="agent-pay-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--blue);">
-            <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Management</h4>
-            <div id="wd-list">Loading withdrawals...</div>
-        </div>
-
-        <div class="card">
-            <h4><i class="fas fa-user-shield"></i> User Search & Management</h4>
-            <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
-            <div id="user-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;"></div>
+        <!-- স্ক্রিনশটের মতো ব্যাক অ্যারো বাটন -->
+        <div class="floating-back-container">
+            <button class="circle-back-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-arrow-left"></i></button>
         </div>
     </div>
 
@@ -236,7 +228,6 @@
             }
         }
 
-        // এডিট করলে ডাবল মেসেজ বা নতুন মেসেজ না হয়ে সুনির্দিষ্টভাবে আগের মেসেজটিই ইনস্ট্যান্ট আপডেট (Overwritten) করার ফিক্সড ফাংশন
         function updateDeliveredUsers(adminNotifKey, data) {
             db.ref('users').once('value', snapshot => {
                 if (snapshot.exists()) {
@@ -374,8 +365,20 @@
 
         function initAdmin() {
             loadAdminNotifications();
-            // অন্যান্য বেসিক ডাটা লোড...
         }
+
+        // সোয়াইপ সিস্টেম (অ্যাডমিন প্যানেল থেকে প্রোফাইলে যাওয়ার জন্য)
+        let touchStartX = 0;
+        window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+        window.addEventListener('touchend', e => {
+            let touchEndX = e.changedTouches[0].screenX;
+            let diff = touchEndX - touchStartX;
+            if (Math.abs(diff) > 70) {
+                if (diff < 0) { // বাম দিকে সোয়াইপ
+                    window.location.href = "profile.html";
+                }
+            }
+        });
     </script>
 </body>
 </html>
