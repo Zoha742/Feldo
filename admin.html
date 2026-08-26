@@ -191,7 +191,7 @@
             initAdmin();
         }
 
-        // নোটিফিকেশন সেন্ড বা ড্রাফট সেভ করার ফাংশন
+        // নোটিফিকেশন সেন্ড বা ড্রাফট সেভ বা এডিট করার সঠিক ফাংশন
         function saveOrSendNotification(actionType) {
             let editKey = document.getElementById('edit-notif-key').value.trim();
             let targetUid = document.getElementById('notif-target-uid').value.trim();
@@ -219,7 +219,7 @@
                 };
 
                 if (editKey) {
-                    // এডিট মোড: অ্যাডমিন রেকর্ড আপডেট করা এবং ইউজারের ইনবক্সেও আপডেট পাঠানো
+                    // এডিট মোড: অ্যাডমিন প্যানেল রেকর্ড আপডেট করা এবং ইউজারদের ইনবক্সে পুরনো মেসেজটিকেই এডিট/ওভাররাইট করা
                     db.ref('admin_notifications/' + editKey).update(notifData).then(() => {
                         if (status === 'sent') {
                             updateDeliveredUsers(editKey, notifData);
@@ -281,17 +281,8 @@
             }
         }
 
-        // এডিট করার পর ইউজারদের ইনবক্সে মেসেজ আপডেট করা
+        // এডিট করার পর ইউজারদের ইনবক্সে নতুন মেসেজ না বানিয়ে, হুবহু আগের মেসেজটিকেই এডিট বা ওভাররাইট করা
         function updateDeliveredUsers(adminNotifKey, data) {
-            let userNotifPayload = {
-                title: data.title,
-                message: data.message,
-                media: data.media,
-                timestamp: Date.now(),
-                isRead: false,
-                adminKey: adminNotifKey
-            };
-
             db.ref('users').once('value', snapshot => {
                 if (snapshot.exists()) {
                     let updates = {};
@@ -302,7 +293,14 @@
                             Object.keys(userData.notifications).forEach(notifKey => {
                                 let userNotif = userData.notifications[notifKey];
                                 if (userNotif.adminKey === adminNotifKey) {
-                                    updates[`users/${uid}/notifications/${notifKey}`] = userNotifPayload;
+                                    updates[`users/${uid}/notifications/${notifKey}`] = {
+                                        title: data.title,
+                                        message: data.message,
+                                        media: data.media,
+                                        timestamp: userNotif.timestamp, // আগের সঠিক সময়টি অপরিবর্তিত থাকবে
+                                        isRead: false,
+                                        adminKey: adminNotifKey
+                                    };
                                 }
                             });
                         }
