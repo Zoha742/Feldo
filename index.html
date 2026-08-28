@@ -9,11 +9,14 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Monetag Official SDK Script (For First 2 Options) -->
+    <!-- Monetag Official SDK Script (For 1st Option) -->
     <script src='https://libtl.com/sdk.js' data-zone='11677340' data-sdk='show_11677340'></script>
     
-    <!-- OnClickA Official SDK Script (For Other Options)[cite: 1] -->
+    <!-- OnClickA Official SDK Script (For 2nd Option) -->
     <script src="https://js.onclickvd.com/in-stream-ad-admanager/tma.js"></script>
+
+    <!-- Adsgram Official SDK Script (For Other Options) -->
+    <script src="https://sad.adsgram.ai/js/adsgram.js"></script>
     
     <style>
         :root {
@@ -193,8 +196,8 @@
                 </div>
             </div>
 
-            <!-- 2nd Option (Monetag Ad) -->
-            <div class="subject-card" onclick="triggerMonetagAd('Business Automation')">
+            <!-- 2nd Option (OnClickA Ad) -->
+            <div class="subject-card" onclick="triggerOnClickAAd('Business Automation')">
                 <div class="sub-icon" style="color: #38bdf8;"><i class="fa-solid fa-robot"></i></div>
                 <div class="sub-info">
                     <h4>Business Automation</h4>
@@ -202,12 +205,12 @@
                 </div>
                 <div class="sub-footer">
                     <span>10 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                    <button class="explore-btn" style="background: #0d9488;">Watch Ad</button>
                 </div>
             </div>
 
-            <!-- Other Options (OnClickA Ad) -->
-            <div class="subject-card" onclick="triggerOnClickAAd('Software Engineering')">
+            <!-- Other Options (Adsgram Ad - PlatformID: 42396, UnitID: 45025) -->
+            <div class="subject-card" onclick="triggerAdsgramAd('Software Engineering')">
                 <div class="sub-icon" style="color: #4ade80;"><i class="fa-solid fa-code"></i></div>
                 <div class="sub-info">
                     <h4>Software Engineering</h4>
@@ -215,11 +218,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>18 Modules</span>
-                    <button class="explore-btn" style="background: #0d9488;">Watch Ad</button>
+                    <button class="explore-btn" style="background: #ca8a04;">Adsgram</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="triggerOnClickAAd('Digital Marketing')">
+            <div class="subject-card" onclick="triggerAdsgramAd('Digital Marketing')">
                 <div class="sub-icon" style="color: #f43f5e;"><i class="fa-solid fa-chart-line"></i></div>
                 <div class="sub-info">
                     <h4>Digital Marketing</h4>
@@ -227,11 +230,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>12 Modules</span>
-                    <button class="explore-btn" style="background: #0d9488;">Watch Ad</button>
+                    <button class="explore-btn" style="background: #ca8a04;">Adsgram</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="triggerOnClickAAd('Data Science')">
+            <div class="subject-card" onclick="triggerAdsgramAd('Data Science')">
                 <div class="sub-icon" style="color: #fbbf24;"><i class="fa-solid fa-database"></i></div>
                 <div class="sub-info">
                     <h4>Data Science</h4>
@@ -239,11 +242,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>16 Modules</span>
-                    <button class="explore-btn" style="background: #0d9488;">Watch Ad</button>
+                    <button class="explore-btn" style="background: #ca8a04;">Adsgram</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="triggerOnClickAAd('UI/UX & Media Design')">
+            <div class="subject-card" onclick="triggerAdsgramAd('UI/UX & Media Design')">
                 <div class="sub-icon" style="color: #ec4899;"><i class="fa-solid fa-palette"></i></div>
                 <div class="sub-info">
                     <h4>UI/UX & Media Design</h4>
@@ -251,32 +254,32 @@
                 </div>
                 <div class="sub-footer">
                     <span>9 Modules</span>
-                    <button class="explore-btn" style="background: #0d9488;">Watch Ad</button>
+                    <button class="explore-btn" style="background: #ca8a04;">Adsgram</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Featured Video Tutorials Section (OnClickA Ad) -->
+        <!-- Featured Video Tutorials Section (Adsgram Ad) -->
         <div class="section-title"><i class="fa-solid fa-video"></i> Masterclass Video Tutorials</div>
         <div class="tutorial-list">
             
-            <div class="tutorial-item" onclick="triggerOnClickAAd('Building Scalable n8n Workflows')">
+            <div class="tutorial-item" onclick="triggerAdsgramAd('Building Scalable n8n Workflows')">
                 <div class="tut-icon"><i class="fa-solid fa-play"></i></div>
                 <div class="tut-info">
                     <h4>Building Scalable n8n Workflows</h4>
                     <p>Advanced integration techniques & error handling.</p>
                 </div>
-                <div class="watch-tag" style="color: #2dd4bf;">Watch Ad <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="watch-tag" style="color: #eab308;">Watch Video <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
-            <div class="tutorial-item" onclick="triggerOnClickAAd('Telegram Mini App Architecture')">
+            <div class="tutorial-item" onclick="triggerAdsgramAd('Telegram Mini App Architecture')">
                 <div class="tut-icon" style="background: #2e1065; color: #a78bfa;"><i class="fa-solid fa-mobile-screen"></i></div>
                 <div class="tut-info">
                     <h4>Telegram Mini App Architecture</h4>
                     <p>Complete guide to deploying TMA front-end & back-end.</p>
                 </div>
-                <div class="watch-tag" style="color: #2dd4bf;">Watch Ad <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="watch-tag" style="color: #eab308;">Watch Video <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
         </div>
@@ -286,15 +289,13 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // --- OnClickA Initialization Logic ---[cite: 1]
-        let showAdFunction = null;
-
+        // --- 1. OnClickA Initialization Logic ---[cite: 1]
+        let showOnClickAAdFunction = null;
         window.addEventListener('DOMContentLoaded', () => {
             if (window.initCdTma) {
                 window.initCdTma({ id: '6136924' })
                     .then(show => {
-                        showAdFunction = show;
-                        console.log("OnClickA Ad Loaded Successfully!");[cite: 1]
+                        showOnClickAAdFunction = show;
                     })
                     .catch(err => {
                         console.log("OnClickA Ad Load Error:", err);[cite: 1]
@@ -302,7 +303,10 @@
             }
         });
 
-        // Monetag Ad Trigger for first 2 options
+        // --- 2. Adsgram Initialization Logic (BlockID: 45025) ---
+        const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "45025" }) : null;
+
+        // Monetag Ad Trigger
         function triggerMonetagAd(itemTitle) {
             if (typeof show_11677340 === 'function') {
                 show_11677340('pop').then(() => {
@@ -315,17 +319,34 @@
             }
         }
 
-        // OnClickA Ad Trigger with proper loading handling
+        // OnClickA Ad Trigger
         function triggerOnClickAAd(itemTitle) {
-            if (typeof showAdFunction === 'function') {
-                showAdFunction().then(() => {
+            if (typeof showOnClickAAdFunction === 'function') {
+                showOnClickAAdFunction().then(() => {
                     tg.showAlert(`Successfully unlocked access to: ${itemTitle}!`);
                 }).catch(err => {
-                    console.log("Ad error:", err);
                     tg.showAlert(`Ad currently unavailable. Access granted to: ${itemTitle}`);
                 });
             } else {
                 tg.showAlert(`Ad is still loading, please try clicking again in a moment!`);
+            }
+        }
+
+        // Adsgram Ad Trigger
+        function triggerAdsgramAd(itemTitle) {
+            if (adsgramController) {
+                adsgramController.show()
+                    .then(() => {
+                        // User watched the ad successfully
+                        tg.showAlert(`Successfully unlocked access to: ${itemTitle}!`);
+                    })
+                    .catch((result) => {
+                        // Error during ad viewing or user closed it early
+                        console.log("Adsgram error:", result);
+                        tg.showAlert(`Ad skipped or unavailable. Access granted to: ${itemTitle}`);
+                    });
+            } else {
+                tg.showAlert(`Adsgram controller not initialized. Access granted to: ${itemTitle}`);
             }
         }
     </script>
