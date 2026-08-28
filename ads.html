@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Watch Ads & Mining</title>
+    <title>HeyCen - Multi Ads Watch & Earn</title>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome for Icons -->
@@ -41,7 +41,6 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        /* সোয়াইপ অ্যানিমেশন ক্লাস */
         .page-slide-left { transform: translateX(-100px); opacity: 0; }
         .page-slide-right { transform: translateX(100px); opacity: 0; }
 
@@ -64,7 +63,6 @@
             color: #c084fc;
         }
 
-        /* 6 Video Ads Cards */
         .video-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -89,7 +87,6 @@
         .watch-btn { background: #7c3aed; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
         .watch-btn.done { background: #10b981; cursor: default; }
 
-        /* বড় এবং আকর্ষণীয় নেভিগেশন বার */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
@@ -119,7 +116,7 @@
         </div>
     </div>
 
-    <!-- বড় এবং সুন্দর নেভিগেশন বার -->
+    <!-- Bottom Navigation -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
@@ -185,17 +182,16 @@
                     });
             }
 
-            // 2. Adsgram Initialization (Unit ID: 45008)
+            // 2. Adsgram Initialization (Unit ID: 45025)
             if (window.Adsgram) {
-                adsgramController = window.Adsgram.init({ blockId: "45008" });
+                adsgramController = window.Adsgram.init({ blockId: "45025" });
             }
         });
 
-        // Multi-Network Fallback Ad Trigger function (OnClickA -> Adsgram)
+        // Fallback Logic: OnClickA -> Adsgram
         function showMultiNetworkAd(onSuccess, onFailure) {
             let adHandled = false;
 
-            // প্রথমে অনক্লিকা (OnClickA) দিয়ে অ্যাড দেখানোর চেষ্টা করবে
             if (primaryShowAd) {
                 primaryShowAd().then(() => {
                     if (!adHandled) {
@@ -207,11 +203,9 @@
                     tryAdsgramFallback(onSuccess, onFailure, () => { adHandled = true; });
                 });
             } else {
-                // অনক্লিকা রেডি না থাকলে সরাসরি Adsgram এ যাবে
                 tryAdsgramFallback(onSuccess, onFailure, () => { adHandled = true; });
             }
 
-            // টাইমআউট হ্যান্ডলার
             setTimeout(() => {
                 if (!adHandled) {
                     adHandled = true;
@@ -220,7 +214,6 @@
             }, 4000);
         }
 
-        // Adsgram Fallback Handler
         function tryAdsgramFallback(onSuccess, onFailure, markHandled) {
             if (adsgramController) {
                 adsgramController.show()
@@ -229,7 +222,7 @@
                         onSuccess();
                     })
                     .catch((result) => {
-                        console.log("Adsgram error:", result);
+                        console.log("Adsgram fallback error:", result);
                         markHandled();
                         onFailure();
                     });
@@ -265,9 +258,7 @@
 
             btn.innerText = "Loading...";
 
-            // অনক্লিকা এবং এডগ্রাম মিলিয়ে মাল্টি-নেটওয়ার্ক অ্যাড কল করা হচ্ছে
             showMultiNetworkAd(() => {
-                // সাকসেস হলে কয়েন যোগ হবে
                 let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
                 let newPoints = currentPoints + points;
                 let newTasksDone = (userData.tasksDone || 0) + 1;
@@ -282,13 +273,12 @@
                     tg.showAlert(`Video Ad #${id} completed! +${points} GP added.`);
                 });
             }, () => {
-                // দুটি অ্যাড নেটওয়ার্কই ফেইল করলে
                 btn.innerText = "Watch";
                 tg.showAlert("Ad is not available right now. Please try again later!");
             });
         }
 
-        // সোয়াইপ অ্যানিমেশন এবং ডাইনামিক কালার পরিবর্তনের লজিক
+        // Swipe & Navigation Logic
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
