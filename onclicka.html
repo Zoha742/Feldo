@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OnClickA Ad Integration</title>
+    <!-- অনক্লিকার প্রথম স্ক্রিপ্ট (Head সেকশনে থাকবে) -->
+    <script src="https://js.onclickvd.com/in-stream-ad-admanager/tma.js"></script>
+</head>
+<body>
+
+    <!-- অনক্লিকার মূল জাভাস্ক্রিপ্ট এবং অ্যাড শো করানোর লজিক -->
+    <script>
+        let showAdFunction = null;
+
+        // পেজ লোড হওয়ার সাথে সাথে অ্যাড ইঞ্জিন ইনিশিয়ালাইজ করা এবং show মেথড রিসিভ করা
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.initCdTma) {
+                window.initCdTma({ id: '6136924' })
+                    .then(show => {
+                        showAdFunction = show;
+                        console.log("OnClickA Ad Loaded Successfully!");
+                    })
+                    .catch(err => {
+                        console.log("OnClickA Ad Load Error:", err);
+                    });
+            }
+        });
+
+        // অন্য পেজ বা বাটন থেকে এই ফাংশনটি কল করলে অ্যাড শো করবে
+        window.triggerOnClickAAd = function() {
+            return new Promise((resolve, reject) => {
+                if (showAdFunction) {
+                    showAdFunction()
+                        .then((result) => {
+                            resolve(result); // অ্যাড দেখা সফল হলে
+                        })
+                        .catch((error) => {
+                            reject(error); // অ্যাড দেখতে সমস্যা হলে
+                        });
+                } else {
+                    reject("Ad is still loading or not available!");
+                }
+            });
+        };
+    </script>
+</body>
+</html>
