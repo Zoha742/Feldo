@@ -9,12 +9,6 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Monetag Official SDK Script (For First 4 Options) -->
-    <script src='https://libtl.com/sdk.js' data-zone='11677340' data-sdk='show_11677340'></script>
-
-    <!-- Adsgram Official SDK Script (For Other Options) -->
-    <script src="https://sad.adsgram.ai/js/adsgram.js"></script>
-    
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -180,8 +174,7 @@
         <div class="section-title"><i class="fa-solid fa-book-open"></i> Available Academic Tracks</div>
         <div class="subject-grid">
             
-            <!-- 1st Option (Monetag Ad) -->
-            <div class="subject-card" onclick="triggerMonetagAd('Artificial Intelligence')">
+            <div class="subject-card" onclick="openCourse('Artificial Intelligence')">
                 <div class="sub-icon" style="color: #c084fc;"><i class="fa-solid fa-brain"></i></div>
                 <div class="sub-info">
                     <h4>Artificial Intelligence</h4>
@@ -193,8 +186,7 @@
                 </div>
             </div>
 
-            <!-- 2nd Option (Monetag Ad) -->
-            <div class="subject-card" onclick="triggerMonetagAd('Business Automation')">
+            <div class="subject-card" onclick="openCourse('Business Automation')">
                 <div class="sub-icon" style="color: #38bdf8;"><i class="fa-solid fa-robot"></i></div>
                 <div class="sub-info">
                     <h4>Business Automation</h4>
@@ -206,8 +198,7 @@
                 </div>
             </div>
 
-            <!-- 3rd Option (Monetag Ad) -->
-            <div class="subject-card" onclick="triggerMonetagAd('Software Engineering')">
+            <div class="subject-card" onclick="openCourse('Software Engineering')">
                 <div class="sub-icon" style="color: #4ade80;"><i class="fa-solid fa-code"></i></div>
                 <div class="sub-info">
                     <h4>Software Engineering</h4>
@@ -219,8 +210,7 @@
                 </div>
             </div>
 
-            <!-- 4th Option (Monetag Ad) -->
-            <div class="subject-card" onclick="triggerMonetagAd('Digital Marketing')">
+            <div class="subject-card" onclick="openCourse('Digital Marketing')">
                 <div class="sub-icon" style="color: #f43f5e;"><i class="fa-solid fa-chart-line"></i></div>
                 <div class="sub-info">
                     <h4>Digital Marketing</h4>
@@ -232,8 +222,7 @@
                 </div>
             </div>
 
-            <!-- 5th Option (Adsgram Ad) -->
-            <div class="subject-card" onclick="triggerAdsgramAd('Data Science')">
+            <div class="subject-card" onclick="openCourse('Data Science')">
                 <div class="sub-icon" style="color: #fbbf24;"><i class="fa-solid fa-database"></i></div>
                 <div class="sub-info">
                     <h4>Data Science</h4>
@@ -241,12 +230,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>16 Modules</span>
-                    <button class="explore-btn" style="background: #ca8a04;">Adsgram</button>
+                    <button class="explore-btn">Enroll</button>
                 </div>
             </div>
 
-            <!-- 6th Option (Adsgram Ad) -->
-            <div class="subject-card" onclick="triggerAdsgramAd('UI/UX & Media Design')">
+            <div class="subject-card" onclick="openCourse('UI/UX & Media Design')">
                 <div class="sub-icon" style="color: #ec4899;"><i class="fa-solid fa-palette"></i></div>
                 <div class="sub-info">
                     <h4>UI/UX & Media Design</h4>
@@ -254,32 +242,32 @@
                 </div>
                 <div class="sub-footer">
                     <span>9 Modules</span>
-                    <button class="explore-btn" style="background: #ca8a04;">Adsgram</button>
+                    <button class="explore-btn">Enroll</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Featured Video Tutorials Section (Adsgram Ads) -->
+        <!-- Featured Video Tutorials Section -->
         <div class="section-title"><i class="fa-solid fa-video"></i> Masterclass Video Tutorials</div>
         <div class="tutorial-list">
             
-            <div class="tutorial-item" onclick="triggerAdsgramAd('Building Scalable n8n Workflows')">
+            <div class="tutorial-item" onclick="openCourse('Building Scalable n8n Workflows')">
                 <div class="tut-icon"><i class="fa-solid fa-play"></i></div>
                 <div class="tut-info">
                     <h4>Building Scalable n8n Workflows</h4>
                     <p>Advanced integration techniques & error handling.</p>
                 </div>
-                <div class="watch-tag" style="color: #eab308;">Watch Video <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="watch-tag">Watch <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
-            <div class="tutorial-item" onclick="triggerAdsgramAd('Telegram Mini App Architecture')">
+            <div class="tutorial-item" onclick="openCourse('Telegram Mini App Architecture')">
                 <div class="tut-icon" style="background: #2e1065; color: #a78bfa;"><i class="fa-solid fa-mobile-screen"></i></div>
                 <div class="tut-info">
                     <h4>Telegram Mini App Architecture</h4>
                     <p>Complete guide to deploying TMA front-end & back-end.</p>
                 </div>
-                <div class="watch-tag" style="color: #eab308;">Watch Video <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="watch-tag">Watch <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
         </div>
@@ -289,36 +277,9 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // --- Adsgram Initialization Logic (BlockID: 45025) ---
-        const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "45025" }) : null;
-
-        // Monetag Ad Trigger (For first 4 options)
-        function triggerMonetagAd(itemTitle) {
-            if (typeof show_11677340 === 'function') {
-                show_11677340('pop').then(() => {
-                    tg.showAlert(`Successfully unlocked access to: ${itemTitle}!`);
-                }).catch(e => {
-                    tg.showAlert(`Loading content for: ${itemTitle}`);
-                });
-            } else {
-                tg.showAlert(`Access granted to: ${itemTitle}`);
-            }
-        }
-
-        // Adsgram Ad Trigger (For remaining options)
-        function triggerAdsgramAd(itemTitle) {
-            if (adsgramController) {
-                adsgramController.show()
-                    .then(() => {
-                        tg.showAlert(`Successfully unlocked access to: ${itemTitle}!`);
-                    })
-                    .catch((result) => {
-                        console.log("Adsgram error:", result);
-                        tg.showAlert(`Ad skipped or unavailable. Access granted to: ${itemTitle}`);
-                    });
-            } else {
-                tg.showAlert(`Adsgram controller not initialized. Access granted to: ${itemTitle}`);
-            }
+        // Normal click action without ads
+        function openCourse(itemTitle) {
+            tg.showAlert(`Opening content for: ${itemTitle}`);
         }
     </script>
 </body>
