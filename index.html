@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen Academy - Professional Learning Platform</title>
+    <title>HeyCen Book Library - Educational & Literary Hub</title>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome for Icons -->
@@ -16,7 +16,7 @@
             --card-border: #1e293b;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
             --accent-color: #38bdf8;
         }
         body {
@@ -43,20 +43,33 @@
             color: #fff;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.25);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; font-weight: 700; }
         .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
-        .age-badge {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 600;
-            margin-top: 10px;
-            letter-spacing: 0.5px;
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 13px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
         }
 
         .section-title {
@@ -69,13 +82,13 @@
             gap: 8px;
         }
 
-        .subject-grid {
+        .book-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 10px;
         }
-        .subject-card {
+        .book-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 14px;
@@ -86,24 +99,24 @@
             cursor: pointer;
             transition: all 0.2s ease;
         }
-        .subject-card:hover {
+        .book-card:hover {
             border-color: var(--accent-color);
             transform: translateY(-2px);
         }
-        .sub-icon {
+        .book-icon {
             width: 40px;
             height: 40px;
-            background: #1e1b4b;
+            background: #1e293b;
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #818cf8;
+            color: #38bdf8;
             font-size: 18px;
         }
-        .sub-info h4 { margin: 0 0 2px 0; font-size: 13px; font-weight: 700; }
-        .sub-info p { margin: 0; font-size: 10px; color: var(--text-muted); }
-        .sub-footer {
+        .book-info h4 { margin: 0 0 2px 0; font-size: 13px; font-weight: 700; }
+        .book-info p { margin: 0; font-size: 10px; color: var(--text-muted); }
+        .book-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -112,8 +125,8 @@
             font-size: 10px;
             color: #cbd5e1;
         }
-        .explore-btn {
-            background: #4f46e5;
+        .read-btn {
+            background: #2563eb;
             color: #fff;
             border: none;
             padding: 4px 10px;
@@ -123,12 +136,12 @@
             cursor: pointer;
         }
 
-        .tutorial-list {
+        .category-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-        .tutorial-item {
+        .category-item {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 12px;
@@ -138,22 +151,22 @@
             gap: 12px;
             cursor: pointer;
         }
-        .tut-icon {
+        .cat-icon {
             width: 36px;
             height: 36px;
-            background: #042f2e;
+            background: #065f46;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #2dd4bf;
+            color: #34d399;
             font-size: 16px;
             flex-shrink: 0;
         }
-        .tut-info { flex: 1; }
-        .tut-info h4 { margin: 0 0 2px 0; font-size: 13px; font-weight: 600; }
-        .tut-info p { margin: 0; font-size: 10px; color: var(--text-muted); }
-        .watch-tag {
+        .cat-info { flex: 1; }
+        .cat-info h4 { margin: 0 0 2px 0; font-size: 13px; font-weight: 600; }
+        .cat-info p { margin: 0; font-size: 10px; color: var(--text-muted); }
+        .action-tag {
             font-size: 11px;
             color: #38bdf8;
             font-weight: 600;
@@ -165,109 +178,90 @@
     <div class="container">
         <!-- Header Banner -->
         <div class="header-banner">
-            <h2>🎓 HeyCen Professional Academy</h2>
-            <p>Advanced digital skills, coding, business automation & AI masterclasses</p>
-            <div class="age-badge"><i class="fa-solid fa-user-shield"></i> Professional Curriculum (19+ Learners)</div>
+            <h2>📚 HeyCen Book Library</h2>
+            <p>Explore literary masterpieces, advanced mathematics & educational resources</p>
         </div>
 
-        <!-- Subjects Grid -->
-        <div class="section-title"><i class="fa-solid fa-book-open"></i> Available Academic Tracks</div>
-        <div class="subject-grid">
+        <!-- Search Box -->
+        <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="Search books, authors or math topics..." id="searchInput">
+        </div>
+
+        <!-- Literary Books Section -->
+        <div class="section-title"><i class="fa-solid fa-feather"></i> Famous Literary Works</div>
+        <div class="book-grid">
             
-            <div class="subject-card" onclick="openCourse('Artificial Intelligence')">
-                <div class="sub-icon" style="color: #c084fc;"><i class="fa-solid fa-brain"></i></div>
-                <div class="sub-info">
-                    <h4>Artificial Intelligence</h4>
-                    <p>Machine learning & AI engineering.</p>
+            <div class="book-card" onclick="openBook('Rabindranath Tagore Collection')">
+                <div class="book-icon" style="color: #f472b6;"><i class="fa-solid fa-book-open-reader"></i></div>
+                <div class="book-info">
+                    <h4>Rabindranath Tagore</h4>
+                    <p>Selected poems & short stories.</p>
                 </div>
-                <div class="sub-footer">
-                    <span>14 Modules</span>
-                    <button class="explore-btn">Enroll</button>
-                </div>
-            </div>
-
-            <div class="subject-card" onclick="openCourse('Business Automation')">
-                <div class="sub-icon" style="color: #38bdf8;"><i class="fa-solid fa-robot"></i></div>
-                <div class="sub-info">
-                    <h4>Business Automation</h4>
-                    <p>n8n workflows & API pipelines.</p>
-                </div>
-                <div class="sub-footer">
-                    <span>10 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                <div class="book-footer">
+                    <span>PDF / Read</span>
+                    <button class="read-btn">Open</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openCourse('Software Engineering')">
-                <div class="sub-icon" style="color: #4ade80;"><i class="fa-solid fa-code"></i></div>
-                <div class="sub-info">
-                    <h4>Software Engineering</h4>
-                    <p>Full-stack web & system design.</p>
+            <div class="book-card" onclick="openBook('Kazi Nazrul Islam Works')">
+                <div class="book-icon" style="color: #fb923c;"><i class="fa-solid fa-fire"></i></div>
+                <div class="book-info">
+                    <h4>Kazi Nazrul Islam</h4>
+                    <p>Bidrohi, Agnibeena & poems.</p>
                 </div>
-                <div class="sub-footer">
-                    <span>18 Modules</span>
-                    <button class="explore-btn">Enroll</button>
-                </div>
-            </div>
-
-            <div class="subject-card" onclick="openCourse('Digital Marketing')">
-                <div class="sub-icon" style="color: #f43f5e;"><i class="fa-solid fa-chart-line"></i></div>
-                <div class="sub-info">
-                    <h4>Digital Marketing</h4>
-                    <p>Growth hacking & TMA campaigns.</p>
-                </div>
-                <div class="sub-footer">
-                    <span>12 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                <div class="book-footer">
+                    <span>PDF / Read</span>
+                    <button class="read-btn">Open</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openCourse('Data Science')">
-                <div class="sub-icon" style="color: #fbbf24;"><i class="fa-solid fa-database"></i></div>
-                <div class="sub-info">
-                    <h4>Data Science</h4>
-                    <p>Analytics, Python & databases.</p>
+            <div class="book-card" onclick="openBook('Sarat Chandra Chattopadhyay')">
+                <div class="book-icon" style="color: #38bdf8;"><i class="fa-solid fa-scroll"></i></div>
+                <div class="book-info">
+                    <h4>Sarat Chandra</h4>
+                    <p>Devdas, Srikanta & novels.</p>
                 </div>
-                <div class="sub-footer">
-                    <span>16 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                <div class="book-footer">
+                    <span>PDF / Read</span>
+                    <button class="read-btn">Open</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openCourse('UI/UX & Media Design')">
-                <div class="sub-icon" style="color: #ec4899;"><i class="fa-solid fa-palette"></i></div>
-                <div class="sub-info">
-                    <h4>UI/UX & Media Design</h4>
-                    <p>Figma, video production & ads.</p>
+            <div class="book-card" onclick="openBook('World Classics & Poetry')">
+                <div class="book-icon" style="color: #a78bfa;"><i class="fa-solid fa-globe"></i></div>
+                <div class="book-info">
+                    <h4>World Classics</h4>
+                    <p>Shakespeare & global literature.</p>
                 </div>
-                <div class="sub-footer">
-                    <span>9 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                <div class="book-footer">
+                    <span>PDF / Read</span>
+                    <button class="read-btn">Open</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Featured Video Tutorials Section -->
-        <div class="section-title"><i class="fa-solid fa-video"></i> Masterclass Video Tutorials</div>
-        <div class="tutorial-list">
+        <!-- Educational & Math Section -->
+        <div class="section-title"><i class="fa-solid fa-calculator"></i> Mathematics & Science</div>
+        <div class="category-list">
             
-            <div class="tutorial-item" onclick="openCourse('Building Scalable n8n Workflows')">
-                <div class="tut-icon"><i class="fa-solid fa-play"></i></div>
-                <div class="tut-info">
-                    <h4>Building Scalable n8n Workflows</h4>
-                    <p>Advanced integration techniques & error handling.</p>
+            <div class="category-item" onclick="openBook('Advanced Higher Mathematics')">
+                <div class="cat-icon" style="background: #1e3a8a; color: #60a5fa;"><i class="fa-solid fa-square-root-variable"></i></div>
+                <div class="cat-info">
+                    <h4>Higher Mathematics</h4>
+                    <p>Algebra, Calculus, Trigonometry & geometry guides.</p>
                 </div>
-                <div class="watch-tag">Watch <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="action-tag">Study <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
-            <div class="tutorial-item" onclick="openCourse('Telegram Mini App Architecture')">
-                <div class="tut-icon" style="background: #2e1065; color: #a78bfa;"><i class="fa-solid fa-mobile-screen"></i></div>
-                <div class="tut-info">
-                    <h4>Telegram Mini App Architecture</h4>
-                    <p>Complete guide to deploying TMA front-end & back-end.</p>
+            <div class="category-item" onclick="openBook('Logic & Problem Solving')">
+                <div class="cat-icon" style="background: #065f46; color: #34d399;"><i class="fa-solid fa-brain"></i></div>
+                <div class="cat-info">
+                    <h4>Logic & Analytical Reasoning</h4>
+                    <p>Mathematical puzzles & problem-solving techniques.</p>
                 </div>
-                <div class="watch-tag">Watch <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="action-tag">Study <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
         </div>
@@ -277,9 +271,9 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Normal click action without ads
-        function openCourse(itemTitle) {
-            tg.showAlert(`Opening content for: ${itemTitle}`);
+        // Open book reader or details action
+        function openBook(bookTitle) {
+            tg.showAlert(`Opening library item: ${bookTitle}`);
         }
     </script>
 </body>
