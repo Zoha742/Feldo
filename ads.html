@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Multi Ads Watch & Earn</title>
+    <title>HeyCen - Watch Ads & Mining</title>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome for Icons -->
@@ -11,8 +11,6 @@
     
     <!-- OnClickA Ad Script -->
     <script src="https://js.onclickvd.com/in-stream-ad-admanager/tma.js"></script>
-    <!-- Adsgram SDK -->
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     
     <style>
         :root {
@@ -165,72 +163,21 @@
             }
         });
 
-        // --- Ad Networks Initialization ---
-        let primaryShowAd = null;
-        let adsgramController = null;
+        // --- OnClickA Initialization ---
+        let showAdFunction = null;
 
         window.addEventListener('DOMContentLoaded', () => {
-            // 1. OnClickA Initialization (Spot ID: 6136924)
             if (window.initCdTma) {
                 window.initCdTma({ id: '6136924' })
                     .then(show => {
-                        primaryShowAd = show;
-                        console.log("OnClickA Ad Ready!");
+                        showAdFunction = show;
+                        console.log("OnClickA Ad Loaded Successfully!");
                     })
                     .catch(err => {
-                        console.log("OnClickA Load Error:", err);
+                        console.log("OnClickA Ad Load Error:", err);
                     });
-            }
-
-            // 2. Adsgram Initialization (Unit ID: 45025)
-            if (window.Adsgram) {
-                adsgramController = window.Adsgram.init({ blockId: "45025" });
             }
         });
-
-        // Fallback Logic: OnClickA -> Adsgram
-        function showMultiNetworkAd(onSuccess, onFailure) {
-            let adHandled = false;
-
-            if (primaryShowAd) {
-                primaryShowAd().then(() => {
-                    if (!adHandled) {
-                        adHandled = true;
-                        onSuccess();
-                    }
-                }).catch(err => {
-                    console.log("OnClickA failed, switching to Adsgram...", err);
-                    tryAdsgramFallback(onSuccess, onFailure, () => { adHandled = true; });
-                });
-            } else {
-                tryAdsgramFallback(onSuccess, onFailure, () => { adHandled = true; });
-            }
-
-            setTimeout(() => {
-                if (!adHandled) {
-                    adHandled = true;
-                    tryAdsgramFallback(onSuccess, onFailure, () => {});
-                }
-            }, 4000);
-        }
-
-        function tryAdsgramFallback(onSuccess, onFailure, markHandled) {
-            if (adsgramController) {
-                adsgramController.show()
-                    .then(() => {
-                        markHandled();
-                        onSuccess();
-                    })
-                    .catch((result) => {
-                        console.log("Adsgram fallback error:", result);
-                        markHandled();
-                        onFailure();
-                    });
-            } else {
-                markHandled();
-                onFailure();
-            }
-        }
 
         // Render 6 Video Ads
         const videoContainer = document.getElementById('video-ads-container');
@@ -258,24 +205,31 @@
 
             btn.innerText = "Loading...";
 
-            showMultiNetworkAd(() => {
-                let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
-                let newPoints = currentPoints + points;
-                let newTasksDone = (userData.tasksDone || 0) + 1;
+            if (showAdFunction) {
+                showAdFunction()
+                    .then((result) => {
+                        let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+                        let newPoints = currentPoints + points;
+                        let newTasksDone = (userData.tasksDone || 0) + 1;
 
-                userData.points = newPoints;
-                userData.gp = newPoints;
-                userData.tasksDone = newTasksDone;
+                        userData.points = newPoints;
+                        userData.gp = newPoints;
+                        userData.tasksDone = newTasksDone;
 
-                userRef.set(userData).then(() => {
-                    btn.innerText = "Done ✓";
-                    btn.classList.add('done');
-                    tg.showAlert(`Video Ad #${id} completed! +${points} GP added.`);
-                });
-            }, () => {
+                        userRef.set(userData).then(() => {
+                            btn.innerText = "Done ✓";
+                            btn.classList.add('done');
+                            tg.showAlert(`Video Ad #${id} completed! +${points} GP added.`);
+                        });
+                    })
+                    .catch((error) => {
+                        btn.innerText = "Watch";
+                        tg.showAlert("Ad is not available or skipped. Please try again!");
+                    });
+            } else {
                 btn.innerText = "Watch";
-                tg.showAlert("Ad is not available right now. Please try again later!");
-            });
+                tg.showAlert("Ad is still loading or not available!");
+            }
         }
 
         // Swipe & Navigation Logic
