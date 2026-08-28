@@ -9,7 +9,7 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Monetag Official SDK Script -->
+    <!-- Monetag Official SDK Script (For First 2 Options) -->
     <script src='https://libtl.com/sdk.js' data-zone='11677340' data-sdk='show_11677340'></script>
     
     <style>
@@ -177,8 +177,8 @@
         <div class="section-title"><i class="fa-solid fa-book-open"></i> Available Academic Tracks</div>
         <div class="subject-grid">
             
-            <!-- 1st Option (With Ad) -->
-            <div class="subject-card" onclick="triggerAd('Artificial Intelligence')">
+            <!-- 1st Option (Monetag Ad) -->
+            <div class="subject-card" onclick="triggerMonetagAd('Artificial Intelligence')">
                 <div class="sub-icon" style="color: #c084fc;"><i class="fa-solid fa-brain"></i></div>
                 <div class="sub-info">
                     <h4>Artificial Intelligence</h4>
@@ -190,8 +190,8 @@
                 </div>
             </div>
 
-            <!-- 2nd Option (With Ad) -->
-            <div class="subject-card" onclick="triggerAd('Business Automation')">
+            <!-- 2nd Option (Monetag Ad) -->
+            <div class="subject-card" onclick="triggerMonetagAd('Business Automation')">
                 <div class="sub-icon" style="color: #38bdf8;"><i class="fa-solid fa-robot"></i></div>
                 <div class="sub-info">
                     <h4>Business Automation</h4>
@@ -203,8 +203,8 @@
                 </div>
             </div>
 
-            <!-- Other Options (Normal/No Ad) -->
-            <div class="subject-card" onclick="openNormalCourse('Software Engineering')">
+            <!-- Other Options (Redirects/Triggers OnClickA Page) -->
+            <div class="subject-card" onclick="openOnClickAPage('Software Engineering')">
                 <div class="sub-icon" style="color: #4ade80;"><i class="fa-solid fa-code"></i></div>
                 <div class="sub-info">
                     <h4>Software Engineering</h4>
@@ -212,11 +212,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>18 Modules</span>
-                    <button class="explore-btn" style="background: #334155;">View</button>
+                    <button class="explore-btn" style="background: #0d9488;">Watch Ads</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openNormalCourse('Digital Marketing')">
+            <div class="subject-card" onclick="openOnClickAPage('Digital Marketing')">
                 <div class="sub-icon" style="color: #f43f5e;"><i class="fa-solid fa-chart-line"></i></div>
                 <div class="sub-info">
                     <h4>Digital Marketing</h4>
@@ -224,11 +224,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>12 Modules</span>
-                    <button class="explore-btn" style="background: #334155;">View</button>
+                    <button class="explore-btn" style="background: #0d9488;">Watch Ads</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openNormalCourse('Data Science')">
+            <div class="subject-card" onclick="openOnClickAPage('Data Science')">
                 <div class="sub-icon" style="color: #fbbf24;"><i class="fa-solid fa-database"></i></div>
                 <div class="sub-info">
                     <h4>Data Science</h4>
@@ -236,11 +236,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>16 Modules</span>
-                    <button class="explore-btn" style="background: #334155;">View</button>
+                    <button class="explore-btn" style="background: #0d9488;">Watch Ads</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openNormalCourse('UI/UX & Media Design')">
+            <div class="subject-card" onclick="openOnClickAPage('UI/UX & Media Design')">
                 <div class="sub-icon" style="color: #ec4899;"><i class="fa-solid fa-palette"></i></div>
                 <div class="sub-info">
                     <h4>UI/UX & Media Design</h4>
@@ -248,32 +248,32 @@
                 </div>
                 <div class="sub-footer">
                     <span>9 Modules</span>
-                    <button class="explore-btn" style="background: #334155;">View</button>
+                    <button class="explore-btn" style="background: #0d9488;">Watch Ads</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Featured Video Tutorials Section (Normal) -->
+        <!-- Featured Video Tutorials Section (Linked with OnClickA) -->
         <div class="section-title"><i class="fa-solid fa-video"></i> Masterclass Video Tutorials</div>
         <div class="tutorial-list">
             
-            <div class="tutorial-item" onclick="openNormalCourse('Building Scalable n8n Workflows')">
+            <div class="tutorial-item" onclick="openOnClickAPage('Building Scalable n8n Workflows')">
                 <div class="tut-icon"><i class="fa-solid fa-play"></i></div>
                 <div class="tut-info">
                     <h4>Building Scalable n8n Workflows</h4>
                     <p>Advanced integration techniques & error handling.</p>
                 </div>
-                <div class="watch-tag">45 Min <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="watch-tag" style="color: #2dd4bf;">Watch Ad <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
-            <div class="tutorial-item" onclick="openNormalCourse('Telegram Mini App Architecture')">
+            <div class="tutorial-item" onclick="openOnClickAPage('Telegram Mini App Architecture')">
                 <div class="tut-icon" style="background: #2e1065; color: #a78bfa;"><i class="fa-solid fa-mobile-screen"></i></div>
                 <div class="tut-info">
                     <h4>Telegram Mini App Architecture</h4>
                     <p>Complete guide to deploying TMA front-end & back-end.</p>
                 </div>
-                <div class="watch-tag">60 Min <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="watch-tag" style="color: #2dd4bf;">Watch Ad <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
         </div>
@@ -283,8 +283,8 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Trigger Ad only for first 2 options
-        function triggerAd(itemTitle) {
+        // Monetag Ad Trigger for first 2 options
+        function triggerMonetagAd(itemTitle) {
             if (typeof show_11677340 === 'function') {
                 show_11677340('pop').then(() => {
                     tg.showAlert(`Successfully unlocked access to: ${itemTitle}!`);
@@ -296,9 +296,9 @@
             }
         }
 
-        // Normal function for other options (No Ad)
-        function openNormalCourse(title) {
-            tg.showAlert(`Opening content for: ${title}`);
+        // Redirects to your onclicka.html file for other options
+        function openOnClickAPage(title) {
+            window.location.href = 'onclicka.html';
         }
     </script>
 </body>
