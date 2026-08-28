@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen Book Library - Educational & Literary Hub</title>
+    <title>World Scientists & Scholars Book Library</title>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome for Icons -->
@@ -12,23 +12,30 @@
     <style>
         :root {
             --bg-color: #0b0f19;
-            --card-bg: #131c2e;
-            --card-border: #1e293b;
+            --card-bg: rgba(19, 28, 46, 0.85);
+            --card-border: rgba(255, 255, 255, 0.1);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
-            --accent-color: #38bdf8;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
+            background: linear-gradient(135deg, #0f172a, #31103f, #0f2b3f, #1a0f2b);
+            background-size: 400% 400%;
+            animation: rainbowBackground 15s ease infinite;
             color: var(--text-main);
             margin: 0;
             padding: 0 0 40px 0;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
             overflow-x: hidden;
         }
+        @keyframes rainbowBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
             width: 100%;
             max-width: 480px;
@@ -37,49 +44,61 @@
         }
 
         .header-banner {
-            background: var(--primary-gradient);
-            border-radius: 16px;
-            padding: 22px 16px;
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            border-radius: 20px;
+            padding: 24px 16px;
             color: #fff;
             text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(255, 117, 140, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: pulseGlow 4s ease-in-out infinite;
         }
-        .header-banner h2 { margin: 0 0 6px 0; font-size: 20px; font-weight: 700; }
-        .header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
-        
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .header-banner h2 { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .header-banner p { margin: 0; font-size: 12px; opacity: 0.95; }
+
         .search-box {
             position: relative;
             margin-bottom: 20px;
         }
         .search-box input {
             width: 100%;
-            padding: 12px 16px 12px 40px;
+            padding: 12px 16px 12px 42px;
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
+            border-radius: 14px;
             color: var(--text-main);
             font-size: 13px;
             box-sizing: border-box;
             outline: none;
+            transition: all 0.3s;
+        }
+        .search-box input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
         }
         .search-box i {
             position: absolute;
-            left: 14px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-muted);
+            color: #38bdf8;
         }
 
         .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            margin: 20px 0 12px 0;
-            color: var(--accent-color);
+            font-size: 16px;
+            font-weight: 800;
+            margin: 24px 0 12px 0;
+            color: #38bdf8;
             display: flex;
             align-items: center;
             gap: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
 
         .book-grid {
@@ -90,87 +109,65 @@
         }
         .book-card {
             background: var(--card-bg);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .book-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent-gradient);
         }
         .book-card:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
+            transform: translateY(-5px) scale(1.02);
+            border-color: rgba(255,255,255,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
+        
         .book-icon {
-            width: 40px;
-            height: 40px;
-            background: #1e293b;
-            border-radius: 10px;
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #38bdf8;
             font-size: 18px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .book-info h4 { margin: 0 0 2px 0; font-size: 13px; font-weight: 700; }
-        .book-info p { margin: 0; font-size: 10px; color: var(--text-muted); }
+        .book-info h4 { margin: 0 0 3px 0; font-size: 13px; font-weight: 700; color: #fff; }
+        .book-info p { margin: 0; font-size: 10px; color: var(--text-muted); line-height: 1.3; }
+        
         .book-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.05);
+            border-top: 1px solid rgba(255,255,255,0.06);
             padding-top: 8px;
             font-size: 10px;
             color: #cbd5e1;
         }
         .read-btn {
-            background: #2563eb;
+            background: var(--btn-gradient);
             color: #fff;
             border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .category-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .category-item {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-        .cat-icon {
-            width: 36px;
-            height: 36px;
-            background: #065f46;
+            padding: 5px 12px;
             border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #34d399;
-            font-size: 16px;
-            flex-shrink: 0;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
-        .cat-info { flex: 1; }
-        .cat-info h4 { margin: 0 0 2px 0; font-size: 13px; font-weight: 600; }
-        .cat-info p { margin: 0; font-size: 10px; color: var(--text-muted); }
-        .action-tag {
-            font-size: 11px;
-            color: #38bdf8;
-            font-weight: 600;
-        }
+        .read-btn:hover { transform: scale(1.08); }
     </style>
 </head>
 <body>
@@ -178,90 +175,270 @@
     <div class="container">
         <!-- Header Banner -->
         <div class="header-banner">
-            <h2>📚 HeyCen Book Library</h2>
-            <p>Explore literary masterpieces, advanced mathematics & educational resources</p>
+            <h2>🌌 World Scientific Library</h2>
+            <p>Explore masterpieces by Einstein, Newton, Hawking, Darwin, and legendary minds</p>
         </div>
 
         <!-- Search Box -->
         <div class="search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="Search books, authors or math topics..." id="searchInput">
+            <input type="text" placeholder="Search 20+ science books & authors..." id="searchInput">
         </div>
 
-        <!-- Literary Books Section -->
-        <div class="section-title"><i class="fa-solid fa-feather"></i> Famous Literary Works</div>
+        <!-- Section 1: Physics & Astronomy -->
+        <div class="section-title"><i class="fa-solid fa-atom"></i> Physics & Astronomy Masters</div>
         <div class="book-grid">
             
-            <div class="book-card" onclick="openBook('Rabindranath Tagore Collection')">
-                <div class="book-icon" style="color: #f472b6;"><i class="fa-solid fa-book-open-reader"></i></div>
+            <!-- 1 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #ff4b1f, #ff9068);" onclick="openBook('Albert Einstein - Relativity')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #ff4b1f, #ff9068);"><i class="fa-solid fa-bolt"></i></div>
                 <div class="book-info">
-                    <h4>Rabindranath Tagore</h4>
-                    <p>Selected poems & short stories.</p>
+                    <h4>Albert Einstein</h4>
+                    <p>Relativity: Special & General Theory.</p>
                 </div>
                 <div class="book-footer">
-                    <span>PDF / Read</span>
-                    <button class="read-btn">Open</button>
+                    <span>Physics • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #ff4b1f, #ff9068);">Read</button>
                 </div>
             </div>
 
-            <div class="book-card" onclick="openBook('Kazi Nazrul Islam Works')">
-                <div class="book-icon" style="color: #fb923c;"><i class="fa-solid fa-fire"></i></div>
+            <!-- 2 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #1d976c, #93f9b9);" onclick="openBook('Isaac Newton - Principia Mathematica')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #1d976c, #93f9b9);"><i class="fa-solid fa-apple-whole"></i></div>
                 <div class="book-info">
-                    <h4>Kazi Nazrul Islam</h4>
-                    <p>Bidrohi, Agnibeena & poems.</p>
+                    <h4>Isaac Newton</h4>
+                    <p>Philosophiæ Naturalis Principia.</p>
                 </div>
                 <div class="book-footer">
-                    <span>PDF / Read</span>
-                    <button class="read-btn">Open</button>
+                    <span>Mechanics • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #1d976c, #93f9b9);">Read</button>
                 </div>
             </div>
 
-            <div class="book-card" onclick="openBook('Sarat Chandra Chattopadhyay')">
-                <div class="book-icon" style="color: #38bdf8;"><i class="fa-solid fa-scroll"></i></div>
+            <!-- 3 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #4facfe, #00f2fe);" onclick="openBook('Stephen Hawking - A Brief History of Time')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"><i class="fa-solid fa-meteor"></i></div>
                 <div class="book-info">
-                    <h4>Sarat Chandra</h4>
-                    <p>Devdas, Srikanta & novels.</p>
+                    <h4>Stephen Hawking</h4>
+                    <p>A Brief History of Time & Cosmos.</p>
                 </div>
                 <div class="book-footer">
-                    <span>PDF / Read</span>
-                    <button class="read-btn">Open</button>
+                    <span>Cosmology • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #4facfe, #00f2fe);">Read</button>
                 </div>
             </div>
 
-            <div class="book-card" onclick="openBook('World Classics & Poetry')">
-                <div class="book-icon" style="color: #a78bfa;"><i class="fa-solid fa-globe"></i></div>
+            <!-- 4 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #b224ef, #7579ff);" onclick="openBook('Carl Sagan - Cosmos')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #b224ef, #7579ff);"><i class="fa-solid fa-earth-americas"></i></div>
                 <div class="book-info">
-                    <h4>World Classics</h4>
-                    <p>Shakespeare & global literature.</p>
+                    <h4>Carl Sagan</h4>
+                    <p>Cosmos: Personal Voyage.</p>
                 </div>
                 <div class="book-footer">
-                    <span>PDF / Read</span>
-                    <button class="read-btn">Open</button>
+                    <span>Astronomy • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #b224ef, #7579ff);">Read</button>
+                </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #f7971e, #ffd200);" onclick="openBook('Niels Bohr - Atomic Theory')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fa-solid fa-radiation"></i></div>
+                <div class="book-info">
+                    <h4>Niels Bohr</h4>
+                    <p>Atomic Theory & Quantum Spectra.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Quantum • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #f7971e, #ffd200);">Read</button>
+                </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #00c6ff, #0072ff);" onclick="openBook('Richard Feynman - Lectures on Physics')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #00c6ff, #0072ff);"><i class="fa-solid fa-atom"></i></div>
+                <div class="book-info">
+                    <h4>Richard Feynman</h4>
+                    <p>The Feynman Lectures on Physics.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Physics • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #00c6ff, #0072ff);">Read</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Educational & Math Section -->
-        <div class="section-title"><i class="fa-solid fa-calculator"></i> Mathematics & Science</div>
-        <div class="category-list">
+        <!-- Section 2: Biology & Evolution -->
+        <div class="section-title"><i class="fa-solid fa-dna"></i> Biology & Earth Sciences</div>
+        <div class="book-grid">
             
-            <div class="category-item" onclick="openBook('Advanced Higher Mathematics')">
-                <div class="cat-icon" style="background: #1e3a8a; color: #60a5fa;"><i class="fa-solid fa-square-root-variable"></i></div>
-                <div class="cat-info">
-                    <h4>Higher Mathematics</h4>
-                    <p>Algebra, Calculus, Trigonometry & geometry guides.</p>
+            <!-- 7 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #11998e, #38ef7d);" onclick="openBook('Charles Darwin - Origin of Species')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);"><i class="fa-solid fa-seedling"></i></div>
+                <div class="book-info">
+                    <h4>Charles Darwin</h4>
+                    <p>On the Origin of Species.</p>
                 </div>
-                <div class="action-tag">Study <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="book-footer">
+                    <span>Evolution • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #11998e, #38ef7d);">Read</button>
+                </div>
             </div>
 
-            <div class="category-item" onclick="openBook('Logic & Problem Solving')">
-                <div class="cat-icon" style="background: #065f46; color: #34d399;"><i class="fa-solid fa-brain"></i></div>
-                <div class="cat-info">
-                    <h4>Logic & Analytical Reasoning</h4>
-                    <p>Mathematical puzzles & problem-solving techniques.</p>
+            <!-- 8 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #eb3349, #f45c43);" onclick="openBook('Gregor Mendel - Plant Hybridization')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #eb3349, #f45c43);"><i class="fa-solid fa-spa"></i></div>
+                <div class="book-info">
+                    <h4>Gregor Mendel</h4>
+                    <p>Experiments on Plant Hybridization.</p>
                 </div>
-                <div class="action-tag">Study <i class="fa-solid fa-chevron-right"></i></div>
+                <div class="book-footer">
+                    <span>Genetics • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #eb3349, #f45c43);">Read</button>
+                </div>
+            </div>
+
+            <!-- 9 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #654ea3, #eaafc8);" onclick="openBook('Marie Curie - Radioactive Substances')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #654ea3, #eaafc8);"><i class="fa-solid fa-flask-vial"></i></div>
+                <div class="book-info">
+                    <h4>Marie Curie</h4>
+                    <p>Researches on Radioactive Substances.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Chemistry • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #654ea3, #eaafc8);">Read</button>
+                </div>
+            </div>
+
+            <!-- 10 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #ff5f6d, #ffc371);" onclick="openBook('Louis Pasteur - Germ Theory')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #ff5f6d, #ffc371);"><i class="fa-solid fa-virus-covid-slash"></i></div>
+                <div class="book-info">
+                    <h4>Louis Pasteur</h4>
+                    <p>Germ Theory & Fermentation.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Microbiology • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #ff5f6d, #ffc371);">Read</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section 3: Mathematics & Computing -->
+        <div class="section-title"><i class="fa-solid fa-square-root-variable"></i> Mathematics & Computing</div>
+        <div class="book-grid">
+            
+            <!-- 11 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #2193b0, #6dd5ed);" onclick="openBook('Euclid - Elements of Geometry')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);"><i class="fa-solid fa-shapes"></i></div>
+                <div class="book-info">
+                    <h4>Euclid of Alexandria</h4>
+                    <p>Elements: Classical Geometry.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Geometry • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #2193b0, #6dd5ed);">Read</button>
+                </div>
+            </div>
+
+            <!-- 12 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #cc2b5e, #753a88);" onclick="openBook('Alan Turing - Computing Machinery')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #cc2b5e, #753a88);"><i class="fa-solid fa-computer"></i></div>
+                <div class="book-info">
+                    <h4>Alan Turing</h4>
+                    <p>Computing Machinery and Intelligence.</p>
+                </div>
+                <div class="book-footer">
+                    <span>AI & Logic • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #cc2b5e, #753a88);">Read</button>
+                </div>
+            </div>
+
+            <!-- 13 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #007991, #78ffd6);" onclick="openBook('Leonhard Euler - Analysis Infinitorum')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #007991, #78ffd6);"><i class="fa-solid fa-infinity"></i></div>
+                <div class="book-info">
+                    <h4>Leonhard Euler</h4>
+                    <p>Introductio in analysin infinitorum.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Calculus • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #007991, #78ffd6);">Read</button>
+                </div>
+            </div>
+
+            <!-- 14 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #f12711, #f5af19);" onclick="openBook('Pythagoras - Number Theory')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #f12711, #f5af19);"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="book-info">
+                    <h4>Pythagoras</h4>
+                    <p>Harmonics & Number Theory.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Numbers • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #f12711, #f5af19);">Read</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section 4: Modern Technology & Innovation -->
+        <div class="section-title"><i class="fa-solid fa-microchip"></i> Modern Tech & Engineering</div>
+        <div class="book-grid">
+            
+            <!-- 15 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);" onclick="openBook('Nikola Tesla - My Inventions')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #833ab4, #fd1d1d);"><i class="fa-solid fa-lightbulb"></i></div>
+                <div class="book-info">
+                    <h4>Nikola Tesla</h4>
+                    <p>My Inventions: The Autobiography.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Electrical • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #833ab4, #fd1d1d);">Read</button>
+                </div>
+            </div>
+
+            <!-- 16 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #3a7bd5, #3a6073);" onclick="openBook('Thomas Edison - Innovation Empire')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #3a7bd5, #3a6073);"><i class="fa-solid fa-gear"></i></div>
+                <div class="book-info">
+                    <h4>Thomas Edison</h4>
+                    <p>Industrial Research & Patents.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Engineering • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #3a7bd5, #3a6073);">Read</button>
+                </div>
+            </div>
+
+            <!-- 17 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #00b09b, #96c93d);" onclick="openBook('Ada Lovelace - Analytical Engine')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #00b09b, #96c93d);"><i class="fa-solid fa-code"></i></div>
+                <div class="book-info">
+                    <h4>Ada Lovelace</h4>
+                    <p>Notes on the Analytical Engine.</p>
+                </div>
+                <div class="book-footer">
+                    <span>Programming • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #00b09b, #96c93d);">Read</button>
+                </div>
+            </div>
+
+            <!-- 18 -->
+            <div class="book-card" style="--accent-gradient: linear-gradient(135deg, #ff416c, #ff4b2b);" onclick="openBook('Galileo Galilei - Starry Messenger')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);"><i class="fa-solid fa-telescope"></i></div>
+                <div class="book-info">
+                    <h4>Galileo Galilei</h4>
+                    <p>Sidereus Nuncius (Starry Messenger).</p>
+                </div>
+                <div class="book-footer">
+                    <span>Astronomy • PDF</span>
+                    <button class="read-btn" style="--btn-gradient: linear-gradient(135deg, #ff416c, #ff4b2b);">Read</button>
+                </div>
             </div>
 
         </div>
@@ -271,9 +448,9 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Open book reader or details action
-        function openBook(bookTitle) {
-            tg.showAlert(`Opening library item: ${bookTitle}`);
+        // Real book reader interaction trigger
+        function openBook(bookName) {
+            tg.showAlert(`Opening Book Library: ${bookName}`);
         }
     </script>
 </body>
