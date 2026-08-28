@@ -9,6 +9,11 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- OnClickA Ad Script -->
+    <script src="https://js.onclickvd.com/in-stream-ad-admanager/tma.js"></script>
+    <!-- Adsgram SDK -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -84,7 +89,7 @@
         .watch-btn { background: #7c3aed; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
         .watch-btn.done { background: #10b981; cursor: default; }
 
-        /* বড় এবং আকর্ষণীয় নেভিগেশন বার (অন্যান্য পেজের সাথে সামঞ্জস্যপূর্ণ) */
+        /* বড় এবং আকর্ষণীয় নেভিগেশন বার */
         .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
@@ -163,6 +168,77 @@
             }
         });
 
+        // --- Ad Networks Initialization ---
+        let primaryShowAd = null;
+        let adsgramController = null;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // 1. OnClickA Initialization (Spot ID: 6136924)
+            if (window.initCdTma) {
+                window.initCdTma({ id: '6136924' })
+                    .then(show => {
+                        primaryShowAd = show;
+                        console.log("OnClickA Ad Ready!");
+                    })
+                    .catch(err => {
+                        console.log("OnClickA Load Error:", err);
+                    });
+            }
+
+            // 2. Adsgram Initialization (Unit ID: 45008)
+            if (window.Adsgram) {
+                adsgramController = window.Adsgram.init({ blockId: "45008" });
+            }
+        });
+
+        // Multi-Network Fallback Ad Trigger function (OnClickA -> Adsgram)
+        function showMultiNetworkAd(onSuccess, onFailure) {
+            let adHandled = false;
+
+            // প্রথমে অনক্লিকা (OnClickA) দিয়ে অ্যাড দেখানোর চেষ্টা করবে
+            if (primaryShowAd) {
+                primaryShowAd().then(() => {
+                    if (!adHandled) {
+                        adHandled = true;
+                        onSuccess();
+                    }
+                }).catch(err => {
+                    console.log("OnClickA failed, switching to Adsgram...", err);
+                    tryAdsgramFallback(onSuccess, onFailure, () => { adHandled = true; });
+                });
+            } else {
+                // অনক্লিকা রেডি না থাকলে সরাসরি Adsgram এ যাবে
+                tryAdsgramFallback(onSuccess, onFailure, () => { adHandled = true; });
+            }
+
+            // টাইমআউট হ্যান্ডলার
+            setTimeout(() => {
+                if (!adHandled) {
+                    adHandled = true;
+                    tryAdsgramFallback(onSuccess, onFailure, () => {});
+                }
+            }, 4000);
+        }
+
+        // Adsgram Fallback Handler
+        function tryAdsgramFallback(onSuccess, onFailure, markHandled) {
+            if (adsgramController) {
+                adsgramController.show()
+                    .then(() => {
+                        markHandled();
+                        onSuccess();
+                    })
+                    .catch((result) => {
+                        console.log("Adsgram error:", result);
+                        markHandled();
+                        onFailure();
+                    });
+            } else {
+                markHandled();
+                onFailure();
+            }
+        }
+
         // Render 6 Video Ads
         const videoContainer = document.getElementById('video-ads-container');
         for (let i = 1; i <= 6; i++) {
@@ -187,18 +263,28 @@
             let btn = document.getElementById(`vid-btn-${id}`);
             if (btn.classList.contains('done')) return;
 
-            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
-            let newPoints = currentPoints + points;
-            let newTasksDone = (userData.tasksDone || 0) + 1;
+            btn.innerText = "Loading...";
 
-            userData.points = newPoints;
-            userData.gp = newPoints;
-            userData.tasksDone = newTasksDone;
+            // অনক্লিকা এবং এডগ্রাম মিলিয়ে মাল্টি-নেটওয়ার্ক অ্যাড কল করা হচ্ছে
+            showMultiNetworkAd(() => {
+                // সাকসেস হলে কয়েন যোগ হবে
+                let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+                let newPoints = currentPoints + points;
+                let newTasksDone = (userData.tasksDone || 0) + 1;
 
-            userRef.set(userData).then(() => {
-                btn.innerText = "Done ✓";
-                btn.classList.add('done');
-                tg.showAlert(`Video Ad #${id} completed! +${points} GP added.`);
+                userData.points = newPoints;
+                userData.gp = newPoints;
+                userData.tasksDone = newTasksDone;
+
+                userRef.set(userData).then(() => {
+                    btn.innerText = "Done ✓";
+                    btn.classList.add('done');
+                    tg.showAlert(`Video Ad #${id} completed! +${points} GP added.`);
+                });
+            }, () => {
+                // দুটি অ্যাড নেটওয়ার্কই ফেইল করলে
+                btn.innerText = "Watch";
+                tg.showAlert("Ad is not available right now. Please try again later!");
             });
         }
 
