@@ -177,6 +177,7 @@
         <div class="section-title"><i class="fa-solid fa-book-open"></i> Available Academic Tracks</div>
         <div class="subject-grid">
             
+            <!-- 1st Option (With Ad) -->
             <div class="subject-card" onclick="triggerAd('Artificial Intelligence')">
                 <div class="sub-icon" style="color: #c084fc;"><i class="fa-solid fa-brain"></i></div>
                 <div class="sub-info">
@@ -189,6 +190,7 @@
                 </div>
             </div>
 
+            <!-- 2nd Option (With Ad) -->
             <div class="subject-card" onclick="triggerAd('Business Automation')">
                 <div class="sub-icon" style="color: #38bdf8;"><i class="fa-solid fa-robot"></i></div>
                 <div class="sub-info">
@@ -201,7 +203,8 @@
                 </div>
             </div>
 
-            <div class="subject-card" onclick="triggerAd('Software Engineering')">
+            <!-- Other Options (Normal/No Ad) -->
+            <div class="subject-card" onclick="openNormalCourse('Software Engineering')">
                 <div class="sub-icon" style="color: #4ade80;"><i class="fa-solid fa-code"></i></div>
                 <div class="sub-info">
                     <h4>Software Engineering</h4>
@@ -209,11 +212,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>18 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                    <button class="explore-btn" style="background: #334155;">View</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="triggerAd('Digital Marketing')">
+            <div class="subject-card" onclick="openNormalCourse('Digital Marketing')">
                 <div class="sub-icon" style="color: #f43f5e;"><i class="fa-solid fa-chart-line"></i></div>
                 <div class="sub-info">
                     <h4>Digital Marketing</h4>
@@ -221,11 +224,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>12 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                    <button class="explore-btn" style="background: #334155;">View</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="triggerAd('Data Science')">
+            <div class="subject-card" onclick="openNormalCourse('Data Science')">
                 <div class="sub-icon" style="color: #fbbf24;"><i class="fa-solid fa-database"></i></div>
                 <div class="sub-info">
                     <h4>Data Science</h4>
@@ -233,11 +236,11 @@
                 </div>
                 <div class="sub-footer">
                     <span>16 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                    <button class="explore-btn" style="background: #334155;">View</button>
                 </div>
             </div>
 
-            <div class="subject-card" onclick="triggerAd('UI/UX & Media Design')">
+            <div class="subject-card" onclick="openNormalCourse('UI/UX & Media Design')">
                 <div class="sub-icon" style="color: #ec4899;"><i class="fa-solid fa-palette"></i></div>
                 <div class="sub-info">
                     <h4>UI/UX & Media Design</h4>
@@ -245,17 +248,17 @@
                 </div>
                 <div class="sub-footer">
                     <span>9 Modules</span>
-                    <button class="explore-btn">Enroll</button>
+                    <button class="explore-btn" style="background: #334155;">View</button>
                 </div>
             </div>
 
         </div>
 
-        <!-- Featured Video Tutorials Section -->
+        <!-- Featured Video Tutorials Section (Normal) -->
         <div class="section-title"><i class="fa-solid fa-video"></i> Masterclass Video Tutorials</div>
         <div class="tutorial-list">
             
-            <div class="tutorial-item" onclick="triggerAd('Building Scalable n8n Workflows')">
+            <div class="tutorial-item" onclick="openNormalCourse('Building Scalable n8n Workflows')">
                 <div class="tut-icon"><i class="fa-solid fa-play"></i></div>
                 <div class="tut-info">
                     <h4>Building Scalable n8n Workflows</h4>
@@ -264,7 +267,7 @@
                 <div class="watch-tag">45 Min <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
-            <div class="tutorial-item" onclick="triggerAd('Telegram Mini App Architecture')">
+            <div class="tutorial-item" onclick="openNormalCourse('Telegram Mini App Architecture')">
                 <div class="tut-icon" style="background: #2e1065; color: #a78bfa;"><i class="fa-solid fa-mobile-screen"></i></div>
                 <div class="tut-info">
                     <h4>Telegram Mini App Architecture</h4>
@@ -280,6 +283,7 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
+        // Trigger Ad only for first 2 options
         function triggerAd(itemTitle) {
             if (typeof show_11677340 === 'function') {
                 show_11677340('pop').then(() => {
@@ -290,6 +294,11 @@
             } else {
                 tg.showAlert(`Access granted to: ${itemTitle}`);
             }
+        }
+
+        // Normal function for other options (No Ad)
+        function openNormalCourse(title) {
+            tg.showAlert(`Opening content for: ${title}`);
         }
     </script>
 </body>
