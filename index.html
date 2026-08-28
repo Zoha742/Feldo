@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Monetag Rewarded Popup Script -->
-    <script src="//libroot.net/p/pop.js" data-zone="11677340" async></script>
+    <script src="https://libroot.net/p/pop.js" data-zone="11677340" async></script>
     
     <style>
         :root {
@@ -283,14 +283,11 @@
         function triggerAd(itemTitle) {
             if (typeof show_11677340 === 'function') {
                 show_11677340('pop').then(() => {
-                    // User watched ad till the end or closed it
                     tg.showAlert(`Successfully unlocked access to: ${itemTitle}!`);
                 }).catch(e => {
-                    // Error playing ad or ad blocked/not ready
                     tg.showAlert(`Loading content for: ${itemTitle}`);
                 });
             } else {
-                // Fallback if ad script takes time to load
                 tg.showAlert(`Access granted to: ${itemTitle}`);
             }
         }
