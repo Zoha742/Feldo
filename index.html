@@ -9,6 +9,9 @@
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Monetag Rewarded Popup Script -->
+    <script src="//libroot.net/p/pop.js" data-zone="11677340" async></script>
+    
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -170,11 +173,11 @@
             <div class="age-badge"><i class="fa-solid fa-user-shield"></i> Professional Curriculum (19+ Learners)</div>
         </div>
 
-        <!-- Subjects Grid (Many Subjects) -->
+        <!-- Subjects Grid -->
         <div class="section-title"><i class="fa-solid fa-book-open"></i> Available Academic Tracks</div>
         <div class="subject-grid">
             
-            <div class="subject-card" onclick="openSubject('Artificial Intelligence')">
+            <div class="subject-card" onclick="triggerAd('Artificial Intelligence')">
                 <div class="sub-icon" style="color: #c084fc;"><i class="fa-solid fa-brain"></i></div>
                 <div class="sub-info">
                     <h4>Artificial Intelligence</h4>
@@ -186,7 +189,7 @@
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openSubject('Business Automation')">
+            <div class="subject-card" onclick="triggerAd('Business Automation')">
                 <div class="sub-icon" style="color: #38bdf8;"><i class="fa-solid fa-robot"></i></div>
                 <div class="sub-info">
                     <h4>Business Automation</h4>
@@ -198,7 +201,7 @@
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openSubject('Software Engineering')">
+            <div class="subject-card" onclick="triggerAd('Software Engineering')">
                 <div class="sub-icon" style="color: #4ade80;"><i class="fa-solid fa-code"></i></div>
                 <div class="sub-info">
                     <h4>Software Engineering</h4>
@@ -210,7 +213,7 @@
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openSubject('Digital Marketing')">
+            <div class="subject-card" onclick="triggerAd('Digital Marketing')">
                 <div class="sub-icon" style="color: #f43f5e;"><i class="fa-solid fa-chart-line"></i></div>
                 <div class="sub-info">
                     <h4>Digital Marketing</h4>
@@ -222,7 +225,7 @@
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openSubject('Data Science')">
+            <div class="subject-card" onclick="triggerAd('Data Science')">
                 <div class="sub-icon" style="color: #fbbf24;"><i class="fa-solid fa-database"></i></div>
                 <div class="sub-info">
                     <h4>Data Science</h4>
@@ -234,7 +237,7 @@
                 </div>
             </div>
 
-            <div class="subject-card" onclick="openSubject('UI/UX & Media Design')">
+            <div class="subject-card" onclick="triggerAd('UI/UX & Media Design')">
                 <div class="sub-icon" style="color: #ec4899;"><i class="fa-solid fa-palette"></i></div>
                 <div class="sub-info">
                     <h4>UI/UX & Media Design</h4>
@@ -252,7 +255,7 @@
         <div class="section-title"><i class="fa-solid fa-video"></i> Masterclass Video Tutorials</div>
         <div class="tutorial-list">
             
-            <div class="tutorial-item" onclick="openVideo('Building Scalable n8n Workflows')">
+            <div class="tutorial-item" onclick="triggerAd('Building Scalable n8n Workflows')">
                 <div class="tut-icon"><i class="fa-solid fa-play"></i></div>
                 <div class="tut-info">
                     <h4>Building Scalable n8n Workflows</h4>
@@ -261,7 +264,7 @@
                 <div class="watch-tag">45 Min <i class="fa-solid fa-chevron-right"></i></div>
             </div>
 
-            <div class="tutorial-item" onclick="openVideo('Telegram Mini App Architecture')">
+            <div class="tutorial-item" onclick="triggerAd('Telegram Mini App Architecture')">
                 <div class="tut-icon" style="background: #2e1065; color: #a78bfa;"><i class="fa-solid fa-mobile-screen"></i></div>
                 <div class="tut-info">
                     <h4>Telegram Mini App Architecture</h4>
@@ -277,12 +280,19 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        function openSubject(subjectName) {
-            tg.showAlert(`Opening curriculum for: ${subjectName}. Professional learning track loaded.`);
-        }
-
-        function openVideo(title) {
-            tg.showAlert(`Now streaming tutorial: ${title}`);
+        function triggerAd(itemTitle) {
+            if (typeof show_11677340 === 'function') {
+                show_11677340('pop').then(() => {
+                    // User watched ad till the end or closed it
+                    tg.showAlert(`Successfully unlocked access to: ${itemTitle}!`);
+                }).catch(e => {
+                    // Error playing ad or ad blocked/not ready
+                    tg.showAlert(`Loading content for: ${itemTitle}`);
+                });
+            } else {
+                // Fallback if ad script takes time to load
+                tg.showAlert(`Access granted to: ${itemTitle}`);
+            }
         }
     </script>
 </body>
