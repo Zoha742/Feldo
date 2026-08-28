@@ -12,7 +12,7 @@
     <!-- Monetag Official SDK Script (For First 2 Options) -->
     <script src='https://libtl.com/sdk.js' data-zone='11677340' data-sdk='show_11677340'></script>
     
-    <!-- OnClickA Official SDK Script (For Other Options) -->
+    <!-- OnClickA Official SDK Script (For Other Options)[cite: 1] -->
     <script src="https://js.onclickvd.com/in-stream-ad-admanager/tma.js"></script>
     
     <style>
@@ -286,7 +286,7 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // --- OnClickA Initialization Logic ---
+        // --- OnClickA Initialization Logic ---[cite: 1]
         let showAdFunction = null;
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -294,10 +294,10 @@
                 window.initCdTma({ id: '6136924' })
                     .then(show => {
                         showAdFunction = show;
-                        console.log("OnClickA Ad Loaded Successfully!");
+                        console.log("OnClickA Ad Loaded Successfully!");[cite: 1]
                     })
                     .catch(err => {
-                        console.log("OnClickA Ad Load Error:", err);
+                        console.log("OnClickA Ad Load Error:", err);[cite: 1]
                     });
             }
         });
@@ -315,16 +315,17 @@
             }
         }
 
-        // OnClickA Ad Trigger for other options
+        // OnClickA Ad Trigger with proper loading handling
         function triggerOnClickAAd(itemTitle) {
-            if (showAdFunction) {
+            if (typeof showAdFunction === 'function') {
                 showAdFunction().then(() => {
                     tg.showAlert(`Successfully unlocked access to: ${itemTitle}!`);
                 }).catch(err => {
-                    tg.showAlert(`Loading content for: ${itemTitle}`);
+                    console.log("Ad error:", err);
+                    tg.showAlert(`Ad currently unavailable. Access granted to: ${itemTitle}`);
                 });
             } else {
-                tg.showAlert(`Access granted to: ${itemTitle}`);
+                tg.showAlert(`Ad is still loading, please try clicking again in a moment!`);
             }
         }
     </script>
