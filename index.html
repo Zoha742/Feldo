@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Scientific Library - Home</title>
+    <title>World Scientific & Literary Archive - Massive Library</title>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome for Icons -->
@@ -14,19 +14,19 @@
     
     <style>
         :root {
-            --card-bg: rgba(19, 28, 46, 0.85);
-            --card-border: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(15, 23, 42, 0.9);
+            --card-border: rgba(255, 255, 255, 0.12);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f172a, #31103f, #0f2b3f, #1a0f2b);
+            background: linear-gradient(135deg, #090d16, #1f0b24, #0b1c24, #12091f);
             background-size: 400% 400%;
             animation: rainbowBackground 15s ease infinite;
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 40px 0;
+            padding: 0 0 50px 0;
             display: flex;
             justify-content: center;
             min-height: 100vh;
@@ -44,24 +44,23 @@
             box-sizing: border-box;
         }
         .banner {
-            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
             border-radius: 20px;
-            padding: 20px 16px;
+            padding: 22px 16px;
             color: #fff;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(255, 117, 140, 0.3);
+            margin-bottom: 18px;
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .banner h2 { margin: 0 0 4px 0; font-size: 20px; font-weight: 800; }
-        .banner p { margin: 0; font-size: 11px; opacity: 0.95; }
+        .banner h2 { margin: 0 0 4px 0; font-size: 21px; font-weight: 800; letter-spacing: 0.5px; }
+        .banner p { margin: 0; font-size: 11px; opacity: 0.95; line-height: 1.4; }
         
-        /* Reward Points Badge */
         .reward-badge {
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(250, 204, 21, 0.3);
+            padding: 8px 18px;
             border-radius: 30px;
             display: inline-flex;
             align-items: center;
@@ -69,116 +68,368 @@
             font-size: 13px;
             font-weight: 700;
             color: #facc15;
-            margin-bottom: 15px;
+            margin-bottom: 14px;
         }
 
-        .card {
+        .section-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin: 22px 0 12px 0;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .book-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .book-card {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
             border: 1px solid var(--card-border);
             border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .book-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        .book-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .book-info h4 { margin: 0 0 2px 0; font-size: 12px; font-weight: 700; color: #fff; }
+        .book-info p { margin: 0; font-size: 10px; color: var(--text-muted); line-height: 1.3; }
+        
+        .book-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            text-decoration: none;
-            color: #fff;
-            transition: all 0.3s;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 8px;
+            font-size: 9px;
+            color: #cbd5e1;
         }
-        .card:hover { transform: translateY(-3px); border-color: rgba(56, 189, 248, 0.5); }
-        .card-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; margin-right: 12px; }
-        .card-content { flex: 1; }
-        .card-content h4 { margin: 0 0 3px 0; font-size: 14px; font-weight: 700; }
-        .card-content p { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .read-btn {
+            color: #fff;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+
     <div class="container" style="text-align: center;">
         
         <!-- Reward Counter Display -->
         <div class="reward-badge">
-            <i class="fa-solid fa-coins"></i> Library Points: <span id="pointsCount">0</span>
+            <i class="fa-solid fa-coins"></i> Archive Points: <span id="pointsCount">0</span>
         </div>
 
         <div class="banner">
-            <h2>🌌 World Scientific Library</h2>
-            <p>Watch ad to unlock books & earn reward points</p>
-        </div>
-        
-        <!-- Categories linked with Adsgram Reward Ad trigger -->
-        <div class="card" onclick="openCategory('physics')">
-            <div class="card-icon" style="background: linear-gradient(135deg, #ff4b1f, #ff9068);"><i class="fa-solid fa-atom"></i></div>
-            <div class="card-content" style="text-align: left;">
-                <h4>Physics & Astronomy Masters</h4>
-                <p>Earn +10 Points & Unlock</p>
-            </div>
-            <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
+            <h2>📚 World Scientific & Literary Archive</h2>
+            <p>Access 20+ legendary masterworks in Physics, Mathematics, Biology, Philosophy & Technology. Watch ad to earn reward points & unlock complete chapters.</p>
         </div>
 
-        <div class="card" onclick="openCategory('biology')">
-            <div class="card-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);"><i class="fa-solid fa-dna"></i></div>
-            <div class="card-content" style="text-align: left;">
-                <h4>Biology & Earth Sciences</h4>
-                <p>Earn +10 Points & Unlock</p>
+        <!-- Section 1: Physics & Cosmos -->
+        <div class="section-title" style="text-align: left;"><i class="fa-solid fa-atom"></i> Physics & Cosmos Masterpieces</div>
+        <div class="book-grid">
+            
+            <div class="book-card" onclick="openBook('Albert Einstein - Relativity')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #ff4b1f, #ff9068);"><i class="fa-solid fa-bolt"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Albert Einstein</h4>
+                    <p>Relativity: Special & General Theory.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #ff4b1f;">Read</button>
+                </div>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
+
+            <div class="book-card" onclick="openBook('Isaac Newton - Principia')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #1d976c, #93f9b9);"><i class="fa-solid fa-apple-whole"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Isaac Newton</h4>
+                    <p>Mathematical Principles of Natural Philosophy.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #1d976c;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Stephen Hawking - Brief History')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"><i class="fa-solid fa-meteor"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Stephen Hawking</h4>
+                    <p>A Brief History of Time & Black Holes.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #00f2fe; color:#000;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Carl Sagan - Cosmos')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #b224ef, #7579ff);"><i class="fa-solid fa-earth-americas"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Carl Sagan</h4>
+                    <p>Cosmos: A Personal Voyage & Universe.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #7579ff;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Richard Feynman - Lectures')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #00c6ff, #0072ff);"><i class="fa-solid fa-radiation"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Richard Feynman</h4>
+                    <p>The Feynman Lectures on Physics.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #0072ff;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Niels Bohr - Quantum Mechanics')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fa-solid fa-atom"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Niels Bohr</h4>
+                    <p>Atomic Theory and Spectra Description.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #f7971e; color:#000;">Read</button>
+                </div>
+            </div>
+
         </div>
 
-        <div class="card" onclick="openCategory('math')">
-            <div class="card-icon" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);"><i class="fa-solid fa-square-root-variable"></i></div>
-            <div class="card-content" style="text-align: left;">
-                <h4>Mathematics & Computing</h4>
-                <p>Earn +10 Points & Unlock</p>
+        <!-- Section 2: Mathematics & Computing -->
+        <div class="section-title" style="text-align: left;"><i class="fa-solid fa-square-root-variable"></i> Mathematics & Computing</div>
+        <div class="book-grid">
+            
+            <div class="book-card" onclick="openBook('Euclid - Elements')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);"><i class="fa-solid fa-shapes"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Euclid of Alexandria</h4>
+                    <p>Elements: Complete Classical Geometry.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #2193b0;">Read</button>
+                </div>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
+
+            <div class="book-card" onclick="openBook('Alan Turing - Computing')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #cc2b5e, #753a88);"><i class="fa-solid fa-computer"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Alan Turing</h4>
+                    <p>Computing Machinery and Intelligence.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #cc2b5e;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Leonhard Euler - Calculus')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #007991, #78ffd6);"><i class="fa-solid fa-infinity"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Leonhard Euler</h4>
+                    <p>Introductio in analysin infinitorum.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #007991;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Pythagoras - Number Theory')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #f12711, #f5af19);"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Pythagoras</h4>
+                    <p>Harmonics and Mathematical Numbers.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #f12711;">Read</button>
+                </div>
+            </div>
+
         </div>
 
-        <div class="card" onclick="openCategory('tech')">
-            <div class="card-icon" style="background: linear-gradient(135deg, #833ab4, #fd1d1d);"><i class="fa-solid fa-microchip"></i></div>
-            <div class="card-content" style="text-align: left;">
-                <h4>Modern Tech & Innovation</h4>
-                <p>Earn +10 Points & Unlock</p>
+        <!-- Section 3: Biology & Earth Sciences -->
+        <div class="section-title" style="text-align: left;"><i class="fa-solid fa-dna"></i> Biology & Earth Sciences</div>
+        <div class="book-grid">
+            
+            <div class="book-card" onclick="openBook('Charles Darwin - Origin of Species')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);"><i class="fa-solid fa-seedling"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Charles Darwin</h4>
+                    <p>On the Origin of Species by Natural Selection.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #11998e;">Read</button>
+                </div>
             </div>
-            <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
+
+            <div class="book-card" onclick="openBook('Gregor Mendel - Genetics')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #eb3349, #f45c43);"><i class="fa-solid fa-spa"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Gregor Mendel</h4>
+                    <p>Experiments on Plant Hybridization.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #eb3349;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Marie Curie - Radioactivity')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #654ea3, #eaafc8);"><i class="fa-solid fa-flask-vial"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Marie Curie</h4>
+                    <p>Researches on Radioactive Substances.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #654ea3;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Louis Pasteur - Microbiology')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #ff5f6d, #ffc371);"><i class="fa-solid fa-virus-covid-slash"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Louis Pasteur</h4>
+                    <p>Germ Theory and Fermentation Studies.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #ff5f6d;">Read</button>
+                </div>
+            </div>
+
         </div>
+
+        <!-- Section 4: Modern Technology & Innovations -->
+        <div class="section-title" style="text-align: left;"><i class="fa-solid fa-microchip"></i> Modern Tech & Engineering</div>
+        <div class="book-grid">
+            
+            <div class="book-card" onclick="openBook('Nikola Tesla - My Inventions')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #833ab4, #fd1d1d);"><i class="fa-solid fa-lightbulb"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Nikola Tesla</h4>
+                    <p>My Inventions: The Autobiography & Patents.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #833ab4;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Thomas Edison - Inventions')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #3a7bd5, #3a6073);"><i class="fa-solid fa-gear"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Thomas Edison</h4>
+                    <p>Industrial Research & Electrical Systems.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #3a7bd5;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Ada Lovelace - Engine Notes')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #00b09b, #96c93d);"><i class="fa-solid fa-code"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Ada Lovelace</h4>
+                    <p>Notes on the Analytical Engine & Code.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #00b09b;">Read</button>
+                </div>
+            </div>
+
+            <div class="book-card" onclick="openBook('Galileo Galilei - Starry Messenger')">
+                <div class="book-icon" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);"><i class="fa-solid fa-telescope"></i></div>
+                <div class="book-info" style="text-align: left;">
+                    <h4>Galileo Galilei</h4>
+                    <p>Sidereus Nuncius & Astronomical Discoveries.</p>
+                </div>
+                <div class="book-footer">
+                    <span>+10 Pts Unlock</span>
+                    <button class="read-btn" style="background: #ff416c;">Read</button>
+                </div>
+            </div>
+
+        </div>
+
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Local Storage দিয়ে পয়েন্ট সেভ করার ব্যবস্থা
-        let userPoints = localStorage.getItem('library_points') ? parseInt(localStorage.getItem('library_points')) : 0;
+        // Local Storage দিয়ে রিওয়ার্ড পয়েন্ট ম্যানেজমেন্ট
+        let userPoints = localStorage.getItem('archive_points') ? parseInt(localStorage.getItem('archive_points')) : 0;
         document.getElementById('pointsCount').innerText = userPoints;
 
-        // Adsgram Controller Initialization (UnitID: 45311)
+        // Adsgram Rewarded Ad Controller Initialization (UnitID: 45311)
         const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "45311" }) : null;
 
-        function openCategory(catName) {
+        function openBook(bookTitle) {
             if (adsgramController) {
                 adsgramController.show()
                     .then(() => {
-                        // User watched the ad successfully -> Give Reward!
+                        // Successful Ad View -> Reward Earned!
                         userPoints += 10;
-                        localStorage.setItem('library_points', userPoints);
+                        localStorage.setItem('archive_points', userPoints);
                         document.getElementById('pointsCount').innerText = userPoints;
-                        
-                        tg.showAlert("🎉 Success! +10 Points added. Unlocking book...");
+
+                        tg.showAlert(`🎉 Reward Earned! +10 Points added. Opening "${bookTitle}"...`);
                         
                         setTimeout(() => {
-                            location.href = `book.html?cat=${catName}`;
+                            location.href = `page.html?book=${encodeURIComponent(bookTitle)}`;
                         }, 1000);
                     })
                     .catch((result) => {
                         console.log("Adsgram error or skipped:", result);
-                        tg.showAlert("Ad was skipped or unavailable. You can still browse.");
-                        location.href = `book.html?cat=${catName}`;
+                        tg.showAlert("Ad skipped or unavailable. Opening library content directly.");
+                        location.href = `page.html?book=${encodeURIComponent(bookTitle)}`;
                     });
             } else {
-                // যদি কোনো কারণে অ্যাড লোড না হয়
-                location.href = `book.html?cat=${catName}`;
+                location.href = `page.html?book=${encodeURIComponent(bookTitle)}`;
             }
         }
     </script>
