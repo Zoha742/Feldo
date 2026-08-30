@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Chapters</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0b0f19; color: #fff; margin: 0; padding: 16px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; }
+        .back-btn { background: #1e293b; color: #38bdf8; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-weight: 600; }
+        .card { background: #131c2e; border: 1px solid #1e293b; padding: 14px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-decoration: none; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        <h3 style="color: #38bdf8; margin-top: 0;">Chapters & Contents</h3>
+        
+        <a href="text.html?chap=1" class="card">
+            <div><h4>Chapter 1: Introduction</h4><p style="font-size: 11px; color: #94a3b8; margin:0;">Basic concepts & overview</p></div>
+            <i class="fa-solid fa-book-open" style="color: #38bdf8;"></i>
+        </a>
+        <a href="text.html?chap=2" class="card">
+            <div><h4>Chapter 2: Core Theories</h4><p style="font-size: 11px; color: #94a3b8; margin:0;">Detailed explanations</p></div>
+            <i class="fa-solid fa-book-open" style="color: #38bdf8;"></i>
+        </a>
+    </div>
+    <script>window.Telegram.WebApp.expand();</script>
+</body>
+</html>
