@@ -3,34 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Collection</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script> 
+    <title>Library Collection</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0b0f19; color: #fff; margin: 0; padding: 16px; display: flex; justify-content: center; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #090d16, #1f0b24, #0b1c24);
+            color: #f8fafc;
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
         .container { width: 100%; max-width: 480px; }
-        .back-btn { background: #1e293b; color: #38bdf8; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-weight: 600; }
-        .card { background: #131c2e; border: 1px solid #1e293b; padding: 14px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-decoration: none; color: #fff; }
-        .card:hover { border-color: #38bdf8; }
+        .back-btn { background: rgba(255,255,255,0.1); color: #38bdf8; border: 1px solid rgba(255,255,255,0.2); padding: 8px 14px; border-radius: 10px; cursor: pointer; margin-bottom: 15px; font-weight: 650; display: inline-flex; align-items: center; gap: 6px; }
+        .card { background: rgba(19, 28, 46, 0.9); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-decoration: none; color: #fff; transition: 0.3s; }
+        .card:hover { border-color: #38bdf8; transform: translateY(-2px); }
     </style>
 </head>
 <body>
     <div class="container">
-        <button class="back-btn" onclick="location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Back to Home</button>
-        <h3 id="categoryTitle" style="color: #38bdf8; margin-top: 0;">Scientific Library</h3>
+        <button class="back-btn" onclick="location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Home Archive</button>
+        <h3 id="categoryTitle" style="color: #38bdf8; margin-top: 5px; margin-bottom: 15px;">Masterworks Collection</h3>
         
         <div id="bookList">
             <a href="page.html?book=relativity" class="card">
-                <div><h4>Relativity: Special & General</h4><p style="font-size: 11px; color: #94a3b8; margin:0;">Albert Einstein</p></div>
-                <span style="font-size: 12px; background: #2563eb; padding: 5px 12px; border-radius: 6px;">Read</span>
+                <div>
+                    <h4 style="margin:0 0 4px 0; font-size: 13px;">Relativity: Special & General Theory</h4>
+                    <p style="font-size: 11px; color: #94a3b8; margin:0;">Author: Albert Einstein • Physics</p>
+                </div>
+                <span style="font-size: 11px; background: #2563eb; padding: 6px 12px; border-radius: 8px; font-weight: 700;">Open</span>
             </a>
             <a href="page.html?book=principia" class="card">
-                <div><h4>Principia Mathematica</h4><p style="font-size: 11px; color: #94a3b8; margin:0;">Isaac Newton</p></div>
-                <span style="font-size: 12px; background: #2563eb; padding: 5px 12px; border-radius: 6px;">Read</span>
+                <div>
+                    <h4 style="margin:0 0 4px 0; font-size: 13px;">Principia Mathematica</h4>
+                    <p style="font-size: 11px; color: #94a3b8; margin:0;">Author: Isaac Newton • Mechanics</p>
+                </div>
+                <span style="font-size: 11px; background: #2563eb; padding: 6px 12px; border-radius: 8px; font-weight: 700;">Open</span>
             </a>
             <a href="page.html?book=cosmos" class="card">
-                <div><h4>Cosmos: A Personal Voyage</h4><p style="font-size: 11px; color: #94a3b8; margin:0;">Carl Sagan</p></div>
-                <span style="font-size: 12px; background: #2563eb; padding: 5px 12px; border-radius: 6px;">Read</span>
+                <div>
+                    <h4 style="margin:0 0 4px 0; font-size: 13px;">Cosmos: A Personal Voyage</h4>
+                    <p style="font-size: 11px; color: #94a3b8; margin:0;">Author: Carl Sagan • Astronomy</p>
+                </div>
+                <span style="font-size: 11px; background: #2563eb; padding: 6px 12px; border-radius: 8px; font-weight: 700;">Open</span>
             </a>
         </div>
     </div>
@@ -38,7 +56,7 @@
         window.Telegram.WebApp.expand();
         const urlParams = new URLSearchParams(window.location.search);
         const cat = urlParams.get('cat');
-        if(cat) document.getElementById('categoryTitle').innerText = cat.toUpperCase() + ' MASTERPIECES';
+        if(cat) document.getElementById('categoryTitle').innerText = cat.toUpperCase() + ' ARCHIVE COLLECTION';
     </script>
 </body>
 </html>
