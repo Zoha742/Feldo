@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Collection</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0b0f19; color: #fff; margin: 0; padding: 16px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; }
+        .back-btn { background: #1e293b; color: #38bdf8; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; margin-bottom: 15px; font-weight: 600; }
+        .card { background: #131c2e; border: 1px solid #1e293b; padding: 14px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-decoration: none; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        <h3 id="categoryTitle" style="color: #38bdf8; margin-top: 0;">Category Books</h3>
+        
+        <div id="bookList">
+            <a href="page.html?book=relativity" class="card">
+                <div><h4>Relativity: Special & General</h4><p style="font-size: 11px; color: #94a3b8; margin:0;">Albert Einstein</p></div>
+                <span style="font-size: 12px; background: #2563eb; padding: 4px 10px; border-radius: 6px;">Read</span>
+            </a>
+            <a href="page.html?book=principia" class="card">
+                <div><h4>Principia Mathematica</h4><p style="font-size: 11px; color: #94a3b8; margin:0;">Isaac Newton</p></div>
+                <span style="font-size: 12px; background: #2563eb; padding: 4px 10px; border-radius: 6px;">Read</span>
+            </a>
+        </div>
+    </div>
+    <script>
+        window.Telegram.WebApp.expand();
+        const urlParams = new URLSearchParams(window.location.search);
+        const cat = urlParams.get('cat');
+        if(cat) document.getElementById('categoryTitle').innerText = cat.toUpperCase() + ' BOOKS';
+    </script>
+</body>
+</html>
