@@ -3,37 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen Book Library - Home</title>
+    <title>World Scientific Library - Home</title>
+    <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Adsgram Official SDK Script (PlatformID: 42708, UnitID: 45311) -->
+    <script src="https://sad.adsgram.ai/js/adsgram.js"></script>
+    
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0b0f19; color: #fff; margin: 0; padding: 16px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 480px; }
-        .banner { background: linear-gradient(135deg, #3b82f6, #1e40af); padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 20px; }
-        .card { background: #131c2e; border: 1px solid #1e293b; padding: 14px; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-decoration: none; color: #fff; }
-        .card:hover { border-color: #38bdf8; }
+        :root {
+            --card-bg: rgba(19, 28, 46, 0.85);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #31103f, #0f2b3f, #1a0f2b);
+            background-size: 400% 400%;
+            animation: rainbowBackground 15s ease infinite;
+            color: var(--text-main);
+            margin: 0;
+            padding: 0 0 40px 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        @keyframes rainbowBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+        .banner {
+            background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+            border-radius: 20px;
+            padding: 24px 16px;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(255, 117, 140, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .banner h2 { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; }
+        .banner p { margin: 0; font-size: 12px; opacity: 0.95; }
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.3s;
+        }
+        .card:hover { transform: translateY(-3px); border-color: rgba(56, 189, 248, 0.5); }
+        .card-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; margin-right: 12px; }
+        .card-content { flex: 1; }
+        .card-content h4 { margin: 0 0 3px 0; font-size: 14px; font-weight: 700; }
+        .card-content p { margin: 0; font-size: 11px; color: var(--text-muted); }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="banner">
-            <h2>📚 HeyCen Library Hub</h2>
-            <p>Select a category to explore books</p>
+            <h2>🌌 World Scientific Library</h2>
+            <p>Explore masterpieces by Einstein, Newton, Hawking & more</p>
         </div>
         
-        <a href="book.html?cat=physics" class="card">
-            <div><i class="fa-solid fa-atom" style="color: #ff9068;"></i> Physics & Science</div>
-            <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
-        </a>
-        <a href="book.html?cat=math" class="card">
-            <div><i class="fa-solid fa-square-root-variable" style="color: #38bdf8;"></i> Mathematics</div>
-            <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
-        </a>
-        <a href="book.html?cat=literature" class="card">
-            <div><i class="fa-solid fa-feather" style="color: #34d399;"></i> World Literature</div>
-            <i class="fa-solid fa-chevron-right" style="font-size: 12px; color: #94a3b8;"></i>
-        </a>
+        <!-- Categories linked with Adsgram Ad trigger -->
+        <div class="card" onclick="openCategory('physics')">
+            <div class="card-icon" style="background: linear-gradient(135deg, #ff4b1f, #ff9068);"><i class="fa-solid fa-atom"></i></div>
+            <div class="card-content">
+                <h4>Physics & Astronomy Masters</h4>
+                <p>Einstein, Newton, Hawking, Sagan</p>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
+        </div>
+
+        <div class="card" onclick="openCategory('biology')">
+            <div class="card-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);"><i class="fa-solid fa-dna"></i></div>
+            <div class="card-content">
+                <h4>Biology & Earth Sciences</h4>
+                <p>Darwin, Mendel, Curie, Pasteur</p>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
+        </div>
+
+        <div class="card" onclick="openCategory('math')">
+            <div class="card-icon" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);"><i class="fa-solid fa-square-root-variable"></i></div>
+            <div class="card-content">
+                <h4>Mathematics & Computing</h4>
+                <p>Euclid, Turing, Euler, Pythagoras</p>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
+        </div>
+
+        <div class="card" onclick="openCategory('tech')">
+            <div class="card-icon" style="background: linear-gradient(135deg, #833ab4, #fd1d1d);"><i class="fa-solid fa-microchip"></i></div>
+            <div class="card-content">
+                <h4>Modern Tech & Innovation</h4>
+                <p>Tesla, Edison, Lovelace, Galileo</p>
+            </div>
+            <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
+        </div>
     </div>
-    <script>window.Telegram.WebApp.expand();</script>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Adsgram Controller Initialization (UnitID: 45311)
+        const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "45311" }) : null;
+
+        function openCategory(catName) {
+            if (adsgramController) {
+                adsgramController.show()
+                    .then(() => {
+                        // User watched the ad successfully, redirect to book list
+                        location.href = `book.html?cat=${catName}`;
+                    })
+                    .catch((result) => {
+                        console.log("Adsgram error:", result);
+                        // Redirect even if ad is skipped or unavailable so user is not stuck
+                        location.href = `book.html?cat=${catName}`;
+                    });
+            } else {
+                location.href = `book.html?cat=${catName}`;
+            }
+        }
+    </script>
 </body>
 </html>
