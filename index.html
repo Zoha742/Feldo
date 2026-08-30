@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>World Scientific Library - Home</title>
-    <!-- Telegram Web App Script --> 
+    <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -46,15 +46,32 @@
         .banner {
             background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
             border-radius: 20px;
-            padding: 24px 16px;
+            padding: 20px 16px;
             color: #fff;
             text-align: center;
             margin-bottom: 20px;
             box-shadow: 0 10px 30px rgba(255, 117, 140, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        .banner h2 { margin: 0 0 6px 0; font-size: 22px; font-weight: 800; }
-        .banner p { margin: 0; font-size: 12px; opacity: 0.95; }
+        .banner h2 { margin: 0 0 4px 0; font-size: 20px; font-weight: 800; }
+        .banner p { margin: 0; font-size: 11px; opacity: 0.95; }
+        
+        /* Reward Points Badge */
+        .reward-badge {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #facc15;
+            margin-bottom: 15px;
+        }
+
         .card {
             background: var(--card-bg);
             backdrop-filter: blur(12px);
@@ -78,45 +95,51 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" style="text-align: center;">
+        
+        <!-- Reward Counter Display -->
+        <div class="reward-badge">
+            <i class="fa-solid fa-coins"></i> Library Points: <span id="pointsCount">0</span>
+        </div>
+
         <div class="banner">
             <h2>🌌 World Scientific Library</h2>
-            <p>Explore masterpieces by Einstein, Newton, Hawking & more</p>
+            <p>Watch ad to unlock books & earn reward points</p>
         </div>
         
-        <!-- Categories linked with Adsgram Ad trigger -->
+        <!-- Categories linked with Adsgram Reward Ad trigger -->
         <div class="card" onclick="openCategory('physics')">
             <div class="card-icon" style="background: linear-gradient(135deg, #ff4b1f, #ff9068);"><i class="fa-solid fa-atom"></i></div>
-            <div class="card-content">
+            <div class="card-content" style="text-align: left;">
                 <h4>Physics & Astronomy Masters</h4>
-                <p>Einstein, Newton, Hawking, Sagan</p>
+                <p>Earn +10 Points & Unlock</p>
             </div>
             <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
         </div>
 
         <div class="card" onclick="openCategory('biology')">
             <div class="card-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);"><i class="fa-solid fa-dna"></i></div>
-            <div class="card-content">
+            <div class="card-content" style="text-align: left;">
                 <h4>Biology & Earth Sciences</h4>
-                <p>Darwin, Mendel, Curie, Pasteur</p>
+                <p>Earn +10 Points & Unlock</p>
             </div>
             <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
         </div>
 
         <div class="card" onclick="openCategory('math')">
             <div class="card-icon" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);"><i class="fa-solid fa-square-root-variable"></i></div>
-            <div class="card-content">
+            <div class="card-content" style="text-align: left;">
                 <h4>Mathematics & Computing</h4>
-                <p>Euclid, Turing, Euler, Pythagoras</p>
+                <p>Earn +10 Points & Unlock</p>
             </div>
             <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
         </div>
 
         <div class="card" onclick="openCategory('tech')">
             <div class="card-icon" style="background: linear-gradient(135deg, #833ab4, #fd1d1d);"><i class="fa-solid fa-microchip"></i></div>
-            <div class="card-content">
+            <div class="card-content" style="text-align: left;">
                 <h4>Modern Tech & Innovation</h4>
-                <p>Tesla, Edison, Lovelace, Galileo</p>
+                <p>Earn +10 Points & Unlock</p>
             </div>
             <i class="fa-solid fa-chevron-right" style="color: #38bdf8;"></i>
         </div>
@@ -126,6 +149,10 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
+        // Local Storage দিয়ে পয়েন্ট সেভ করার ব্যবস্থা
+        let userPoints = localStorage.getItem('library_points') ? parseInt(localStorage.getItem('library_points')) : 0;
+        document.getElementById('pointsCount').innerText = userPoints;
+
         // Adsgram Controller Initialization (UnitID: 45311)
         const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "45311" }) : null;
 
@@ -133,15 +160,24 @@
             if (adsgramController) {
                 adsgramController.show()
                     .then(() => {
-                        // User watched the ad successfully, redirect to book list
-                        location.href = `book.html?cat=${catName}`;
+                        // User watched the ad successfully -> Give Reward!
+                        userPoints += 10;
+                        localStorage.setItem('library_points', userPoints);
+                        document.getElementById('pointsCount').innerText = userPoints;
+                        
+                        tg.showAlert("🎉 Success! +10 Points added. Unlocking book...");
+                        
+                        setTimeout(() => {
+                            location.href = `book.html?cat=${catName}`;
+                        }, 1000);
                     })
                     .catch((result) => {
-                        console.log("Adsgram error:", result);
-                        // Redirect even if ad is skipped or unavailable so user is not stuck
+                        console.log("Adsgram error or skipped:", result);
+                        tg.showAlert("Ad was skipped or unavailable. You can still browse.");
                         location.href = `book.html?cat=${catName}`;
                     });
             } else {
+                // যদি কোনো কারণে অ্যাড লোড না হয়
                 location.href = `book.html?cat=${catName}`;
             }
         }
