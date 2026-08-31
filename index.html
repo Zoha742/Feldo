@@ -3,435 +3,373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Scientific & Literary Archive - Massive Library</title>
-    <!-- Telegram Web App Script -->
+    <title>HeyCen - Home</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- FontAwesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Adsgram Official SDK Script (PlatformID: 42708, UnitID: 45311) -->
-    <script src="https://sad.adsgram.ai/js/adsgram.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css?v=2.4"> 
     
     <style>
         :root {
-            --card-bg: rgba(15, 23, 42, 0.9);
-            --card-border: rgba(255, 255, 255, 0.12);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --border-color: #e2e8f0;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #090d16, #1f0b24, #0b1c24, #12091f);
-            background-size: 400% 400%;
-            animation: rainbowBackground 15s ease infinite;
+            background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 50px 0;
+            padding: 0 0 100px 0;
             display: flex;
             justify-content: center;
-            min-height: 100vh;
             overflow-x: hidden;
-        }
-        @keyframes rainbowBackground {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
         .container {
             width: 100%;
             max-width: 480px;
             padding: 16px;
             box-sizing: border-box;
-        }
-        .banner {
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
-            border-radius: 20px;
-            padding: 22px 16px;
-            color: #fff;
-            text-align: center;
-            margin-bottom: 18px;
-            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .banner h2 { margin: 0 0 4px 0; font-size: 21px; font-weight: 800; letter-spacing: 0.5px; }
-        .banner p { margin: 0; font-size: 11px; opacity: 0.95; line-height: 1.4; }
-        
-        .reward-badge {
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(250, 204, 21, 0.3);
-            padding: 8px 18px;
-            border-radius: 30px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #facc15;
-            margin-bottom: 14px;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .section-title {
-            font-size: 15px;
-            font-weight: 800;
-            margin: 22px 0 12px 0;
-            color: #38bdf8;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-        }
+        /* সোয়াইপ অ্যানিমেশন ক্লাস */
+        .page-slide-left { transform: translateX(-100px); opacity: 0; }
+        .page-slide-right { transform: translateX(100px); opacity: 0; }
 
-        .book-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .book-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .book-card:hover {
-            transform: translateY(-4px) scale(1.02);
-            border-color: rgba(56, 189, 248, 0.5);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-        }
-        .book-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 17px;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .book-info h4 { margin: 0 0 2px 0; font-size: 12px; font-weight: 700; color: #fff; }
-        .book-info p { margin: 0; font-size: 10px; color: var(--text-muted); line-height: 1.3; }
-        
-        .book-footer {
+        .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            padding-top: 8px;
-            font-size: 9px;
-            color: #cbd5e1;
+            margin-bottom: 20px;
         }
-        .read-btn {
-            color: #fff;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 700;
-            cursor: pointer;
+        .user-info h2 { margin: 0; font-size: 20px; font-weight: 700; }
+        .user-info p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
+        .header-icons { display: flex; align-items: center; gap: 12px; }
+        .notification-btn { background: none; border: none; font-size: 20px; color: var(--text-main); cursor: pointer; position: relative; }
+        
+        /* বেল আইকন ভাইব্রেট বা ঝাঁকানোর অ্যানিমেশন */
+        @keyframes shakeBell {
+            0% { transform: rotate(0deg); }
+            15% { transform: rotate(14deg); }
+            30% { transform: rotate(-14deg); }
+            45% { transform: rotate(10deg); }
+            60% { transform: rotate(-10deg); }
+            75% { transform: rotate(4deg); }
+            90% { transform: rotate(-4deg); }
+            100% { transform: rotate(0deg); }
         }
+        .vibrating-bell {
+            animation: shakeBell 0.8s infinite ease-in-out;
+            color: #ef4444 !important;
+        }
+
+        .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid #6366f1; }
+        .points-card { background: var(--primary-gradient); border-radius: 20px; padding: 24px; color: #ffffff; position: relative; overflow: hidden; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4); }
+        .points-title { font-size: 13px; opacity: 0.9; margin-bottom: 6px; }
+        .points-value { font-size: 34px; font-weight: 800; margin-bottom: 10px; }
+        .usd-badge { display: inline-block; background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .history-btn { position: absolute; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.2); border: none; color: #ffffff; padding: 6px 14px; border-radius: 12px; font-size: 12px; cursor: pointer; backdrop-filter: blur(5px); }
+        .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .menu-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px 8px; border-radius: 16px; text-align: center; cursor: pointer; text-decoration: none; color: var(--text-main); }
+        .menu-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 18px; color: #fff; }
+        .menu-label { font-size: 11px; font-weight: 600; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .section-title { font-size: 16px; font-weight: 700; }
+        .streak-badge { font-size: 12px; color: #f97316; font-weight: 600; }
+        .bonus-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scrollbar-width: none; }
+        .bonus-scroll::-webkit-scrollbar { display: none; }
+        .bonus-card { background: var(--card-bg); border: 1px solid var(--border-color); min-width: 65px; padding: 12px 6px; border-radius: 14px; text-align: center; flex-shrink: 0; }
+        .bonus-card.active { border-color: #8b5cf6; background: #f3e8ff; }
+        .bonus-card.claimed { opacity: 0.6; background: #f1f5f9; }
+        .bonus-card .day { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+        .bonus-card .icon { font-size: 18px; margin-bottom: 6px; color: #22c55e; }
+        .bonus-card .reward { font-size: 11px; font-weight: 700; }
+        
+        .task-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .task-left { display: flex; align-items: center; gap: 12px; }
+        .task-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
+        .task-info h4 { margin: 0 0 4px 0; font-size: 14px; font-weight: 600; }
+        .task-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .task-reward { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #eab308; margin-top: 4px; }
+        .action-btn { background: #6366f1; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .action-btn.red { background: #ef4444; }
+        .action-btn.green { background: #22c55e; }
+        .action-btn.purple { background: #8b5cf6; }
+        .action-btn.orange { background: #f97316; }
+
+        .promo-banner { background: var(--primary-gradient); border-radius: 16px; padding: 16px; color: #fff; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+        .promo-banner h3 { margin: 0 0 4px 0; font-size: 15px; }
+        .promo-banner p { margin: 0; font-size: 11px; opacity: 0.9; }
+        .promo-btn { background: rgba(255,255,255,0.25); border: none; color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; backdrop-filter: blur(5px); white-space: nowrap; }
+        
+        /* বড় এবং আকর্ষণীয় নেভিগেশন বার */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
+            width: 100%; max-width: 480px; background: var(--card-bg); 
+            border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; 
+            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; 
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+            transition: background 0.3s ease;
+        }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item.active { color: #6366f1; }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="container" style="text-align: center;">
-        
-        <!-- Reward Counter Display -->
-        <div class="reward-badge">
-            <i class="fa-solid fa-coins"></i> Archive Points: <span id="pointsCount">0</span>
+    <div class="container" id="mainContainer">
+        <div class="header">
+            <div class="user-info">
+                <h2>Hello, <span id="username">User</span> 👋</h2>
+                <p>Complete tasks, watch ads & earn points</p>
+            </div>
+            <div class="header-icons">
+                <button class="notification-btn" onclick="location.href='notification.html'"><i class="fa-regular fa-bell"></i></button>
+                <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="User" onclick="location.href='profile.html'">
+            </div>
         </div>
 
-        <div class="banner">
-            <h2>📚 World Scientific & Literary Archive</h2>
-            <p>Access 20+ legendary masterworks in Physics, Mathematics, Biology, Philosophy & Technology. Watch ad to earn reward points & unlock complete chapters.</p>
+        <div class="points-card">
+            <div class="points-title">Your Points (GP)</div>
+            <div class="points-value" id="balance">0</div>
+            <div class="usd-badge" id="usd-value">≈ $0.00</div>
+            <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
         </div>
 
-        <!-- Section 1: Physics & Cosmos -->
-        <div class="section-title" style="text-align: left;"><i class="fa-solid fa-atom"></i> Physics & Cosmos Masterpieces</div>
-        <div class="book-grid">
-            
-            <div class="book-card" onclick="openBook('Albert Einstein - Relativity')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #ff4b1f, #ff9068);"><i class="fa-solid fa-bolt"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Albert Einstein</h4>
-                    <p>Relativity: Special & General Theory.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #ff4b1f;">Read</button>
-                </div>
+        <div class="quick-menu">
+            <div class="menu-item" onclick="claimDailyBonus()">
+                <div class="menu-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="menu-label">Daily Check-in</div>
             </div>
-
-            <div class="book-card" onclick="openBook('Isaac Newton - Principia')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #1d976c, #93f9b9);"><i class="fa-solid fa-apple-whole"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Isaac Newton</h4>
-                    <p>Mathematical Principles of Natural Philosophy.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #1d976c;">Read</button>
-                </div>
+            <div class="menu-item" onclick="location.href='ads.html'">
+                <div class="menu-icon" style="background: #ef4444;"><i class="fa-solid fa-play"></i></div>
+                <div class="menu-label">Watch Ads</div>
             </div>
-
-            <div class="book-card" onclick="openBook('Stephen Hawking - Brief History')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"><i class="fa-solid fa-meteor"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Stephen Hawking</h4>
-                    <p>A Brief History of Time & Black Holes.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #00f2fe; color:#000;">Read</button>
-                </div>
+            <a href="task.html" class="menu-item">
+                <div class="menu-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
+                <div class="menu-label">Tasks</div>
+            </a>
+            <div class="menu-item" onclick="location.href='agent.html'">
+                <div class="menu-icon" style="background: #3b82f6;"><i class="fa-solid fa-handshake"></i></div>
+                <div class="menu-label">Agent</div>
             </div>
-
-            <div class="book-card" onclick="openBook('Carl Sagan - Cosmos')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #b224ef, #7579ff);"><i class="fa-solid fa-earth-americas"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Carl Sagan</h4>
-                    <p>Cosmos: A Personal Voyage & Universe.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #7579ff;">Read</button>
-                </div>
-            </div>
-
-            <div class="book-card" onclick="openBook('Richard Feynman - Lectures')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #00c6ff, #0072ff);"><i class="fa-solid fa-radiation"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Richard Feynman</h4>
-                    <p>The Feynman Lectures on Physics.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #0072ff;">Read</button>
-                </div>
-            </div>
-
-            <div class="book-card" onclick="openBook('Niels Bohr - Quantum Mechanics')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #f7971e, #ffd200);"><i class="fa-solid fa-atom"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Niels Bohr</h4>
-                    <p>Atomic Theory and Spectra Description.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #f7971e; color:#000;">Read</button>
-                </div>
-            </div>
-
         </div>
 
-        <!-- Section 2: Mathematics & Computing -->
-        <div class="section-title" style="text-align: left;"><i class="fa-solid fa-square-root-variable"></i> Mathematics & Computing</div>
-        <div class="book-grid">
-            
-            <div class="book-card" onclick="openBook('Euclid - Elements')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #2193b0, #6dd5ed);"><i class="fa-solid fa-shapes"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Euclid of Alexandria</h4>
-                    <p>Elements: Complete Classical Geometry.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #2193b0;">Read</button>
-                </div>
-            </div>
+        <div class="section-header">
+            <div class="section-title">Daily Bonus</div>
+            <div class="streak-badge" id="streak-text"><i class="fa-solid fa-fire"></i> 1 Days Streak</div>
+        </div>
+        <div class="bonus-scroll" id="daily-bonus-container"></div>
 
-            <div class="book-card" onclick="openBook('Alan Turing - Computing')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #cc2b5e, #753a88);"><i class="fa-solid fa-computer"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Alan Turing</h4>
-                    <p>Computing Machinery and Intelligence.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #cc2b5e;">Read</button>
-                </div>
-            </div>
-
-            <div class="book-card" onclick="openBook('Leonhard Euler - Calculus')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #007991, #78ffd6);"><i class="fa-solid fa-infinity"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Leonhard Euler</h4>
-                    <p>Introductio in analysin infinitorum.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #007991;">Read</button>
-                </div>
-            </div>
-
-            <div class="book-card" onclick="openBook('Pythagoras - Number Theory')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #f12711, #f5af19);"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Pythagoras</h4>
-                    <p>Harmonics and Mathematical Numbers.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #f12711;">Read</button>
-                </div>
-            </div>
-
+        <div class="section-header">
+            <div class="section-title">Available Tasks</div>
+            <a href="task.html" style="font-size: 12px; color: #6366f1; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
-        <!-- Section 3: Biology & Earth Sciences -->
-        <div class="section-title" style="text-align: left;"><i class="fa-solid fa-dna"></i> Biology & Earth Sciences</div>
-        <div class="book-grid">
-            
-            <div class="book-card" onclick="openBook('Charles Darwin - Origin of Species')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #11998e, #38ef7d);"><i class="fa-solid fa-seedling"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Charles Darwin</h4>
-                    <p>On the Origin of Species by Natural Selection.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #11998e;">Read</button>
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #8b5cf6;"><i class="fa-solid fa-file-lines"></i></div>
+                <div class="task-info">
+                    <h4>Complete Survey</h4>
+                    <p>Watch ad & earn points</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +150</div>
                 </div>
             </div>
-
-            <div class="book-card" onclick="openBook('Gregor Mendel - Genetics')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #eb3349, #f45c43);"><i class="fa-solid fa-spa"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Gregor Mendel</h4>
-                    <p>Experiments on Plant Hybridization.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #eb3349;">Read</button>
-                </div>
-            </div>
-
-            <div class="book-card" onclick="openBook('Marie Curie - Radioactivity')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #654ea3, #eaafc8);"><i class="fa-solid fa-flask-vial"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Marie Curie</h4>
-                    <p>Researches on Radioactive Substances.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #654ea3;">Read</button>
-                </div>
-            </div>
-
-            <div class="book-card" onclick="openBook('Louis Pasteur - Microbiology')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #ff5f6d, #ffc371);"><i class="fa-solid fa-virus-covid-slash"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Louis Pasteur</h4>
-                    <p>Germ Theory and Fermentation Studies.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #ff5f6d;">Read</button>
-                </div>
-            </div>
-
+            <button class="action-btn purple" onclick="showComingSoon()">Start</button>
         </div>
 
-        <!-- Section 4: Modern Technology & Innovations -->
-        <div class="section-title" style="text-align: left;"><i class="fa-solid fa-microchip"></i> Modern Tech & Engineering</div>
-        <div class="book-grid">
-            
-            <div class="book-card" onclick="openBook('Nikola Tesla - My Inventions')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #833ab4, #fd1d1d);"><i class="fa-solid fa-lightbulb"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Nikola Tesla</h4>
-                    <p>My Inventions: The Autobiography & Patents.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #833ab4;">Read</button>
+        <div class="task-card">
+            <div class="task-left">
+                <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-download"></i></div>
+                <div class="task-info">
+                    <h4>Download App</h4>
+                    <p>Watch ad & earn points</p>
+                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +100</div>
                 </div>
             </div>
-
-            <div class="book-card" onclick="openBook('Thomas Edison - Inventions')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #3a7bd5, #3a6073);"><i class="fa-solid fa-gear"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Thomas Edison</h4>
-                    <p>Industrial Research & Electrical Systems.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #3a7bd5;">Read</button>
-                </div>
-            </div>
-
-            <div class="book-card" onclick="openBook('Ada Lovelace - Engine Notes')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #00b09b, #96c93d);"><i class="fa-solid fa-code"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Ada Lovelace</h4>
-                    <p>Notes on the Analytical Engine & Code.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #00b09b;">Read</button>
-                </div>
-            </div>
-
-            <div class="book-card" onclick="openBook('Galileo Galilei - Starry Messenger')">
-                <div class="book-icon" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);"><i class="fa-solid fa-telescope"></i></div>
-                <div class="book-info" style="text-align: left;">
-                    <h4>Galileo Galilei</h4>
-                    <p>Sidereus Nuncius & Astronomical Discoveries.</p>
-                </div>
-                <div class="book-footer">
-                    <span>+10 Pts Unlock</span>
-                    <button class="read-btn" style="background: #ff416c;">Read</button>
-                </div>
-            </div>
-
+            <button class="action-btn green" onclick="showComingSoon()">Start</button>
         </div>
 
+        <div class="promo-banner" style="margin-top: 20px;">
+            <div>
+                <h3>Watch Ads & Earn More!</h3>
+                <p>Watch ads and earn unlimited points</p>
+            </div>
+            <button class="promo-btn" onclick="location.href='ads.html'"><i class="fa-solid fa-play"></i> Watch Now</button>
+        </div>
     </div>
 
+    <!-- নেভিগেশন বার -->
+    <div class="bottom-nav" id="bottomNav">
+        <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
+        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
+        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Local Storage দিয়ে রিওয়ার্ড পয়েন্ট ম্যানেজমেন্ট
-        let userPoints = localStorage.getItem('archive_points') ? parseInt(localStorage.getItem('archive_points')) : 0;
-        document.getElementById('pointsCount').innerText = userPoints;
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id.toString() : "7757851056";
+        let username = user ? (user.first_name || "User") : "User";
 
-        // Adsgram Rewarded Ad Controller Initialization (UnitID: 45311)
-        const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "45311" }) : null;
+        document.getElementById('username').innerText = username;
+        if (user && user.photo_url) {
+            document.getElementById('user-avatar').src = user.photo_url;
+        }
 
-        function openBook(bookTitle) {
-            if (adsgramController) {
-                adsgramController.show()
-                    .then(() => {
-                        // Successful Ad View -> Reward Earned!
-                        userPoints += 10;
-                        localStorage.setItem('archive_points', userPoints);
-                        document.getElementById('pointsCount').innerText = userPoints;
+        let userRef = db.ref('users/' + userId);
+        let userData = { points: 0, gp: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, lastSeen: Date.now() };
 
-                        tg.showAlert(`🎉 Reward Earned! +10 Points added. Opening "${bookTitle}"...`);
-                        
-                        setTimeout(() => {
-                            location.href = `page.html?book=${encodeURIComponent(bookTitle)}`;
-                        }, 1000);
-                    })
-                    .catch((result) => {
-                        console.log("Adsgram error or skipped:", result);
-                        tg.showAlert("Ad skipped or unavailable. Opening library content directly.");
-                        location.href = `page.html?book=${encodeURIComponent(bookTitle)}`;
-                    });
+        userRef.on('value', (snapshot) => {
+            let data = snapshot.val();
+            if (data) {
+                userData = data;
+                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                userData.points = currentPoints;
+                userData.gp = currentPoints;
+                updateUI();
+                userRef.update({ name: username, username: username, lastSeen: Date.now() });
             } else {
-                location.href = `page.html?book=${encodeURIComponent(bookTitle)}`;
+                userData = { points: 0, gp: 0, tasksDone: 0, streakDay: 1, lastCheckInDate: "", name: username, username: username, lastSeen: Date.now() };
+                userRef.set(userData);
+                updateUI();
+            }
+        });
+
+        function updateUI() {
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            document.getElementById('balance').innerText = currentPoints.toLocaleString();
+            document.getElementById('usd-value').innerText = '≈ $' + (currentPoints / 10000).toFixed(2);
+            document.getElementById('streak-text').innerHTML = `<i class="fa-solid fa-fire"></i> ${userData.streakDay || 1} Days Streak`;
+            renderDailyBonus();
+        }
+
+        function renderDailyBonus() {
+            const container = document.getElementById('daily-bonus-container');
+            container.innerHTML = '';
+            const rewards = [10, 15, 20, 25, 30, 35, 50];
+            let currentStreak = userData.streakDay || 1;
+            
+            for (let i = 1; i <= 7; i++) {
+                let isClaimed = i < currentStreak;
+                let isActive = i === currentStreak;
+                let iconClass = isClaimed ? "fa-solid fa-circle-check" : (i === 3 ? "fa-solid fa-gift" : "fa-solid fa-box-open");
+                let cardClass = "bonus-card" + (isActive ? " active" : "") + (isClaimed ? " claimed" : "");
+
+                container.innerHTML += `
+                    <div class="${cardClass}">
+                        <div class="day">Day ${i}</div>
+                        <div class="icon"><i class="${iconClass}"></i></div>
+                        <div class="reward">+${rewards[i-1]}</div>
+                    </div>
+                `;
             }
         }
+
+        function claimDailyBonus() {
+            let today = new Date().toDateString();
+            if (userData.lastCheckInDate === today) {
+                tg.showAlert('You have already claimed today!');
+                return;
+            }
+            const rewards = [10, 15, 20, 25, 30, 35, 50];
+            let rewardAmount = rewards[(userData.streakDay || 1) - 1] || 10;
+
+            let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
+            userData.points = currentPoints + rewardAmount;
+            userData.gp = userData.points;
+            userData.tasksDone = (userData.tasksDone || 0) + 1;
+            userData.lastCheckInDate = today;
+            userData.streakDay = (userData.streakDay || 1) < 7 ? (userData.streakDay || 1) + 1 : 1;
+
+            userRef.set(userData).then(() => {
+                tg.showAlert(`Claimed Daily Bonus! +${rewardAmount} GP added.`);
+            });
+        }
+
+        function showComingSoon() {
+            tg.showAlert("Coming Soon!");
+        }
+
+        // সোয়াইপ অ্যানিমেশন লজিক
+        let touchStartX = 0;
+        window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+        window.addEventListener('touchend', e => {
+            let touchEndX = e.changedTouches[0].screenX;
+            let diff = touchEndX - touchStartX;
+            const container = document.getElementById('mainContainer');
+            const bottomNav = document.getElementById('bottomNav');
+
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) {
+                    container.classList.add('page-slide-left');
+                    bottomNav.style.background = '#1e1b4b';
+                    setTimeout(() => { window.location.href = "task.html"; }, 250);
+                }
+            }
+        });
+
+        // আনরিড নোটিফিকেশন ট্র্যাক করে বেল আইকন ভাইব্রেট করার লজিক
+        let notifRef = db.ref('users/' + userId + '/notifications');
+        notifRef.on('value', (snapshot) => {
+            let bellBtn = document.querySelector('.notification-btn i');
+            let hasUnread = false;
+
+            if (snapshot.exists()) {
+                let notifs = snapshot.val();
+                Object.keys(notifs).forEach(key => {
+                    let item = notifs[key];
+                    if (item.isRead === false || item.isRead === undefined) {
+                        hasUnread = true;
+                    }
+                });
+            }
+
+            if (hasUnread) {
+                bellBtn.classList.add('vibrating-bell');
+            } else {
+                bellBtn.classList.remove('vibrating-bell');
+            }
+        });
+
+        // নতুন মেসেজ আসলে পপআপ শুধু একবার দেখানোর লজিক
+        let isInitialLoad = true;
+        notifRef.limitToLast(1).on('child_added', (snapshot) => {
+            let notif = snapshot.val();
+            let msg = notif.message || notif.text;
+            
+            if (msg && !isInitialLoad && (notif.isRead === false || notif.isRead === undefined)) {
+                tg.showAlert(msg);
+            }
+        });
+
+        setTimeout(() => {
+            isInitialLoad = false;
+        }, 2000);
     </script>
 </body>
 </html>
