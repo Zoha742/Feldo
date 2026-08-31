@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 16px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; }
+        .card { background: #fff; border: 1px solid #e2e8f0; padding: 16px; border-radius: 14px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3><i class="fa-solid fa-gauge" style="color: #6366f1;"></i> Activity Dashboard</h3>
+        <div class="card">
+            <h4>Total Tasks Completed</h4>
+            <p style="font-size: 20px; font-weight: 700; color: #6366f1; margin: 5px 0 0 0;">12 Tasks</p>
+        </div>
+        <div class="card">
+            <h4>Performance Metrics</h4>
+            <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">All utility structures operating smoothly.</p>
+        </div>
+        <button style="background: #e2e8f0; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Home</button>
+    </div>
+    <script>window.Telegram.WebApp.expand();</script>
+</body>
+</html>
