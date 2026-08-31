@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dress Store - Shop</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; padding: 0 0 80px 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .balance-badge { background: #fef08a; color: #854d0e; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; }
+        
+        .dress-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .dress-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+        .dress-img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; background: #e2e8f0; margin-bottom: 8px; }
+        .dress-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; }
+        .dress-price { font-size: 12px; font-weight: 700; color: #eab308; margin-bottom: 10px; }
+        .buy-btn { background: #ec4899; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; }
+        
+        /* বটম নেভিগেশন */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; cursor: pointer; }
+        .nav-item.active { color: #ec4899; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h3>🛍️ Fashion Dress Shop</h3>
+            <div class="balance-badge" id="shopBalance">0 GP</div>
+        </div>
+
+        <div class="dress-grid">
+            <div class="dress-card">
+                <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300" class="dress-img" alt="Dress">
+                <div>
+                    <h4 class="dress-title">Summer Floral Gown</h4>
+                    <div class="dress-price">🪙 200 Gold Points</div>
+                </div>
+                <button class="buy-btn" onclick="buyDress('Summer Floral Gown', 200)">Buy Now</button>
+            </div>
+
+            <div class="dress-card">
+                <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300" class="dress-img" alt="Dress">
+                <div>
+                    <h4 class="dress-title">Classic Party Dress</h4>
+                    <div class="dress-price">🪙 350 Gold Points</div>
+                </div>
+                <button class="buy-btn" onclick="buyDress('Classic Party Dress', 350)">Buy Now</button>
+            </div>
+
+            <div class="dress-card">
+                <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300" class="dress-img" alt="Dress">
+                <div>
+                    <h4 class="dress-title">Casual Denim Outfit</h4>
+                    <div class="dress-price">🪙 150 Gold Points</div>
+                </div>
+                <button class="buy-btn" onclick="buyDress('Casual Denim Outfit', 150)">Buy Now</button>
+            </div>
+
+            <div class="dress-card">
+                <img src="https://images.unsplash.com/photo-1550639525-c97d455acf70?w=300" class="dress-img" alt="Dress">
+                <div>
+                    <h4 class="dress-title">Elegant Evening Wear</h4>
+                    <div class="dress-price">🪙 500 Gold Points</div>
+                </div>
+                <button class="buy-btn" onclick="buyDress('Elegant Evening Wear', 500)">Buy Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- নেভিগেশন বার -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item active" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
+        <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let goldPoints = localStorage.getItem('gold_points') ? parseInt(localStorage.getItem('gold_points')) : 100;
+        document.getElementById('shopBalance').innerText = goldPoints + " GP";
+
+        function buyDress(dressName, price) {
+            if (goldPoints >= price) {
+                goldPoints -= price;
+                localStorage.setItem('gold_points', goldPoints);
+                document.getElementById('shopBalance').innerText = goldPoints + " GP";
+
+                // কেনা ড্রেস প্রোফাইলে সেভ করার জন্য
+                let myOrders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+                myOrders.push(dressName);
+                localStorage.setItem('my_orders', JSON.stringify(myOrders));
+
+                tg.showAlert(`🎉 Successful! You bought "${dressName}". Check your profile for shipping status.`);
+            } else {
+                tg.showAlert("❌ Insufficient Gold Points! Watch more ads and complete tasks to earn points.");
+            }
+        }
+    </script>
+</body>
+</html>
