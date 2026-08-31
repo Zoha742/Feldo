@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyCen Dress Store - Home</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -31,16 +31,17 @@
         
         .section-title { font-size: 15px; font-weight: 700; margin: 16px 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
         
-        /* টাস্ক ও অ্যাড কার্ড স্টাইল */
         .task-list, .ads-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .item-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 14px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; }
-        .item-left { display: flex; align-items: center; gap: 12px; }
-        .item-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
+        .item-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .item-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; flex-shrink: 0; }
+        .item-info { flex: 1; }
         .item-info h4 { margin: 0 0 2px 0; font-size: 13px; font-weight: 600; }
         .item-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
         .reward-tag { font-size: 11px; font-weight: 700; color: #eab308; margin-top: 2px; }
         
-        .action-btn { background: #ec4899; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
+        .action-btn { background: #ec4899; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+        .action-btn.completed { background: #22c55e !important; cursor: default; }
         
         /* বটম নেভিগেশন */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
@@ -68,17 +69,13 @@
         <div class="section-title">
             <span><i class="fa-solid fa-play" style="color: #ec4899;"></i> Watch Ads (10 Ads Available)</span>
         </div>
-        <div class="ads-list" id="adsContainer">
-            <!-- জাভাস্ক্রিপ্ট দিয়ে ১০টি অ্যাড ডায়নামিক লোড হবে -->
-        </div>
+        <div class="ads-list" id="adsContainer"></div>
 
-        <!-- ৫টি টাস্ক/ওয়ার্ক সেকশন -->
+        <!-- চ্যানেল জয়েনিং টাস্ক সেকশন (আপনার দেওয়া ইউজারনেমগুলো দিয়ে তৈরি) -->
         <div class="section-title">
-            <span><i class="fa-solid fa-list-check" style="color: #8b5cf6;"></i> Complete Works (5 Tasks)</span>
+            <span><i class="fa-solid fa-bullhorn" style="color: #8b5cf6;"></i> Join Channels (+100 GP Each)</span>
         </div>
-        <div class="task-list" id="tasksContainer">
-            <!-- জাভাস্ক্রিপ্ট দিয়ে ৫টি টাস্ক ডায়নামিক লোড হবে -->
-        </div>
+        <div class="task-list" id="tasksContainer"></div>
     </div>
 
     <!-- নেভিগেশন বার -->
@@ -96,7 +93,6 @@
         let userName = user ? (user.first_name || "User") : "User";
         document.getElementById('username').innerText = userName;
 
-        // লোকালস্টোরেজ থেকে গোল্ড পয়েন্ট ম্যানেজ করা
         let goldPoints = localStorage.getItem('gold_points') ? parseInt(localStorage.getItem('gold_points')) : 100;
         document.getElementById('goldBalance').innerText = goldPoints + " GP";
 
@@ -118,17 +114,37 @@
                     })
                     .catch((result) => {
                         console.log("Adsgram error:", result);
-                        tg.showAlert("Ad skipped or unavailable.");
+                        tg.showAlert("⚠️ No ads available right now. Please try again later!");
                     });
             } else {
-                updateGold(20);
-                tg.showAlert(`🎉 Ad #${adNumber} completed! +20 Gold Points added.`);
+                // যদি Adsgram লোড না হয় বা টেস্ট মোড হয়
+                tg.showAlert("⚠️ No ads available at this moment. Please check back later.");
             }
         }
 
-        function doTask(taskNumber, reward) {
-            updateGold(reward);
-            tg.showAlert(`✅ Task #${taskNumber} completed successfully! +${reward} Gold Points added.`);
+        // চ্যানেল টাস্ক হ্যান্ডলার (Go & Complete Logic)
+        let completedTasks = JSON.parse(localStorage.getItem('completed_tasks') || '{}');
+
+        function handleTask(username, btnElement) {
+            let taskId = "task_" + username;
+            if (completedTasks[taskId]) return;
+
+            // প্রথমে ইউজারের ব্রাউজারে চ্যানেলটি ওপেন হবে (Go)
+            window.open(`https://t.me/${username.replace('@', '')}`, '_blank');
+
+            // ৫ সেকেন্ড পর বা ইউজার ব্যাক আসার পর ক্লেম বা কমপ্লিট দেখাবে
+            setTimeout(() => {
+                if (confirm(`Did you join channel ${username}? Click OK to claim your 100 Gold Points!`)) {
+                    updateGold(100);
+                    completedTasks[taskId] = true;
+                    localStorage.setItem('completed_tasks', JSON.stringify(completedTasks));
+                    
+                    btnElement.innerText = "Completed";
+                    btnElement.classList.add('completed');
+                    btnElement.disabled = true;
+                    tg.showAlert("🎉 Task completed! +100 Gold Points added.");
+                }
+            }, 2000);
         }
 
         // ১০টি অ্যাড রেন্ডার করা
@@ -140,7 +156,7 @@
                         <div class="item-icon" style="background: #ec4899;"><i class="fa-solid fa-video"></i></div>
                         <div class="item-info">
                             <h4>Promotional Ad #${i}</h4>
-                            <p>Watch short video clip</p>
+                            <p>Watch video & earn points</p>
                             <div class="reward-tag">+20 Gold Points</div>
                         </div>
                     </div>
@@ -149,28 +165,27 @@
             `;
         }
 
-        // ৫টি টাস্ক রেন্ডার করা
-        const taskList = [
-            { title: "Daily Survey Task", desc: "Share fashion preferences", reward: 50 },
-            { title: "Visit Catalog", desc: "Browse new summer collection", reward: 40 },
-            { title: "Social Share Task", desc: "Share app with friends", reward: 60 },
-            { title: "Feedback Form", desc: "Submit store review", reward: 45 },
-            { title: "Profile Check", desc: "Update shipping info", reward: 30 }
-        ];
-
+        // আপনার দেওয়া টেলিগ্রাম ইউজারনেমগুলো দিয়ে চ্যানেল টাস্ক লিস্ট তৈরি
+        const channelUsernames = ["@Vunaq", "@Luqpo", "@Lugko", "@Lujpo", "@Fovxo", "@Xoypo", "@Xoyfo", "@Xoyco", "@Xoyvo", "@Xoyqo", "@Xoywo", "@Foyko", "@Royci", "@Royqo"];
+        
         const tasksContainer = document.getElementById('tasksContainer');
-        taskList.forEach((task, index) => {
+        channelUsernames.forEach((username, index) => {
+            let taskId = "task_" + username;
+            let isDone = completedTasks[taskId];
+            
             tasksContainer.innerHTML += `
                 <div class="item-card">
                     <div class="item-left">
-                        <div class="item-icon" style="background: #8b5cf6;"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div class="item-icon" style="background: #8b5cf6;"><i class="fa-solid fa-bullhorn"></i></div>
                         <div class="item-info">
-                            <h4>${task.title}</h4>
-                            <p>${task.desc}</p>
-                            <div class="reward-tag">+${task.reward} Gold Points</div>
+                            <h4>Join Channel ${username}</h4>
+                            <p>Subscribe channel to earn reward</p>
+                            <div class="reward-tag">+100 Gold Points</div>
                         </div>
                     </div>
-                    <button class="action-btn" style="background: #8b5cf6;" onclick="doTask(${index + 1}, ${task.reward})">Complete</button>
+                    <button class="action-btn ${isDone ? 'completed' : ''}" id="btn_${index}" ${isDone ? 'disabled' : ''} onclick="handleTask('${username}', this)">
+                        ${isDone ? 'Completed' : 'Go & Earn'}
+                    </button>
                 </div>
             `;
         });
