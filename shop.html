@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dress Store - 40 Styles Shop</title>
+    <title>Dress Store - Cloudinary Shop</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,7 +20,7 @@
 
         .dress-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .dress-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
-        .dress-img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; background: #e2e8f0; margin-bottom: 8px; }
+        .dress-img { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; background: #e2e8f0; margin-bottom: 8px; }
         .dress-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; }
         .dress-price { font-size: 12px; font-weight: 700; color: #eab308; margin-bottom: 8px; }
         
@@ -52,10 +52,9 @@
             <button class="cat-btn" onclick="filterCategory('Denim', this)">Denim</button>
             <button class="cat-btn" onclick="filterCategory('Evening', this)">Evening</button>
             <button class="cat-btn" onclick="filterCategory('Casual', this)">Casual</button>
-            <button class="cat-btn" onclick="filterCategory('Traditional', this)">Traditional</button>
         </div>
 
-        <!-- ৪০টি ড্রেসের কন্টেইনার -->
+        <!-- ড্রেস গ্রিড কন্টেইনার -->
         <div class="dress-grid" id="dressGrid"></div>
     </div>
 
@@ -73,29 +72,33 @@
         let goldPoints = localStorage.getItem('gold_points') ? parseInt(localStorage.getItem('gold_points')) : 100;
         document.getElementById('shopBalance').innerText = goldPoints + " GP";
 
-        // বিভিন্ন ক্যাটাগরির আলাদা ছবি এবং নামের লিস্ট
-        const dressTypes = [
-            { name: "Royal Floral Gown", cat: "Gown", img: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300" },
-            { name: "Glitter Party Dress", cat: "Party", img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300" },
-            { name: "Classic Denim Outfit", cat: "Denim", img: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300" },
-            { name: "Velvet Evening Wear", cat: "Evening", img: "https://images.unsplash.com/photo-1550639525-c97d455acf70?w=300" },
-            { name: "Summer Casual Set", cat: "Casual", img: "https://images.unsplash.com/photo-1525845859779-54d477ff291f?w=300" },
-            { name: "Designer Silk Maxi", cat: "Traditional", img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=300" },
-            { name: "Chic Cocktail Gown", cat: "Gown", img: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=300" },
-            { name: "Sequins Party Frock", cat: "Party", img: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300" }
+        // আপনার দেওয়া ক্লাউডিনারি লিংকগুলো দিয়ে ড্রেস লিস্ট তৈরি করা হলো
+        const cloudDresses = [
+            { name: "Royal Floral Gown", cat: "Gown", price: 120, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" },
+            { name: "Classic Party Dress", cat: "Party", price: 150, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" },
+            { name: "Elegance Evening Wear", cat: "Evening", price: 180, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/7_zz8gga.webp" },
+            { name: "Casual Denim Outfit", cat: "Denim", price: 100, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/1_ufizyp.webp" },
+            { name: "Summer Breeze Gown", cat: "Gown", price: 130, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/3_tm4w9f.webp" },
+            { name: "Chic Party Frock", cat: "Party", price: 160, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/5_lphyur.webp" },
+            { name: "Modern Denim Style", cat: "Denim", price: 110, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/6_a7nrjj.webp" },
+            { name: "Velvet Night Outfit", cat: "Evening", price: 190, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/9_pyynus.webp" },
+            { name: "Designer Casual Wear", cat: "Casual", price: 95, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/8_rnhjh5.webp" },
+            { name: "Luxury Party Gown", cat: "Party", price: 210, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/10_l7enmg.webp" },
+            { name: "Graceful Maxi Dress", cat: "Gown", price: 140, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/19_fazthb.webp" },
+            { name: "Stylish Evening Look", cat: "Evening", price: 175, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/16_ff8bo3.webp" },
+            { name: "Premium Party Dress", cat: "Party", price: 220, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/11_nmuqvi.webp" },
+            { name: "Trend Setter Denim", cat: "Denim", price: 125, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/17_nevt22.webp" },
+            { name: "Royal Blue Gown", cat: "Gown", price: 195, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/21_g8xdy3.webp" },
+            { name: "Classic Evening Style", cat: "Evening", price: 165, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/18_vtbuam.webp" },
+            { name: "Modest Casual Fit", cat: "Casual", price: 105, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/12_lxoxkk.webp" },
+            { name: "Special Event Gown", cat: "Gown", price: 230, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/14_vv3edn.webp" },
+            { name: "Vibrant Party Frock", cat: "Party", price: 185, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/13_j1iqqj.webp" },
+            { name: "Urban Denim Wear", cat: "Denim", price: 115, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/20_nl0iqq.webp" },
+            { name: "Exquisite Evening Gown", cat: "Evening", price: 250, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/22_ostfn4.webp" },
+            { name: "Daily Casual Set", cat: "Casual", price: 90, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/24_pbzdij.webp" },
+            { name: "Chic Designer Dress", cat: "Party", price: 200, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/23_exv5bf.webp" },
+            { name: "Elite Collection Gown", cat: "Gown", price: 240, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/15_vgqlvi.webp" }
         ];
-
-        let allDresses = [];
-        for (let i = 1; i <= 40; i++) {
-            let template = dressTypes[(i - 1) % dressTypes.length];
-            allDresses.push({
-                id: i,
-                name: `Style #${i} ${template.name}`,
-                category: template.cat,
-                price: 100 + (i * 12),
-                image: `${template.img}&sig=${i}`
-            });
-        }
 
         let selectedSizes = {};
 
@@ -103,37 +106,37 @@
             const dressGrid = document.getElementById('dressGrid');
             dressGrid.innerHTML = '';
             
-            list.forEach(dress => {
+            list.forEach((dress, index) => {
                 dressGrid.innerHTML += `
                     <div class="dress-card">
-                        <img src="${dress.image}" class="dress-img" alt="Dress">
+                        <img src="${dress.img}" class="dress-img" alt="Dress">
                         <div>
                             <h4 class="dress-title">${dress.name}</h4>
                             <div class="dress-price">🪙 ${dress.price} GP</div>
-                            <div class="size-box" id="sizes_${dress.id}">
-                                <button class="size-btn" onclick="selectSize(${dress.id}, 'S', this)">S</button>
-                                <button class="size-btn" onclick="selectSize(${dress.id}, 'M', this)">M</button>
-                                <button class="size-btn" onclick="selectSize(${dress.id}, 'L', this)">L</button>
-                                <button class="size-btn" onclick="selectSize(${dress.id}, 'XL', this)">XL</button>
+                            <div class="size-box" id="sizes_${index}">
+                                <button class="size-btn" onclick="selectSize(${index}, 'S', this)">S</button>
+                                <button class="size-btn" onclick="selectSize(${index}, 'M', this)">M</button>
+                                <button class="size-btn" onclick="selectSize(${index}, 'L', this)">L</button>
+                                <button class="size-btn" onclick="selectSize(${index}, 'XL', this)">XL</button>
                             </div>
                         </div>
-                        <button class="buy-btn" onclick="confirmOrder('${dress.name}', ${dress.price}, ${dress.id})">Buy Now</button>
+                        <button class="buy-btn" onclick="confirmOrder('${dress.name}', ${dress.price}, ${index})">Buy Now</button>
                     </div>
                 `;
             });
         }
 
         // প্রথমে সব ড্রেস লোড হবে
-        renderDresses(allDresses);
+        renderDresses(cloudDresses);
 
         function filterCategory(cat, btn) {
             document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
             if (cat === 'All') {
-                renderDresses(allDresses);
+                renderDresses(cloudDresses);
             } else {
-                let filtered = allDresses.filter(d => d.category === cat);
+                let filtered = cloudDresses.filter(d => d.category === cat);
                 renderDresses(filtered);
             }
         }
