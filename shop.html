@@ -9,9 +9,15 @@
     <style>
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; padding: 0 0 80px 0; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .balance-badge { background: #fef08a; color: #854d0e; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; }
         
+        /* শপ ক্যাটাগরি নেভিগেশন বার */
+        .shop-nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scrollbar-width: none; }
+        .shop-nav::-webkit-scrollbar { display: none; }
+        .cat-btn { background: #fff; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; color: #64748b; }
+        .cat-btn.active { background: #ec4899; color: #fff; border-color: #ec4899; }
+
         .dress-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .dress-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
         .dress-img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; background: #e2e8f0; margin-bottom: 8px; }
@@ -24,7 +30,7 @@
 
         .buy-btn { background: #ec4899; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; }
         
-        /* বটম নেভিগেশন */
+        /* মেইন বটম নেভিগেশন */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
         .nav-item { text-align: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; cursor: pointer; }
         .nav-item.active { color: #ec4899; }
@@ -38,11 +44,22 @@
             <div class="balance-badge" id="shopBalance">0 GP</div>
         </div>
 
+        <!-- শপ ক্যাটাগরি নেভিগেশন বার -->
+        <div class="shop-nav">
+            <button class="cat-btn active" onclick="filterCategory('All', this)">All Styles</button>
+            <button class="cat-btn" onclick="filterCategory('Gown', this)">Gowns</button>
+            <button class="cat-btn" onclick="filterCategory('Party', this)">Party Wear</button>
+            <button class="cat-btn" onclick="filterCategory('Denim', this)">Denim</button>
+            <button class="cat-btn" onclick="filterCategory('Evening', this)">Evening</button>
+            <button class="cat-btn" onclick="filterCategory('Casual', this)">Casual</button>
+            <button class="cat-btn" onclick="filterCategory('Traditional', this)">Traditional</button>
+        </div>
+
         <!-- ৪০টি ড্রেসের কন্টেইনার -->
         <div class="dress-grid" id="dressGrid"></div>
     </div>
 
-    <!-- নেভিগেশন বার -->
+    <!-- বটম নেভিগেশন বার -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item active" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
@@ -56,33 +73,69 @@
         let goldPoints = localStorage.getItem('gold_points') ? parseInt(localStorage.getItem('gold_points')) : 100;
         document.getElementById('shopBalance').innerText = goldPoints + " GP";
 
-        // ৪০টি ড্রেসের ডাটা জেনারেট করা
-        const dressGrid = document.getElementById('dressGrid');
-        const categories = ["Floral Gown", "Party Dress", "Denim Outfit", "Evening Wear", "Summer Casual", "Silk Maxi", "Velvet Kurti", "Royal Lehenga"];
-        
+        // বিভিন্ন ক্যাটাগরির আলাদা ছবি এবং নামের লিস্ট
+        const dressTypes = [
+            { name: "Royal Floral Gown", cat: "Gown", img: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300" },
+            { name: "Glitter Party Dress", cat: "Party", img: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300" },
+            { name: "Classic Denim Outfit", cat: "Denim", img: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300" },
+            { name: "Velvet Evening Wear", cat: "Evening", img: "https://images.unsplash.com/photo-1550639525-c97d455acf70?w=300" },
+            { name: "Summer Casual Set", cat: "Casual", img: "https://images.unsplash.com/photo-1525845859779-54d477ff291f?w=300" },
+            { name: "Designer Silk Maxi", cat: "Traditional", img: "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?w=300" },
+            { name: "Chic Cocktail Gown", cat: "Gown", img: "https://images.unsplash.com/photo-1566174053879-31528523f8ae?w=300" },
+            { name: "Sequins Party Frock", cat: "Party", img: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300" }
+        ];
+
+        let allDresses = [];
+        for (let i = 1; i <= 40; i++) {
+            let template = dressTypes[(i - 1) % dressTypes.length];
+            allDresses.push({
+                id: i,
+                name: `Style #${i} ${template.name}`,
+                category: template.cat,
+                price: 100 + (i * 12),
+                image: `${template.img}&sig=${i}`
+            });
+        }
+
         let selectedSizes = {};
 
-        for (let i = 1; i <= 40; i++) {
-            let catName = categories[(i - 1) % categories.length];
-            let dressName = `Style #${i} ${catName}`;
-            let price = 100 + (i * 15); // দাম ভিন্ন ভিন্ন হবে
-
-            dressGrid.innerHTML += `
-                <div class="dress-card">
-                    <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300&sig=${i}" class="dress-img" alt="Dress">
-                    <div>
-                        <h4 class="dress-title">${dressName}</h4>
-                        <div class="dress-price">🪙 ${price} GP</div>
-                        <div class="size-box" id="sizes_${i}">
-                            <button class="size-btn" onclick="selectSize(${i}, 'S', this)">S</button>
-                            <button class="size-btn" onclick="selectSize(${i}, 'M', this)">M</button>
-                            <button class="size-btn" onclick="selectSize(${i}, 'L', this)">L</button>
-                            <button class="size-btn" onclick="selectSize(${i}, 'XL', this)">XL</button>
+        function renderDresses(list) {
+            const dressGrid = document.getElementById('dressGrid');
+            dressGrid.innerHTML = '';
+            
+            list.forEach(dress => {
+                dressGrid.innerHTML += `
+                    <div class="dress-card">
+                        <img src="${dress.image}" class="dress-img" alt="Dress">
+                        <div>
+                            <h4 class="dress-title">${dress.name}</h4>
+                            <div class="dress-price">🪙 ${dress.price} GP</div>
+                            <div class="size-box" id="sizes_${dress.id}">
+                                <button class="size-btn" onclick="selectSize(${dress.id}, 'S', this)">S</button>
+                                <button class="size-btn" onclick="selectSize(${dress.id}, 'M', this)">M</button>
+                                <button class="size-btn" onclick="selectSize(${dress.id}, 'L', this)">L</button>
+                                <button class="size-btn" onclick="selectSize(${dress.id}, 'XL', this)">XL</button>
+                            </div>
                         </div>
+                        <button class="buy-btn" onclick="confirmOrder('${dress.name}', ${dress.price}, ${dress.id})">Buy Now</button>
                     </div>
-                    <button class="buy-btn" onclick="confirmOrder('${dressName}', ${price}, ${i})">Buy Now</button>
-                </div>
-            `;
+                `;
+            });
+        }
+
+        // প্রথমে সব ড্রেস লোড হবে
+        renderDresses(allDresses);
+
+        function filterCategory(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (cat === 'All') {
+                renderDresses(allDresses);
+            } else {
+                let filtered = allDresses.filter(d => d.category === cat);
+                renderDresses(filtered);
+            }
         }
 
         function selectSize(dressId, size, btn) {
@@ -99,7 +152,6 @@
                 return;
             }
 
-            // চেক করা ইউজারের হোম অ্যাড্রেস সেভ করা আছে কি না
             let savedAddress = localStorage.getItem('shipping_address');
             if (!savedAddress) {
                 tg.showAlert("⚠️ Please set your Home Shipping Address in your Profile page before purchasing!");
@@ -109,18 +161,16 @@
                 return;
             }
 
-            // গোল্ড পয়েন্ট পর্যাপ্ত আছে কি না চেক করা
             if (goldPoints >= price) {
                 goldPoints -= price;
                 localStorage.setItem('gold_points', goldPoints);
                 document.getElementById('shopBalance').innerText = goldPoints + " GP";
 
-                // অর্ডার লিস্টে সেভ করা
                 let myOrders = JSON.parse(localStorage.getItem('my_orders') || '[]');
-                myOrders.push(`${dressName} (Size: ${chosenSize})`);
+                myOrders.push(`${dressName} [Size: ${chosenSize}]`);
                 localStorage.setItem('my_orders', JSON.stringify(myOrders));
 
-                tg.showAlert(`🎉 Order Confirmed! You bought "${dressName}" [Size: ${chosenSize}]. Check Profile for shipping status.`);
+                tg.showAlert(`🎉 Order Confirmed! You bought "${dressName}" (Size: ${chosenSize}). Check Profile for shipping status.`);
             } else {
                 tg.showAlert("❌ Insufficient Gold Points! Watch ads and complete tasks to earn more points.");
             }
