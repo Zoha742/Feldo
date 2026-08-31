@@ -7,7 +7,7 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Adsgram Official SDK Script -->
+    <!-- Adsgram Official SDK Script (Block ID: 45422) -->
     <script src="https://sad.adsgram.ai/js/adsgram.js"></script>
 
     <style>
@@ -42,7 +42,7 @@
         
         .action-btn { background: #8b5cf6; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
         .action-btn.claim { background: #eab308 !important; color: #000 !important; }
-        .action-btn.completed { background: #22c55e !important; color: #fff !important; cursor: default; }
+        .action-btn.cooldown { background: #94a3b8 !important; color: #fff !important; cursor: not-allowed; }
         
         /* বটম নেভিগেশন */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
@@ -74,7 +74,7 @@
 
         <!-- চ্যানেল জয়েনিং টাস্ক সেকশন -->
         <div class="section-title">
-            <span><i class="fa-solid fa-bullhorn" style="color: #8b5cf6;"></i> Join Channels (+100 GP Each)</span>
+            <span><i class="fa-solid fa-bullhorn" style="color: #8b5cf6;"></i> Join Channels (5-10 GP Each)</span>
         </div>
         <div class="task-list" id="tasksContainer"></div>
     </div>
@@ -103,40 +103,75 @@
             document.getElementById('goldBalance').innerText = goldPoints + " GP";
         }
 
-        // Adsgram Controller (আপনার Block ID এখানে বসাবেন)
-        const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_NEW_BLOCK_ID" }) : null;
+        // ৫ থেকে ১০ এর মধ্যে র্যান্ডম পয়েন্ট জেনারেট করার ফাংশন
+        function getRandomPoints() {
+            return Math.floor(Math.random() * (10 - 5 + 1)) + 5;
+        }
+
+        // Adsgram Controller (UnitID: 45422)
+        const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "45422" }) : null;
+
+        let adCooldowns = JSON.parse(localStorage.getItem('ad_cooldowns') || '{}');
 
         function watchAd(adNumber) {
+            let now = Date.now();
+            let lastTime = adCooldowns[adNumber] || 0;
+            let twelveHours = 12 * 60 * 60 * 1000;
+
+            if (now - lastTime < twelveHours) {
+                let hoursLeft = Math.ceil((twelveHours - (now - lastTime)) / (1000 * 60 * 60));
+                tg.showAlert(`⏳ Cooldown active! Please try again after ${hoursLeft} hours.`);
+                return;
+            }
+
             if (adsgramController) {
                 adsgramController.show()
                     .then(() => {
-                        updateGold(20);
-                        tg.showAlert(`🎉 Ad #${adNumber} watched! +20 Gold Points earned.`);
+                        let earned = getRandomPoints();
+                        updateGold(earned);
+                        
+                        adCooldowns[adNumber] = Date.now();
+                        localStorage.setItem('ad_cooldowns', JSON.stringify(adCooldowns));
+
+                        tg.showAlert(`🎉 Ad watched! +${earned} Gold Points earned.`);
+                        location.reload(); // পেজ রিফ্রেশ করে কুলডাউন আপডেট করতে
                     })
                     .catch((result) => {
                         console.log("Adsgram error:", result);
                         tg.showAlert("⚠️ No ads available right now. Please try again later!");
                     });
             } else {
-                tg.showAlert("⚠️ No ads available at this moment. Please check back later.");
+                let earned = getRandomPoints();
+                updateGold(earned);
+                adCooldowns[adNumber] = Date.now();
+                localStorage.setItem('ad_cooldowns', JSON.stringify(adCooldowns));
+                tg.showAlert(`🎉 Test Ad completed! +${earned} Gold Points added.`);
+                location.reload();
             }
         }
 
-        // টাস্ক স্টেট ম্যানেজমেন্ট
-        let completedTasks = JSON.parse(localStorage.getItem('completed_tasks') || '{}');
+        // টাস্ক স্টেট ম্যানেজমেন্ট (১২ ঘণ্টা লিমিট সহ)
+        let taskCooldowns = JSON.parse(localStorage.getItem('task_cooldowns') || '{}');
         let visitedTasks = JSON.parse(localStorage.getItem('visited_tasks') || '{}');
 
         function handleTask(username, btnElement) {
             let cleanUser = username.replace('@', '');
             let taskId = "task_" + cleanUser;
 
-            if (completedTasks[taskId]) return;
+            let now = Date.now();
+            let lastTime = taskCooldowns[taskId] || 0;
+            let twelveHours = 12 * 60 * 60 * 1000;
 
-            // ধাপ ১: লিংকে ক্লিক করলে চ্যানেল ওপেন হবে (অ্যাপ বন্ধ হবে না)
+            if (now - lastTime < twelveHours) {
+                let hoursLeft = Math.ceil((twelveHours - (now - lastTime)) / (1000 * 60 * 60));
+                tg.showAlert(`⏳ Task on cooldown! Available after ${hoursLeft} hours.`);
+                return;
+            }
+
+            // ধাপ ১: লিংকে ক্লিক করলে চ্যানেল ওপেন হবে
             if (!visitedTasks[taskId]) {
                 let channelUrl = `https://t.me/${cleanUser}`;
                 
-                // Telegram WebApp API দিয়ে সেফ ওপেন
                 if (tg.openTelegramLink) {
                     tg.openTelegramLink(channelUrl);
                 } else {
@@ -146,39 +181,48 @@
                 visitedTasks[taskId] = true;
                 localStorage.setItem('visited_tasks', JSON.stringify(visitedTasks));
 
-                btnElement.innerText = "Claim +100 GP";
+                btnElement.innerText = "Claim Reward";
                 btnElement.classList.add('claim');
-                tg.showAlert("Channel opened! Join the channel and return here to claim your +100 GP.");
+                tg.showAlert("Channel opened! Join and return here to claim your points.");
             } 
-            // ধাপ ২: জয়েন করার পর ক্লেইম বাটনে চাপ দিলে পয়েন্ট যোগ হবে
+            // ধাপ ২: ক্লেইম করলে র্যান্ডম ৫-১০ পয়েন্ট যোগ হবে এবং ১২ ঘণ্টার টাইমার শুরু হবে
             else {
-                updateGold(100);
-                completedTasks[taskId] = true;
-                localStorage.setItem('completed_tasks', JSON.stringify(completedTasks));
+                let earned = getRandomPoints();
+                updateGold(earned);
+                
+                taskCooldowns[taskId] = Date.now();
+                localStorage.setItem('task_cooldowns', JSON.stringify(taskCooldowns));
+                
+                delete visitedTasks[taskId];
+                localStorage.setItem('visited_tasks', JSON.stringify(visitedTasks));
 
-                btnElement.innerText = "Completed";
-                btnElement.classList.remove('claim');
-                btnElement.classList.add('completed');
-                btnElement.disabled = true;
-
-                tg.showAlert("🎉 Task completed! +100 Gold Points added to your account.");
+                tg.showAlert(`🎉 Task completed! +${earned} Gold Points added.`);
+                location.reload();
             }
         }
 
         // ১০টি অ্যাড রেন্ডার
         const adsContainer = document.getElementById('adsContainer');
+        let nowTime = Date.now();
+        let twelveHours = 12 * 60 * 60 * 1000;
+
         for (let i = 1; i <= 10; i++) {
+            let lastTime = adCooldowns[i] || 0;
+            let inCooldown = (nowTime - lastTime < twelveHours);
+            
             adsContainer.innerHTML += `
                 <div class="item-card">
                     <div class="item-left">
                         <div class="item-icon" style="background: #ec4899;"><i class="fa-solid fa-video"></i></div>
                         <div class="item-info">
                             <h4>Promotional Ad #${i}</h4>
-                            <p>Watch video & earn points</p>
-                            <div class="reward-tag">+20 Gold Points</div>
+                            <p>Watch video & earn 5-10 GP</p>
+                            <div class="reward-tag">+5 to +10 GP</div>
                         </div>
                     </div>
-                    <button class="action-btn" style="background: #ec4899;" onclick="watchAd(${i})">Watch</button>
+                    <button class="action-btn ${inCooldown ? 'cooldown' : ''}" ${inCooldown ? 'disabled' : ''} onclick="watchAd(${i})">
+                        ${inCooldown ? 'Cooldown' : 'Watch'}
+                    </button>
                 </div>
             `;
         }
@@ -190,17 +234,19 @@
         channelUsernames.forEach((username) => {
             let cleanUser = username.replace('@', '');
             let taskId = "task_" + cleanUser;
-            let isDone = completedTasks[taskId];
+            
+            let lastTime = taskCooldowns[taskId] || 0;
+            let inCooldown = (nowTime - lastTime < twelveHours);
             let isVisited = visitedTasks[taskId];
             
             let btnText = "Go & Join";
             let btnClass = "action-btn";
 
-            if (isDone) {
-                btnText = "Completed";
-                btnClass = "action-btn completed";
+            if (inCooldown) {
+                btnText = "Cooldown (12h)";
+                btnClass = "action-btn cooldown";
             } else if (isVisited) {
-                btnText = "Claim +100 GP";
+                btnText = "Claim Reward";
                 btnClass = "action-btn claim";
             }
             
@@ -210,11 +256,11 @@
                         <div class="item-icon" style="background: #8b5cf6;"><i class="fa-solid fa-bullhorn"></i></div>
                         <div class="item-info">
                             <h4>Join Channel ${username}</h4>
-                            <p>Subscribe channel to earn reward</p>
-                            <div class="reward-tag">+100 Gold Points</div>
+                            <p>Earn 5-10 Gold Points</p>
+                            <div class="reward-tag">+5 to +10 GP</div>
                         </div>
                     </div>
-                    <button class="${btnClass}" ${isDone ? 'disabled' : ''} onclick="handleTask('${username}', this)">
+                    <button class="${btnClass}" ${inCooldown ? 'disabled' : ''} onclick="handleTask('${username}', this)">
                         ${btnText}
                     </button>
                 </div>
