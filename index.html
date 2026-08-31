@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Task Hub</title>
+    <title>HeyCen Dress Store - Home</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Adsgram Official SDK Script (আপনার নতুন Block ID এখানে বসাবেন) -->
+    <!-- Adsgram Official SDK Script -->
     <script src="https://sad.adsgram.ai/js/adsgram.js"></script>
 
     <style>
@@ -16,40 +16,36 @@
             --card-bg: #ffffff;
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            --primary-gradient: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
             --border-color: #e2e8f0;
         }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0 0 80px 0;
-            display: flex;
-            justify-content: center;
-        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; padding: 0 0 80px 0; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .user-info h2 { margin: 0; font-size: 20px; font-weight: 700; }
-        .user-info p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
-        .profile-link { cursor: pointer; text-decoration: none; color: inherit; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; background: #e2e8f0; padding: 6px 12px; border-radius: 20px; }
-        .points-card { background: var(--primary-gradient); border-radius: 20px; padding: 24px; color: #ffffff; margin-bottom: 24px; box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4); }
-        .points-title { font-size: 13px; opacity: 0.9; margin-bottom: 6px; }
-        .points-value { font-size: 34px; font-weight: 800; margin-bottom: 6px; }
-        .badge { display: inline-block; background: rgba(255, 255, 255, 0.2); padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-        .section-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
-        .task-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .task-left { display: flex; align-items: center; gap: 12px; }
-        .task-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; background: #8b5cf6; }
-        .task-info h4 { margin: 0 0 4px 0; font-size: 14px; font-weight: 600; }
-        .task-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
-        .task-reward { font-size: 12px; font-weight: 700; color: #eab308; margin-top: 4px; }
-        .action-btn { background: #6366f1; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .user-info h2 { margin: 0; font-size: 18px; font-weight: 700; }
+        .user-info p { margin: 2px 0 0 0; font-size: 12px; color: var(--text-muted); }
+        
+        .gold-card { background: var(--primary-gradient); border-radius: 20px; padding: 20px; color: #ffffff; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(236, 72, 153, 0.3); }
+        .gold-title { font-size: 12px; opacity: 0.9; margin-bottom: 4px; }
+        .gold-value { font-size: 28px; font-weight: 800; }
+        
+        .section-title { font-size: 15px; font-weight: 700; margin: 16px 0 10px 0; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* টাস্ক ও অ্যাড কার্ড স্টাইল */
+        .task-list, .ads-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .item-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 12px 14px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; }
+        .item-left { display: flex; align-items: center; gap: 12px; }
+        .item-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
+        .item-info h4 { margin: 0 0 2px 0; font-size: 13px; font-weight: 600; }
+        .item-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .reward-tag { font-size: 11px; font-weight: 700; color: #eab308; margin-top: 2px; }
+        
+        .action-btn { background: #ec4899; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; }
         
         /* বটম নেভিগেশন */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
         .nav-item { text-align: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; cursor: pointer; }
-        .nav-item.active { color: #6366f1; }
+        .nav-item.active { color: #ec4899; }
         .nav-item i { font-size: 18px; display: block; margin-bottom: 4px; }
     </style>
 </head>
@@ -57,52 +53,39 @@
     <div class="container">
         <div class="header">
             <div class="user-info">
-                <h2>Hello, <span id="username">User</span> 👋</h2>
-                <p>Complete tasks & earn utility points</p>
+                <h2>Welcome, <span id="username">User</span> 👋</h2>
+                <p>Earn Gold Points & Shop Dresses</p>
             </div>
-            <a href="profile.html" class="profile-link"><i class="fa-solid fa-user"></i> Pro</a>
         </div>
 
-        <div class="points-card">
-            <div class="points-title">Available Utility Points</div>
-            <div class="points-value" id="balance">150</div>
-            <div class="badge"><i class="fa-solid fa-shield-check"></i> Verified Utility Account</div>
+        <!-- গোল্ড পয়েন্ট কার্ড -->
+        <div class="gold-card">
+            <div class="gold-title"><i class="fa-solid fa-coins"></i> Your Gold Balance</div>
+            <div class="gold-value" id="goldBalance">0 GP</div>
         </div>
 
-        <div class="section-title">Interactive Task Hub</div>
-
-        <div class="task-card">
-            <div class="task-left">
-                <div class="task-icon"><i class="fa-solid fa-play"></i></div>
-                <div class="task-info">
-                    <h4>Watch Productivity Ad</h4>
-                    <p>Complete view to earn rewards</p>
-                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +50 Points</div>
-                </div>
-            </div>
-            <button class="action-btn" onclick="watchAdTask()">Start</button>
+        <!-- ১০টি অ্যাড সেকশন -->
+        <div class="section-title">
+            <span><i class="fa-solid fa-play" style="color: #ec4899;"></i> Watch Ads (10 Ads Available)</span>
+        </div>
+        <div class="ads-list" id="adsContainer">
+            <!-- জাভাস্ক্রিপ্ট দিয়ে ১০টি অ্যাড ডায়নামিক লোড হবে -->
         </div>
 
-        <div class="task-card">
-            <div class="task-left">
-                <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-lock-open"></i></div>
-                <div class="task-info">
-                    <h4>Unlock Pro Module</h4>
-                    <p>Cost: 100 Points</p>
-                    <div class="task-reward"><i class="fa-solid fa-star" style="color: #6366f1;"></i> Premium Access</div>
-                </div>
-            </div>
-            <button class="action-btn" style="background: #22c55e;" onclick="unlockModule()">Unlock</button>
+        <!-- ৫টি টাস্ক/ওয়ার্ক সেকশন -->
+        <div class="section-title">
+            <span><i class="fa-solid fa-list-check" style="color: #8b5cf6;"></i> Complete Works (5 Tasks)</span>
+        </div>
+        <div class="task-list" id="tasksContainer">
+            <!-- জাভাস্ক্রিপ্ট দিয়ে ৫টি টাস্ক ডায়নামিক লোড হবে -->
         </div>
     </div>
 
     <!-- নেভিগেশন বার -->
     <div class="bottom-nav">
         <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
-        <a class="nav-item" href="dash.html"><i class="fa-solid fa-gauge"></i>Dash</a>
-        <a class="nav-item" href="tasks.html"><i class="fa-solid fa-list-check"></i>Tasks</a>
+        <a class="nav-item" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
-        <a class="nav-item" href="settings.html"><i class="fa-solid fa-gear"></i>Settings</a>
     </div>
 
     <script>
@@ -110,43 +93,87 @@
         tg.expand();
 
         let user = tg.initDataUnsafe.user;
-        if (user && user.first_name) {
-            document.getElementById('username').innerText = user.first_name;
+        let userName = user ? (user.first_name || "User") : "User";
+        document.getElementById('username').innerText = userName;
+
+        // লোকালস্টোরেজ থেকে গোল্ড পয়েন্ট ম্যানেজ করা
+        let goldPoints = localStorage.getItem('gold_points') ? parseInt(localStorage.getItem('gold_points')) : 100;
+        document.getElementById('goldBalance').innerText = goldPoints + " GP";
+
+        function updateGold(amount) {
+            goldPoints += amount;
+            localStorage.setItem('gold_points', goldPoints);
+            document.getElementById('goldBalance').innerText = goldPoints + " GP";
         }
 
-        // Adsgram Controller (আপনার নতুন Block ID এখানে বসাবেন)
+        // Adsgram Controller (আপনার Block ID এখানে বসাবেন)
         const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_NEW_BLOCK_ID" }) : null;
 
-        function watchAdTask() {
+        function watchAd(adNumber) {
             if (adsgramController) {
                 adsgramController.show()
                     .then(() => {
-                        let current = parseInt(document.getElementById('balance').innerText);
-                        let updated = current + 50;
-                        document.getElementById('balance').innerText = updated;
-                        tg.showAlert("Success! +50 Points added to your account.");
+                        updateGold(20);
+                        tg.showAlert(`🎉 Ad #${adNumber} watched! +20 Gold Points earned.`);
                     })
                     .catch((result) => {
                         console.log("Adsgram error:", result);
                         tg.showAlert("Ad skipped or unavailable.");
                     });
             } else {
-                let current = parseInt(document.getElementById('balance').innerText);
-                document.getElementById('balance').innerText = current + 50;
-                tg.showAlert("Task verified successfully! +50 Points added.");
+                updateGold(20);
+                tg.showAlert(`🎉 Ad #${adNumber} completed! +20 Gold Points added.`);
             }
         }
 
-        function unlockModule() {
-            let current = parseInt(document.getElementById('balance').innerText);
-            if (current >= 100) {
-                current -= 100;
-                document.getElementById('balance').innerText = current;
-                tg.showAlert("🎉 Pro Module unlocked successfully using your points!");
-            } else {
-                tg.showAlert("❌ Insufficient points! Watch ads to earn more points.");
-            }
+        function doTask(taskNumber, reward) {
+            updateGold(reward);
+            tg.showAlert(`✅ Task #${taskNumber} completed successfully! +${reward} Gold Points added.`);
         }
+
+        // ১০টি অ্যাড রেন্ডার করা
+        const adsContainer = document.getElementById('adsContainer');
+        for (let i = 1; i <= 10; i++) {
+            adsContainer.innerHTML += `
+                <div class="item-card">
+                    <div class="item-left">
+                        <div class="item-icon" style="background: #ec4899;"><i class="fa-solid fa-video"></i></div>
+                        <div class="item-info">
+                            <h4>Promotional Ad #${i}</h4>
+                            <p>Watch short video clip</p>
+                            <div class="reward-tag">+20 Gold Points</div>
+                        </div>
+                    </div>
+                    <button class="action-btn" onclick="watchAd(${i})">Watch</button>
+                </div>
+            `;
+        }
+
+        // ৫টি টাস্ক রেন্ডার করা
+        const taskList = [
+            { title: "Daily Survey Task", desc: "Share fashion preferences", reward: 50 },
+            { title: "Visit Catalog", desc: "Browse new summer collection", reward: 40 },
+            { title: "Social Share Task", desc: "Share app with friends", reward: 60 },
+            { title: "Feedback Form", desc: "Submit store review", reward: 45 },
+            { title: "Profile Check", desc: "Update shipping info", reward: 30 }
+        ];
+
+        const tasksContainer = document.getElementById('tasksContainer');
+        taskList.forEach((task, index) => {
+            tasksContainer.innerHTML += `
+                <div class="item-card">
+                    <div class="item-left">
+                        <div class="item-icon" style="background: #8b5cf6;"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <div class="item-info">
+                            <h4>${task.title}</h4>
+                            <p>${task.desc}</p>
+                            <div class="reward-tag">+${task.reward} Gold Points</div>
+                        </div>
+                    </div>
+                    <button class="action-btn" style="background: #8b5cf6;" onclick="doTask(${index + 1}, ${task.reward})">Complete</button>
+                </div>
+            `;
+        });
     </script>
 </body>
 </html>
