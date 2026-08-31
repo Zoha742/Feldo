@@ -6,10 +6,10 @@
     <title>HeyCen - Task Hub</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-     
+    
     <!-- Adsgram Official SDK Script (আপনার নতুন Block ID এখানে বসাবেন) -->
     <script src="https://sad.adsgram.ai/js/adsgram.js"></script>
- 
+
     <style>
         :root {
             --bg-color: #f8fafc;
@@ -85,14 +85,14 @@
 
         <div class="task-card">
             <div class="task-left">
-                <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
+                <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-lock-open"></i></div>
                 <div class="task-info">
-                    <h4>Daily Survey Task</h4>
-                    <p>Answer feedback questions</p>
-                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +100 Points</div>
+                    <h4>Unlock Pro Module</h4>
+                    <p>Cost: 100 Points</p>
+                    <div class="task-reward"><i class="fa-solid fa-star" style="color: #6366f1;"></i> Premium Access</div>
                 </div>
             </div>
-            <button class="action-btn" style="background: #22c55e;" onclick="watchAdTask()">Start</button>
+            <button class="action-btn" style="background: #22c55e;" onclick="unlockModule()">Unlock</button>
         </div>
     </div>
 
@@ -131,7 +131,20 @@
                         tg.showAlert("Ad skipped or unavailable.");
                     });
             } else {
-                tg.showAlert("Task verified successfully!");
+                let current = parseInt(document.getElementById('balance').innerText);
+                document.getElementById('balance').innerText = current + 50;
+                tg.showAlert("Task verified successfully! +50 Points added.");
+            }
+        }
+
+        function unlockModule() {
+            let current = parseInt(document.getElementById('balance').innerText);
+            if (current >= 100) {
+                current -= 100;
+                document.getElementById('balance').innerText = current;
+                tg.showAlert("🎉 Pro Module unlocked successfully using your points!");
+            } else {
+                tg.showAlert("❌ Insufficient points! Watch ads to earn more points.");
             }
         }
     </script>
