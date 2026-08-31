@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dress Store - Shop</title> 
+    <title>Dress Store - 40 Styles Shop</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -16,7 +16,12 @@
         .dress-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
         .dress-img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; background: #e2e8f0; margin-bottom: 8px; }
         .dress-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; }
-        .dress-price { font-size: 12px; font-weight: 700; color: #eab308; margin-bottom: 10px; }
+        .dress-price { font-size: 12px; font-weight: 700; color: #eab308; margin-bottom: 8px; }
+        
+        .size-box { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
+        .size-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 3px 6px; font-size: 10px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .size-btn.selected { background: #ec4899; color: #fff; border-color: #ec4899; }
+
         .buy-btn { background: #ec4899; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; }
         
         /* বটম নেভিগেশন */
@@ -33,43 +38,8 @@
             <div class="balance-badge" id="shopBalance">0 GP</div>
         </div>
 
-        <div class="dress-grid">
-            <div class="dress-card">
-                <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300" class="dress-img" alt="Dress">
-                <div>
-                    <h4 class="dress-title">Summer Floral Gown</h4>
-                    <div class="dress-price">🪙 200 Gold Points</div>
-                </div>
-                <button class="buy-btn" onclick="buyDress('Summer Floral Gown', 200)">Buy Now</button>
-            </div>
-
-            <div class="dress-card">
-                <img src="https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300" class="dress-img" alt="Dress">
-                <div>
-                    <h4 class="dress-title">Classic Party Dress</h4>
-                    <div class="dress-price">🪙 350 Gold Points</div>
-                </div>
-                <button class="buy-btn" onclick="buyDress('Classic Party Dress', 350)">Buy Now</button>
-            </div>
-
-            <div class="dress-card">
-                <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=300" class="dress-img" alt="Dress">
-                <div>
-                    <h4 class="dress-title">Casual Denim Outfit</h4>
-                    <div class="dress-price">🪙 150 Gold Points</div>
-                </div>
-                <button class="buy-btn" onclick="buyDress('Casual Denim Outfit', 150)">Buy Now</button>
-            </div>
-
-            <div class="dress-card">
-                <img src="https://images.unsplash.com/photo-1550639525-c97d455acf70?w=300" class="dress-img" alt="Dress">
-                <div>
-                    <h4 class="dress-title">Elegant Evening Wear</h4>
-                    <div class="dress-price">🪙 500 Gold Points</div>
-                </div>
-                <button class="buy-btn" onclick="buyDress('Elegant Evening Wear', 500)">Buy Now</button>
-            </div>
-        </div>
+        <!-- ৪০টি ড্রেসের কন্টেইনার -->
+        <div class="dress-grid" id="dressGrid"></div>
     </div>
 
     <!-- নেভিগেশন বার -->
@@ -86,20 +56,73 @@
         let goldPoints = localStorage.getItem('gold_points') ? parseInt(localStorage.getItem('gold_points')) : 100;
         document.getElementById('shopBalance').innerText = goldPoints + " GP";
 
-        function buyDress(dressName, price) {
+        // ৪০টি ড্রেসের ডাটা জেনারেট করা
+        const dressGrid = document.getElementById('dressGrid');
+        const categories = ["Floral Gown", "Party Dress", "Denim Outfit", "Evening Wear", "Summer Casual", "Silk Maxi", "Velvet Kurti", "Royal Lehenga"];
+        
+        let selectedSizes = {};
+
+        for (let i = 1; i <= 40; i++) {
+            let catName = categories[(i - 1) % categories.length];
+            let dressName = `Style #${i} ${catName}`;
+            let price = 100 + (i * 15); // দাম ভিন্ন ভিন্ন হবে
+
+            dressGrid.innerHTML += `
+                <div class="dress-card">
+                    <img src="https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=300&sig=${i}" class="dress-img" alt="Dress">
+                    <div>
+                        <h4 class="dress-title">${dressName}</h4>
+                        <div class="dress-price">🪙 ${price} GP</div>
+                        <div class="size-box" id="sizes_${i}">
+                            <button class="size-btn" onclick="selectSize(${i}, 'S', this)">S</button>
+                            <button class="size-btn" onclick="selectSize(${i}, 'M', this)">M</button>
+                            <button class="size-btn" onclick="selectSize(${i}, 'L', this)">L</button>
+                            <button class="size-btn" onclick="selectSize(${i}, 'XL', this)">XL</button>
+                        </div>
+                    </div>
+                    <button class="buy-btn" onclick="confirmOrder('${dressName}', ${price}, ${i})">Buy Now</button>
+                </div>
+            `;
+        }
+
+        function selectSize(dressId, size, btn) {
+            selectedSizes[dressId] = size;
+            let parent = document.getElementById(`sizes_${dressId}`);
+            parent.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        }
+
+        function confirmOrder(dressName, price, dressId) {
+            let chosenSize = selectedSizes[dressId];
+            if (!chosenSize) {
+                tg.showAlert("⚠️ Please select a dress size (S, M, L, XL) first!");
+                return;
+            }
+
+            // চেক করা ইউজারের হোম অ্যাড্রেস সেভ করা আছে কি না
+            let savedAddress = localStorage.getItem('shipping_address');
+            if (!savedAddress) {
+                tg.showAlert("⚠️ Please set your Home Shipping Address in your Profile page before purchasing!");
+                setTimeout(() => {
+                    window.location.href = "profile.html";
+                }, 1500);
+                return;
+            }
+
+            // গোল্ড পয়েন্ট পর্যাপ্ত আছে কি না চেক করা
             if (goldPoints >= price) {
                 goldPoints -= price;
                 localStorage.setItem('gold_points', goldPoints);
                 document.getElementById('shopBalance').innerText = goldPoints + " GP";
 
-                // কেনা ড্রেস প্রোফাইলে সেভ করার জন্য
+                // অর্ডার লিস্টে সেভ করা
                 let myOrders = JSON.parse(localStorage.getItem('my_orders') || '[]');
-                myOrders.push(dressName);
+                myOrders.push(`${dressName} (Size: ${chosenSize})`);
                 localStorage.setItem('my_orders', JSON.stringify(myOrders));
 
-                tg.showAlert(`🎉 Successful! You bought "${dressName}". Check your profile for shipping status.`);
+                tg.showAlert(`🎉 Order Confirmed! You bought "${dressName}" [Size: ${chosenSize}]. Check Profile for shipping status.`);
             } else {
-                tg.showAlert("❌ Insufficient Gold Points! Watch more ads and complete tasks to earn points.");
+                tg.showAlert("❌ Insufficient Gold Points! Watch ads and complete tasks to earn more points.");
             }
         }
     </script>
