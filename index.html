@@ -40,8 +40,9 @@
         .item-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
         .reward-tag { font-size: 11px; font-weight: 700; color: #eab308; margin-top: 2px; }
         
-        .action-btn { background: #ec4899; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-        .action-btn.completed { background: #22c55e !important; cursor: default; }
+        .action-btn { background: #8b5cf6; color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+        .action-btn.claim { background: #eab308 !important; color: #000 !important; }
+        .action-btn.completed { background: #22c55e !important; color: #fff !important; cursor: default; }
         
         /* বটম নেভিগেশন */
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
@@ -71,7 +72,7 @@
         </div>
         <div class="ads-list" id="adsContainer"></div>
 
-        <!-- চ্যানেল জয়েনিং টাস্ক সেকশন (আপনার দেওয়া ইউজারনেমগুলো দিয়ে তৈরি) -->
+        <!-- চ্যানেল জয়েনিং টাস্ক সেকশন -->
         <div class="section-title">
             <span><i class="fa-solid fa-bullhorn" style="color: #8b5cf6;"></i> Join Channels (+100 GP Each)</span>
         </div>
@@ -117,37 +118,54 @@
                         tg.showAlert("⚠️ No ads available right now. Please try again later!");
                     });
             } else {
-                // যদি Adsgram লোড না হয় বা টেস্ট মোড হয়
                 tg.showAlert("⚠️ No ads available at this moment. Please check back later.");
             }
         }
 
-        // চ্যানেল টাস্ক হ্যান্ডলার (Go & Complete Logic)
+        // টাস্ক স্টেট ম্যানেজমেন্ট
         let completedTasks = JSON.parse(localStorage.getItem('completed_tasks') || '{}');
+        let visitedTasks = JSON.parse(localStorage.getItem('visited_tasks') || '{}');
 
         function handleTask(username, btnElement) {
-            let taskId = "task_" + username;
+            let cleanUser = username.replace('@', '');
+            let taskId = "task_" + cleanUser;
+
             if (completedTasks[taskId]) return;
 
-            // প্রথমে ইউজারের ব্রাউজারে চ্যানেলটি ওপেন হবে (Go)
-            window.open(`https://t.me/${username.replace('@', '')}`, '_blank');
-
-            // ৫ সেকেন্ড পর বা ইউজার ব্যাক আসার পর ক্লেম বা কমপ্লিট দেখাবে
-            setTimeout(() => {
-                if (confirm(`Did you join channel ${username}? Click OK to claim your 100 Gold Points!`)) {
-                    updateGold(100);
-                    completedTasks[taskId] = true;
-                    localStorage.setItem('completed_tasks', JSON.stringify(completedTasks));
-                    
-                    btnElement.innerText = "Completed";
-                    btnElement.classList.add('completed');
-                    btnElement.disabled = true;
-                    tg.showAlert("🎉 Task completed! +100 Gold Points added.");
+            // ধাপ ১: লিংকে ক্লিক করলে চ্যানেল ওপেন হবে (অ্যাপ বন্ধ হবে না)
+            if (!visitedTasks[taskId]) {
+                let channelUrl = `https://t.me/${cleanUser}`;
+                
+                // Telegram WebApp API দিয়ে সেফ ওপেন
+                if (tg.openTelegramLink) {
+                    tg.openTelegramLink(channelUrl);
+                } else {
+                    window.open(channelUrl, '_blank');
                 }
-            }, 2000);
+
+                visitedTasks[taskId] = true;
+                localStorage.setItem('visited_tasks', JSON.stringify(visitedTasks));
+
+                btnElement.innerText = "Claim +100 GP";
+                btnElement.classList.add('claim');
+                tg.showAlert("Channel opened! Join the channel and return here to claim your +100 GP.");
+            } 
+            // ধাপ ২: জয়েন করার পর ক্লেইম বাটনে চাপ দিলে পয়েন্ট যোগ হবে
+            else {
+                updateGold(100);
+                completedTasks[taskId] = true;
+                localStorage.setItem('completed_tasks', JSON.stringify(completedTasks));
+
+                btnElement.innerText = "Completed";
+                btnElement.classList.remove('claim');
+                btnElement.classList.add('completed');
+                btnElement.disabled = true;
+
+                tg.showAlert("🎉 Task completed! +100 Gold Points added to your account.");
+            }
         }
 
-        // ১০টি অ্যাড রেন্ডার করা
+        // ১০টি অ্যাড রেন্ডার
         const adsContainer = document.getElementById('adsContainer');
         for (let i = 1; i <= 10; i++) {
             adsContainer.innerHTML += `
@@ -160,18 +178,31 @@
                             <div class="reward-tag">+20 Gold Points</div>
                         </div>
                     </div>
-                    <button class="action-btn" onclick="watchAd(${i})">Watch</button>
+                    <button class="action-btn" style="background: #ec4899;" onclick="watchAd(${i})">Watch</button>
                 </div>
             `;
         }
 
-        // আপনার দেওয়া টেলিগ্রাম ইউজারনেমগুলো দিয়ে চ্যানেল টাস্ক লিস্ট তৈরি
+        // ১৪টি টেলিগ্রাম চ্যানেল টাস্ক রেন্ডার
         const channelUsernames = ["@Vunaq", "@Luqpo", "@Lugko", "@Lujpo", "@Fovxo", "@Xoypo", "@Xoyfo", "@Xoyco", "@Xoyvo", "@Xoyqo", "@Xoywo", "@Foyko", "@Royci", "@Royqo"];
         
         const tasksContainer = document.getElementById('tasksContainer');
-        channelUsernames.forEach((username, index) => {
-            let taskId = "task_" + username;
+        channelUsernames.forEach((username) => {
+            let cleanUser = username.replace('@', '');
+            let taskId = "task_" + cleanUser;
             let isDone = completedTasks[taskId];
+            let isVisited = visitedTasks[taskId];
+            
+            let btnText = "Go & Join";
+            let btnClass = "action-btn";
+
+            if (isDone) {
+                btnText = "Completed";
+                btnClass = "action-btn completed";
+            } else if (isVisited) {
+                btnText = "Claim +100 GP";
+                btnClass = "action-btn claim";
+            }
             
             tasksContainer.innerHTML += `
                 <div class="item-card">
@@ -183,8 +214,8 @@
                             <div class="reward-tag">+100 Gold Points</div>
                         </div>
                     </div>
-                    <button class="action-btn ${isDone ? 'completed' : ''}" id="btn_${index}" ${isDone ? 'disabled' : ''} onclick="handleTask('${username}', this)">
-                        ${isDone ? 'Completed' : 'Go & Earn'}
+                    <button class="${btnClass}" ${isDone ? 'disabled' : ''} onclick="handleTask('${username}', this)">
+                        ${btnText}
                     </button>
                 </div>
             `;
