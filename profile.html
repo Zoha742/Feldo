@@ -3,30 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile</title>
+    <title>User Profile & Address</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 16px; display: flex; justify-content: center; }
-        .container { width: 100%; max-width: 480px; text-align: center; }
-        .profile-card { background: #fff; border: 1px solid #e2e8f0; padding: 24px; border-radius: 16px; margin-top: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; padding: 0 0 80px 0; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
+        .profile-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 16px; }
+        .avatar { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid #ec4899; }
+        .profile-card h3 { margin: 0 0 4px 0; font-size: 18px; }
+        .profile-card p { margin: 0; font-size: 12px; color: #64748b; }
+        
+        .section-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; }
+        .section-card h4 { margin: 0 0 12px 0; font-size: 14px; color: #ec4899; }
+        
+        .input-group { margin-bottom: 10px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; font-weight: 600; color: #64748b; margin-bottom: 4px; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 13px; }
+        
+        .save-btn { background: #ec4899; color: #fff; border: none; padding: 10px; width: 100%; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
+        
+        .order-item { background: #f1f5f9; padding: 8px 12px; border-radius: 8px; font-size: 12px; margin-bottom: 6px; display: flex; justify-content: space-between; }
+
+        /* বটম নেভিগেশন */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; cursor: pointer; }
+        .nav-item.active { color: #ec4899; }
+        .nav-item i { font-size: 18px; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- প্রোফাইল কার্ড -->
         <div class="profile-card">
-            <h3 id="profName" style="margin: 0 0 5px 0;">User Profile</h3>
-            <p style="color: #64748b; font-size: 13px; margin: 0;">Status: Verified Hub Member</p>
+            <img id="userAvatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="avatar" alt="Avatar">
+            <h3 id="profileName">User Name</h3>
+            <p>Telegram ID: <span id="profileId">12345678</span></p>
+            <div style="margin-top: 10px; font-weight: 700; color: #eab308; font-size: 14px;">
+                🪙 Gold Balance: <span id="profileGold">0</span> GP
+            </div>
         </div>
-        <br>
-        <button style="background: #e2e8f0; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Home</button>
+
+        <!-- হোম অ্যাড্রেস সেটআপ সেকশন -->
+        <div class="section-card">
+            <h4><i class="fa-solid fa-location-dot"></i> Shipping Home Address</h4>
+            <div class="input-group">
+                <label>Full Name / Recipient</label>
+                <input type="text" id="addrName" placeholder="Enter full name">
+            </div>
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="text" id="addrPhone" placeholder="Enter mobile number">
+            </div>
+            <div class="input-group">
+                <label>Home Address / Delivery Area</label>
+                <input type="text" id="addrStreet" placeholder="House, Road, City, Division">
+            </div>
+            <button class="save-btn" onclick="saveAddress()">Save Shipping Address</button>
+        </div>
+
+        <!-- কেনা ড্রেস বা অর্ডার লিস্ট -->
+        <div class="section-card">
+            <h4><i class="fa-solid fa-bag-shopping"></i> My Purchased Dresses</h4>
+            <div id="orderList">
+                <p style="font-size: 12px; color: #64748b; margin: 0;">No dresses purchased yet.</p>
+            </div>
+        </div>
     </div>
+
+    <!-- নেভিগেশন বার -->
+    <div class="bottom-nav">
+        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
+        <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    </div>
+
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
+
         let user = tg.initDataUnsafe.user;
-        if(user && user.first_name) {
-            document.getElementById('profName').innerText = user.first_name + "'s Profile";
+        let userId = user ? user.id : "7757851056";
+        let userName = user ? (user.first_name || "User") : "User";
+        
+        document.getElementById('profileName').innerText = userName;
+        document.getElementById('profileId').innerText = userId;
+        if (user && user.photo_url) {
+            document.getElementById('userAvatar').src = user.photo_url;
+        }
+
+        // গোল্ড পয়েন্ট লোড
+        let goldPoints = localStorage.getItem('gold_points') ? parseInt(localStorage.getItem('gold_points')) : 100;
+        document.getElementById('profileGold').innerText = goldPoints;
+
+        // সেভ করা অ্যাড্রেস লোড করা
+        if (localStorage.getItem('shipping_address')) {
+            let addr = JSON.parse(localStorage.getItem('shipping_address'));
+            document.getElementById('addrName').value = addr.name || '';
+            document.getElementById('addrPhone').value = addr.phone || '';
+            document.getElementById('addrStreet').value = addr.street || '';
+        }
+
+        function saveAddress() {
+            let addressData = {
+                name: document.getElementById('addrName').value,
+                phone: document.getElementById('addrPhone').value,
+                street: document.getElementById('addrStreet').value
+            };
+            localStorage.setItem('shipping_address', JSON.stringify(addressData));
+            tg.showAlert("✅ Shipping home address saved successfully!");
+        }
+
+        // অর্ডার লিস্ট লোড করা
+        let myOrders = JSON.parse(localStorage.getItem('my_orders') || '[]');
+        let orderContainer = document.getElementById('orderList');
+        if (myOrders.length > 0) {
+            orderContainer.innerHTML = '';
+            myOrders.forEach((item, index) => {
+                orderContainer.innerHTML += `
+                    <div class="order-item">
+                        <span>#${index + 1} ${item}</span>
+                        <span style="color: #22c55e; font-weight: 600;">Processing</span>
+                    </div>
+                `;
+            });
         }
     </script>
 </body>
