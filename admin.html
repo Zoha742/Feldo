@@ -37,6 +37,7 @@
         .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--pink); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
+        .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .floating-back-container { display: flex; justify-content: center; margin: 25px 0 10px 0; }
         .circle-back-btn { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); border: none; color: #fff; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5); }
     </style>
@@ -107,6 +108,30 @@
         <button class="btn btn-gray" style="margin-top: 15px;" onclick="closeOrderModal()">Close</button>
     </div>
 
+    <!-- User Management Modal -->
+    <div class="overlay" id="overlay" onclick="closeModal()"></div>
+    <div class="modal" id="modal">
+        <h3 id="m-title">Manage User</h3>
+        <p id="m-name-label" style="font-size: 14px; color: #fbbf24; margin: 5px 0; font-weight: bold;"></p>
+        <p id="m-uid-label" style="font-size: 12px; color: var(--blue); margin-bottom: 10px;"></p>
+        <hr border="0" style="height:1px; background:var(--border); margin:10px 0;">
+        
+        <label style="font-size:12px;">Balance (GP)</label>
+        <input type="number" id="m-gp" class="input-box">
+        
+        <div class="grid" style="margin-top:5px;">
+            <button class="btn btn-blue" onclick="updateUserGP()">Update GP</button>
+            <button class="btn btn-orange" onclick="makeGPZero()">Set GP to 0</button>
+        </div>
+
+        <div class="grid" style="margin-top:5px;">
+            <button class="btn btn-purple" onclick="resetUserData()">Reset Profile Data</button>
+            <button class="btn btn-red" id="ban-btn" onclick="toggleBan()">Ban User</button>
+        </div>
+
+        <button class="btn" style="background:#334155; margin-top:10px;" onclick="closeModal()">Cancel</button>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
@@ -140,24 +165,37 @@
 
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
-                let banned = 0, totalGP = 0;
+                let banned = 0, totalGP = 0, activeCount = 0;
+                let currentTime = Date.now();
                 let usersArray = [];
+                
                 snap.forEach(c => {
-                    let u = c.val();
+                    let u = c.val() || {};
+                    let uId = c.key;
+                    let uName = u.username || u.name || "Unknown";
                     if(u.banned) banned++;
-                    let gp = u.points !== undefined ? u.points : (u.gp || 0);
-                    totalGP += gp;
-                    usersArray.push({ id: c.key, name: u.username || u.name || "Unknown", gp: gp, banned: u.banned || false });
+                    
+                    let userPoints = u.points !== undefined ? u.points : (u.gp || 0);
+                    totalGP += userPoints;
+
+                    if (u.lastSeen && (currentTime - u.lastSeen) < (5 * 60 * 1000)) { 
+                        activeCount++; 
+                    }
+
+                    usersArray.push({ id: uId, name: uName, gp: userPoints, banned: u.banned || false });
                 });
+
                 document.getElementById('st-users').innerText = count;
+                document.getElementById('st-active').innerText = activeCount;
                 document.getElementById('st-banned').innerText = banned;
                 document.getElementById('st-total-gp').innerText = totalGP.toLocaleString();
                 
                 let html = "";
                 usersArray.forEach(u => {
+                    let safeName = u.name.replace(/'/g, "\\'");
                     html += `<div class="user-item">
                         <div><b>${u.name}</b> (${u.id})<br><small>${u.gp.toLocaleString()} GP</small></div>
-                        <button class="btn btn-blue" style="width:auto; padding:5px 12px;" onclick="openUserModal('${u.id}', '${u.name}', ${u.gp})">Manage</button>
+                        <button class="btn btn-blue" style="width:auto; padding:5px 12px;" onclick="openUserModal('${u.id}', '${safeName}', ${u.gp}, ${u.banned})">Manage</button>
                     </div>`;
                 });
                 document.getElementById('user-list').innerHTML = html || "No users found.";
@@ -176,15 +214,16 @@
                         if (order.status === 'Pending') {
                             pendingCount++;
                             let orderTimeFormatted = order.timestamp ? new Date(order.timestamp).toLocaleString() : 'N/A';
+                            let safeItemName = order.itemName.replace(/'/g, "\\'");
                             html += `
-                                <div class="list-item" style="border-left-color: var(--pink);" onclick="viewOrderDetails('${order.userId}', '${order.itemName.replace(/'/g, "\\'")}', ${order.price}, '${orderTimeFormatted}')">
+                                <div class="list-item" style="border-left-color: var(--pink);" onclick="viewOrderDetails('${order.userId}', '${safeItemName}', ${order.price}, '${orderTimeFormatted}')">
                                     <b>Item: ${order.itemName}</b><br>
                                     <small>User: ${order.userName} (ID: ${order.userId})</small><br>
                                     <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small>
                                     <div style="margin-top: 4px; font-size: 11px; color: #38bdf8;"><i class="fas fa-phone-alt"></i> Tap box to view phone & address</div>
                                     <div class="grid" style="margin-top:8px; grid-template-columns: 1fr 1fr;" onclick="event.stopPropagation()">
-                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${order.itemName}')">Accept</button>
-                                        <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}', '${order.itemName}', ${order.price})">Reject & Refund</button>
+                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${safeItemName}')">Accept</button>
+                                        <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}', '${safeItemName}', ${order.price})">Reject & Refund</button>
                                     </div>
                                 </div>
                             `;
@@ -199,7 +238,7 @@
             });
         }
 
-        // ইউজারের মূল অ্যাকাউন্ট বা অ্যাড্রেস নোড থেকে সম্পূর্ণ অ্যাড্রেস, ফোন ও নাম ফেচ করার ফাংশন
+        // ইউজারের ফোন নম্বর ও অ্যাড্রেস নিখুঁতভাবে সব সম্ভাব্য পাথ থেকে খুঁজে বের করার ফাংশন
         function viewOrderDetails(targetUserId, itemName, price, orderTime) {
             document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
             document.getElementById('orderOverlay').style.display = 'block';
@@ -208,8 +247,8 @@
             db.ref('users/' + targetUserId).once('value', snap => {
                 let uData = snap.val() || {};
                 
-                // বিভিন্ন সম্ভাব্য নেমস্পেস চেক করা হচ্ছে (যাতে কোনোটা বাদ না যায়)
-                let addr = uData.shipping_address || uData.address || uData.profile_address || uData;
+                // ইউজার ডাটাবেজে address, shipping_address বা সরাসরি রুটে থাকতে পারে
+                let addr = uData.address || uData.shipping_address || uData.profile_address || uData;
 
                 let fullName = addr.fullName || addr.name || uData.name || uData.username || 'N/A';
                 let phoneNum = addr.phone || addr.number || addr.mobile || uData.phone || 'N/A';
@@ -281,9 +320,59 @@
             }
         }
 
+        // ইউজার ম্যানেজমেন্ট মডাল ওপেন করার ফাংশন
+        function openUserModal(id, name, gp, isBanned) {
+            window.targetU = id;
+            window.targetBanned = isBanned;
+            document.getElementById('m-name-label').innerText = "Name: " + name;
+            document.getElementById('m-uid-label').innerText = "ID: " + id;
+            document.getElementById('m-gp').value = gp;
+            document.getElementById('ban-btn').innerText = isBanned ? "Unban User" : "Ban User";
+            document.getElementById('ban-btn').className = isBanned ? "btn btn-green" : "btn btn-red";
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function updateUserGP() {
+            let gp = parseInt(document.getElementById('m-gp').value) || 0;
+            db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
+        }
+
+        function makeGPZero() {
+            if(confirm("Are you sure you want to make this user's GP 0?")) {
+                document.getElementById('m-gp').value = 0;
+                db.ref('users/' + window.targetU).update({ gp: 0, points: 0 }).then(() => { alert("User GP set to 0!"); closeModal(); });
+            }
+        }
+
+        function resetUserData() {
+            if(confirm("Warning: This will reset user's data! Proceed?")) {
+                db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
+                    alert("User data reset successfully!");
+                    closeModal();
+                });
+            }
+        }
+
+        function toggleBan() {
+            let newState = !window.targetBanned;
+            db.ref('users/' + window.targetU + '/banned').set(newState).then(() => { alert(newState ? "User Banned!" : "User Unbanned!"); closeModal(); });
+        }
+
+        function filterUsers() {
+            let q = document.getElementById('user-search').value.toLowerCase();
+            document.querySelectorAll('.user-item').forEach(it => {
+                it.style.display = it.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
+        }
+
+        function closeModal() { 
+            document.getElementById('overlay').style.display = 'none'; 
+            document.getElementById('modal').style.display = 'none'; 
+        }
+
         function loadBoostRequests() {}
         function loadIdVerifiedProofs() {}
-        function filterUsers() {}
     </script>
 </body>
 </html>
