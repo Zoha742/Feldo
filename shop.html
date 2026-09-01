@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Shop</title>
+    <title>HeyCen - Shop Categories</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -34,11 +34,44 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .header h2 { margin: 0; font-size: 20px; font-weight: 700; }
         .balance-badge { background: var(--primary-gradient); color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; }
-        
+
+        /* ক্যাটাগরি ট্যাব বাটনসমূহ */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+            scrollbar-width: none;
+        }
+        .category-tabs::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            background: #6366f1;
+            color: #fff;
+            border-color: #6366f1;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        /* প্রোডাক্ট সেকশন */
+        .category-section { display: none; }
+        .category-section.active { display: block; }
+
         .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
         .shop-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
         .shop-img { width: 100%; height: 140px; object-fit: cover; border-radius: 12px; background: #f1f5f9; margin-bottom: 8px; }
@@ -66,45 +99,99 @@
             <div class="balance-badge" id="user-gp-balance">🪙 0 GP</div>
         </div>
 
-        <div class="shop-grid" id="shop-items-container">
-            <!-- আইটেম ১: ড্রেস -->
-            <div class="shop-card">
-                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-img" alt="Item">
-                <div>
-                    <h4 class="shop-title">Royal Floral Gown</h4>
-                    <div class="shop-price">🪙 12,000 GP</div>
-                </div>
-                <button class="buy-btn" onclick="buyItemWithGP('Royal Floral Gown', 12000)">Buy Now</button>
-            </div>
+        <!-- ক্যাটাগরি ট্যাব মেনু -->
+        <div class="category-tabs">
+            <button class="tab-btn active" onclick="switchCategory('female')">👗 Female Dress</button>
+            <button class="tab-btn" onclick="switchCategory('boys')">👕 Boys Dress</button>
+            <button class="tab-btn" onclick="switchCategory('smartphone')">📱 Smartphone</button>
+            <button class="tab-btn" onclick="switchCategory('others')">🎁 Other Items</button>
+        </div>
 
-            <!-- আইটেম ২: ড্রেস -->
-            <div class="shop-card">
-                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" class="shop-img" alt="Item">
-                <div>
-                    <h4 class="shop-title">Classic Party Dress</h4>
-                    <div class="shop-price">🪙 13,500 GP</div>
+        <!-- ১. Female Dress সেকশন -->
+        <div id="cat-female" class="category-section active">
+            <div class="shop-grid">
+                <div class="shop-card">
+                    <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-img" alt="Dress">
+                    <div>
+                        <h4 class="shop-title">Royal Floral Gown</h4>
+                        <div class="shop-price">🪙 12,000 GP</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItemWithGP('Royal Floral Gown', 12000)">Buy Now</button>
                 </div>
-                <button class="buy-btn" onclick="buyItemWithGP('Classic Party Dress', 13500)">Buy Now</button>
+                <div class="shop-card">
+                    <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" class="shop-img" alt="Dress">
+                    <div>
+                        <h4 class="shop-title">Classic Party Dress</h4>
+                        <div class="shop-price">🪙 13,500 GP</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItemWithGP('Classic Party Dress', 13500)">Buy Now</button>
+                </div>
             </div>
+        </div>
 
-            <!-- আইটেম ৩: ফোন -->
-            <div class="shop-card">
-                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300" class="shop-img" alt="Item">
-                <div>
-                    <h4 class="shop-title">Smartphone X Pro</h4>
-                    <div class="shop-price">🪙 50,000 GP</div>
+        <!-- ২. Boys Dress সেকশন -->
+        <div id="cat-boys" class="category-section">
+            <div class="shop-grid">
+                <div class="shop-card">
+                    <img src="https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=300" class="shop-img" alt="Dress">
+                    <div>
+                        <h4 class="shop-title">Formal Blazer Suit</h4>
+                        <div class="shop-price">🪙 15,000 GP</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItemWithGP('Formal Blazer Suit', 15000)">Buy Now</button>
                 </div>
-                <button class="buy-btn" onclick="buyItemWithGP('Smartphone X Pro', 50000)">Buy Now</button>
+                <div class="shop-card">
+                    <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300" class="shop-img" alt="Dress">
+                    <div>
+                        <h4 class="shop-title">Casual Hoodie & Jeans</h4>
+                        <div class="shop-price">🪙 10,000 GP</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItemWithGP('Casual Hoodie & Jeans', 10000)">Buy Now</button>
+                </div>
             </div>
+        </div>
 
-            <!-- আইটেম ৪: আদার্স -->
-            <div class="shop-card">
-                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300" class="shop-img" alt="Item">
-                <div>
-                    <h4 class="shop-title">Smart Watch Series 9</h4>
-                    <div class="shop-price">🪙 25,000 GP</div>
+        <!-- ৩. Smartphone সেকশন -->
+        <div id="cat-smartphone" class="category-section">
+            <div class="shop-grid">
+                <div class="shop-card">
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300" class="shop-img" alt="Phone">
+                    <div>
+                        <h4 class="shop-title">Smartphone X Pro</h4>
+                        <div class="shop-price">🪙 50,000 GP</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItemWithGP('Smartphone X Pro', 50000)">Buy Now</button>
                 </div>
-                <button class="buy-btn" onclick="buyItemWithGP('Smart Watch Series 9', 25000)">Buy Now</button>
+                <div class="shop-card">
+                    <img src="https://images.unsplash.com/photo-1565849904461-04a58ad377e0?w=300" class="shop-img" alt="Phone">
+                    <div>
+                        <h4 class="shop-title">Ultra Edition 5G</h4>
+                        <div class="shop-price">🪙 65,000 GP</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItemWithGP('Ultra Edition 5G', 65000)">Buy Now</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ৪. Other Items সেকশন -->
+        <div id="cat-others" class="category-section">
+            <div class="shop-grid">
+                <div class="shop-card">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300" class="shop-img" alt="Watch">
+                    <div>
+                        <h4 class="shop-title">Smart Watch Series 9</h4>
+                        <div class="shop-price">🪙 25,000 GP</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItemWithGP('Smart Watch Series 9', 25000)">Buy Now</button>
+                </div>
+                <div class="shop-card">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300" class="shop-img" alt="Headphone">
+                    <div>
+                        <h4 class="shop-title">Wireless Bass Headphone</h4>
+                        <div class="shop-price">🪙 8,500 GP</div>
+                    </div>
+                    <button class="buy-btn" onclick="buyItemWithGP('Wireless Bass Headphone', 8500)">Buy Now</button>
+                </div>
             </div>
         </div>
     </div>
@@ -150,6 +237,16 @@
             }
         });
 
+        // ক্যাটাগরি সুইচ করার ফাংশন
+        function switchCategory(categoryName) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.category-section').forEach(sec => sec.classList.remove('active'));
+
+            event.currentTarget.classList.add('active');
+            document.getElementById('cat-' + categoryName).classList.add('active');
+        }
+
+        // GP দিয়ে আইটেম অর্ডার করার ফাংশন
         function buyItemWithGP(itemName, itemPrice) {
             if (userPoints < itemPrice) {
                 tg.showAlert("⚠️ Your GP balance is insufficient to buy this item!");
@@ -159,9 +256,7 @@
             if (confirm(`Do you want to buy "${itemName}" for ${itemPrice.toLocaleString()} GP?`)) {
                 let newPoints = userPoints - itemPrice;
 
-                // ইউজারের অ্যাকাউন্ট থেকে GP কেটে নেওয়া
                 db.ref('users/' + userId).update({ points: newPoints, gp: newPoints }).then(() => {
-                    // অ্যাডমিন প্যানেলে অর্ডার সেন্ড করা
                     let orderData = {
                         userId: userId,
                         userName: username,
