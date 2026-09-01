@@ -4,6 +4,7 @@
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyCen - Tasks</title>
+    <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -48,9 +49,10 @@
         .tasks-header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
         .tasks-header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
         
+        /* আগের মতো ২ কলামের গ্রিড ডিজাইন */
         .task-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 12px;
             margin-bottom: 20px;
         }
@@ -65,7 +67,7 @@
         }
         .task-grid-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
         .task-grid-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
-        .task-grid-info h4 { margin: 0; font-size: 13px; font-weight: 700; }
+        .task-grid-info h4 { margin: 0; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; }
         .task-grid-info p { margin: 2px 0 0 0; font-size: 10px; color: var(--text-muted); }
         .task-grid-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 10px; }
         .task-grid-reward { font-size: 12px; font-weight: 700; color: #eab308; display: flex; align-items: center; gap: 4px; }
@@ -83,7 +85,7 @@
         .nav-item.active { color: #c084fc; }
         .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
 
-        .loading-text { text-align: center; color: var(--text-muted); font-size: 14px; margin-top: 20px; }
+        .loading-text { text-align: center; color: var(--text-muted); font-size: 14px; margin-top: 20px; grid-column: span 2; }
     </style>
 </head>
 <body>
@@ -94,6 +96,7 @@
             <p>Join channels below to earn 50 GP each</p>
         </div>
 
+        <!-- ডাইনামিক টাস্কগুলো এখানে লোড হবে -->
         <div class="task-grid" id="dynamicTaskGrid">
             <div class="loading-text">Loading tasks...</div>
         </div>
@@ -134,25 +137,21 @@
         let userId = user ? user.id.toString() : "7757851056";
         let userRef = db.ref('users/' + userId);
 
-        // তোমার দেওয়া সমস্ত চ্যানেল লিস্ট
         const channelList = [
             "Xoypo", "Xoyfo", "Xoyco", "Xoyvo", "Xoyqo", "Xoywo", "Ogeeu", "Foyko", "Royci", "Royqo", "Keoiv", "Keoiz", "Bivbo", "Mivbo", "Oviib", "Qeoil", "EoPay", "cyriv", "cypit", "Bypir", "cypij", "Cypia", "Psirt", "Wjstv", "Doyvi", "Foyvi", "Jtrtv", "Apsox", "Apgox", "Oamgo", "Cisot", "Orous", "Okous", "Oeous", "uoike", "Foike", "Doike", "Uniwo", "hizdo", "Eopse", "Risof", "Roiho", "Tebvi", "Coaic", "icoji", "Uaffi", "Xafbi", "Coijo", "Cexmo", "Pexmo", "Wopse", "tavfo", "Kavfo", "Oanlo", "Eamvo", "Oanvo", "oofti", "Foqro", "Foqxo", "Joivo", "Xijci", "Foyzo", "Foljo", "Fuuqo", "fusqo", "fuyqo", "tiqoo", "Qifoo", "Hoyqo", "Qelfo", "Qeljo", "Fnntv", "Jnntv", "Fnitv", "Fbntv", "Cbigo", "Eavno", "Eapno", "Foyqo", "Upbif", "Upbib", "Upbir", "Upbip", "Upbim", "Oesno", "Lanvo", "Yovki", "Oovki", "Uovki", "syfox", "Spyzo", "Vavfo", "Cavfo", "Eavdo", "Coixo", "Fovgi", "Tafvi", "Guzna", "Aovji", "Oelgo", "Yelfo", "Zoosy", "Zivfo", "Uesgo", "Ripfo", "Fovmi", "Wovti", "Jafki", "Dikto", "Joizo", "Uxdao", "Wxdao", "Movti", "Fovti", "Oafki", "Eafki", "Oafmi", "Uafmi", "Vafmi", "Eafmi", "Gigxe", "Eooti", "Eovmi", "Pafbi", "Livbo", "Dapbo", "Roiwo", "Foiqo", "Wigdo", "Diczo", "Oafvi", "Dijzo", "Kovmi", "Oubuy", "Jafvi", "Kafvi", "Cafvi", "Eapti", "Xafti", "Cekio", "Ualjo", "Ealjo", "Uofti", "Eofti", "Pofti", "Vunki", "dagpi", "Hagpi", "Eagpi", "Cagpi", "Zidme", "Relbo", "Eelvo", "Yelvo", "Ohous", "Opous", "Tewvi", "Epegi", "Uafti", "dysel", "dycel", "Oviwo", "Dojvi", "Fisdo", "Rirbo", "Uanbo", "Oamco", "Zisvo", "Oisvo", "Wisvo", "Oispo", "reljo", "uepax", "uevax", "aekax", "Cigzo", "Uevio", "Xikvi", "Oeyvi", "Ueyvi", "Qittoo", "ZilMal", "ZilXal", "XilXal", "BikNak", "BikVak", "BakVak", "XilMal", "Zilfal", "ZilSal", "XalXil", "XikMik", "XilMil", "XikXaq", "HakVak", "HakBak", "HikDik"
         ];
 
-        // Firebase থেকে ইউজারের ডেটা ফেচ করে টাস্ক রেন্ডার করা
         userRef.once('value').then((snapshot) => {
             let data = snapshot.val() || { tasksDone: 0 };
             let currentTasksDone = data.tasksDone || 0;
             renderTasks(currentTasksDone);
         });
 
-        // ডাইনামিক রেন্ডার লজিক (ঠিক ২০টি টাস্ক দেখাবে)
         function renderTasks(startIndex) {
             const grid = document.getElementById('dynamicTaskGrid');
             grid.innerHTML = ''; 
 
             for(let i = 0; i < 20; i++) {
-                // লুপ তৈরির জন্য Modulo (%) ব্যবহার করা হয়েছে
                 let channelIndex = (startIndex + i) % channelList.length;
                 let channelName = channelList[channelIndex];
                 
@@ -161,25 +160,23 @@
                     <div class="task-grid-top">
                         <div class="task-grid-icon" style="background: #3b82f6;"><i class="fa-brands fa-telegram"></i></div>
                         <div class="task-grid-info">
-                            <h4>Join @${channelName}</h4>
-                            <p>Join channel & earn</p>
+                            <h4>@${channelName}</h4>
+                            <p>Join & earn</p>
                         </div>
                     </div>
                     <div class="task-grid-bottom">
                         <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +50</div>
-                        <button class="task-start-btn" onclick="completeChannelTask('${channelName}')">Join Now</button>
+                        <button class="task-start-btn" onclick="completeChannelTask('${channelName}')">Join</button>
                     </div>
                 </div>`;
                 grid.innerHTML += cardHTML;
             }
         }
 
-        // টাস্ক কমপ্লিট লজিক
         function completeChannelTask(channelUsername) {
-            // টেলিগ্রাম চ্যানেল ওপেন করা
-            window.open('https://t.me/' + channelUsername, '_blank');
+            // ফিক্স: Telegram Web App API ব্যবহার করা হয়েছে লিংক ওপেন করার জন্য
+            tg.openTelegramLink('https://t.me/' + channelUsername);
 
-            // ফায়ারবেসে পয়েন্ট আপডেট করা
             userRef.once('value').then((snapshot) => {
                 let data = snapshot.val() || { points: 0, gp: 0, tasksDone: 0 };
                 let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
@@ -194,13 +191,11 @@
                     tasksDone: newTasksDone
                 }).then(() => {
                     tg.showAlert(`Task completed! +50 GP added.`);
-                    // নতুন ইন্ডেক্স দিয়ে টাস্ক রেন্ডার করা (লুপ এগিয়ে যাবে)
                     renderTasks(newTasksDone);
                 });
             });
         }
 
-        // সোয়াইপ অ্যানিমেশন লজিক
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
