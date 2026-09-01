@@ -104,7 +104,6 @@
         .stat-card .stat-value { font-size: 12px; font-weight: 800; margin-bottom: 2px; color: #fff; }
         .stat-card .stat-label { font-size: 8.5px; color: var(--text-muted); }
 
-        /* অর্ডার হিস্টরি কার্ড */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -123,7 +122,6 @@
             align-items: center;
         }
 
-        /* মেনু লিস্ট */
         .menu-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
         .menu-row-item {
             background: var(--card-bg);
@@ -168,7 +166,6 @@
             </div>
         </div>
 
-        <!-- টপ ইউজার কার্ড -->
         <div class="profile-card" id="profileCardElement">
             <div class="profile-left">
                 <div class="avatar-container">
@@ -185,7 +182,6 @@
             </div>
         </div>
 
-        <!-- স্ট্যাটাস গ্রিড -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-coins"></i></div>
@@ -209,7 +205,7 @@
             </div>
         </div>
 
-        <!-- অর্ডার হিস্টরি কার্ড -->
+        <!-- অর্ডার হিস্টরি কার্ড (Rejected ও Approved স্ট্যাটাস রিয়েল-টাইম দেখাবে) -->
         <div class="card">
             <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #fff;"><i class="fa-solid fa-bag-shopping" style="color: #ec4899;"></i> My Orders History</h4>
             <div id="my-orders-list" style="max-height: 220px; overflow-y: auto;">
@@ -217,7 +213,6 @@
             </div>
         </div>
 
-        <!-- মেনু লিস্ট (শিপিং অ্যাড্রেস, হেল্প ও সাপোর্ট এবং অ্যাডমিন প্যানেল) -->
         <div class="menu-list">
             <a class="menu-row-item" href="address.html">
                 <div class="menu-row-left">
@@ -230,7 +225,6 @@
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
             </a>
 
-            <!-- Help & Support Option (Added Back) -->
             <a class="menu-row-item" href="support.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);"><i class="fa-solid fa-headset"></i></div>
@@ -242,7 +236,6 @@
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
             </a>
 
-            <!-- Admin Panel Button -->
             <a class="menu-row-item admin-row-item" id="admin-panel-btn" href="admin.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: linear-gradient(135deg, #ef4444, #991b1b);"><i class="fa-solid fa-user-shield"></i></div>
@@ -256,7 +249,6 @@
         </div>
     </div>
 
-    <!-- নেভিগেশন বার -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
@@ -301,7 +293,6 @@
             document.getElementById('user-avatar').src = user.photo_url;
         }
 
-        // ইউজার ডেটা ও ভেরিফিকেশন চেক
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
             if(data) {
@@ -317,15 +308,23 @@
             }
         });
 
-        // শপ অর্ডার হিস্টরি লোড
-        db.ref('shop_orders').orderByChild('userId').equalTo(userId).on('value', snap => {
+        // ইউজারের নিজস্ব অর্ডার হিস্টরি রিয়েল-টাইম লোড (Pending, Approved, এবং Rejected স্ট্যাটাসসহ)
+        db.ref('users/' + userId + '/orders').on('value', snap => {
             let container = document.getElementById('my-orders-list');
             let html = "";
             if (snap.exists()) {
                 snap.forEach(child => {
                     let order = child.val();
-                    let statusColor = order.status === 'Approved' ? '#22c55e' : '#f59e0b';
-                    let statusText = order.status === 'Approved' ? 'Accepted ✅' : 'Pending ⏳';
+                    let statusColor = '#f59e0b';
+                    let statusText = 'Pending ⏳';
+
+                    if (order.status === 'Approved') {
+                        statusColor = '#22c55e';
+                        statusText = 'Accepted ✅';
+                    } else if (order.status === 'Rejected') {
+                        statusColor = '#ef4444';
+                        statusText = 'Rejected ❌ (Refunded)';
+                    }
 
                     html += `
                         <div class="order-item-box">
