@@ -133,6 +133,7 @@
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
             </a>
 
+            <!-- Admin Panel Button -->
             <a class="menu-row-item admin-row-item" id="admin-panel-btn" href="admin.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: #991b1b;"><i class="fa-solid fa-user-shield"></i></div>
@@ -186,8 +187,10 @@
         if (userId === ADMIN_USER_ID) {
             document.getElementById('admin-panel-btn').style.display = "flex";
         }
+        if (user && user.photo_url) {
+            document.getElementById('user-avatar').src = user.photo_url;
+        }
 
-        // ইউজার ডেটা ও ব্যালেন্স লোড
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
             if(data) {
@@ -197,7 +200,7 @@
             }
         });
 
-        // ইউজারের নিজস্ব অর্ডার হিস্টরি রিয়েল-টাইম লোড (Pending, Approved, Rejected স্ট্যাটাসসহ)
+        // ইউজারের নিজস্ব অর্ডার হিস্টরি রিয়েল-টাইম লোড
         db.ref('users/' + userId + '/orders').on('value', snap => {
             let container = document.getElementById('my-orders-list');
             let html = "";
