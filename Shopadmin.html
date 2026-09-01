@@ -104,7 +104,7 @@
                         }
                     });
 
-                    // নতুন অর্ডার উপরে দেখানোর জন্য সর্টিং (Newest First)
+                    // নতুন অর্ডারগুলো সবার উপরে দেখানোর জন্য সর্টিং (Newest First)
                     ordersArray.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
                     ordersArray.forEach(order => {
@@ -132,31 +132,26 @@
             });
         }
 
-        // ফায়ারবেসের ইউজারের ভেতরে থাকা যেকোনো প্রপার্টি স্ক্যান করে ফোন ও অ্যাড্রেস বের করার ফাংশন
+        // সরাসরি users/{userId}/address নোড থেকে ডেটা ফেচ করার ফাংশন
         function viewOrderDetails(targetUserId, itemName, price, orderTime) {
             document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
             document.getElementById('orderOverlay').style.display = 'block';
             document.getElementById('orderModal').style.display = 'block';
 
-            db.ref('users/' + targetUserId).once('value', snap => {
-                let uData = snap.val() || {};
-                
-                // সব সম্ভাব্য অবজেক্ট ও প্রপার্টি স্ক্যান করা হচ্ছে
-                let subObj1 = uData.address || {};
-                let subObj2 = uData.shipping_address || {};
-                let subObj3 = uData.profile_address || {};
+            db.ref('users/' + targetUserId + '/address').once('value', snap => {
+                let addr = snap.val();
 
-                // নাম খোঁজা
-                let fullName = subObj1.fullName || subObj1.name || subObj2.fullName || subObj2.name || subObj3.fullName || subObj3.name || uData.fullName || uData.name || uData.username || 'N/A';
-                
-                // ফোন নম্বর খোঁজা (সব সম্ভাব্য কী-ওয়ার্ড চেক করে)
-                let phoneNum = subObj1.phone || subObj1.number || subObj1.mobile || subObj2.phone || subObj2.number || subObj2.mobile || subObj3.phone || subObj3.number || subObj3.mobile || uData.phone || uData.number || uData.mobile || uData.phoneNumber || 'N/A';
-                
-                // অ্যাড্রেস খোঁজা
-                let fullLocation = subObj1.address || subObj1.location || subObj2.address || subObj2.location || subObj3.address || subObj3.location || uData.address || uData.location || uData.full_address || 'N/A';
-                
-                // জিপ কোড খোঁজা
-                let zipCode = subObj1.zip || subObj1.zipCode || subObj2.zip || subObj2.zipCode || subObj3.zip || subObj3.zipCode || uData.zip || uData.zipCode || 'N/A';
+                let fullName = 'N/A';
+                let phoneNum = 'N/A';
+                let fullLocation = 'N/A';
+                let zipCode = 'N/A';
+
+                if (addr) {
+                    fullName = addr.fullName || 'N/A';
+                    phoneNum = addr.phone || 'N/A';
+                    fullLocation = addr.address || 'N/A';
+                    zipCode = addr.zip || 'N/A';
+                }
 
                 let addressHtml = `
                     <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
