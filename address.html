@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyCen - Shipping Address</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -128,6 +130,19 @@
     </div>
 
     <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
+            authDomain: "heycen-9a9d8.firebaseapp.com",
+            databaseURL: "https://heycen-9a9d8-default-rtdb.firebaseio.com",
+            projectId: "heycen-9a9d8",
+            storageBucket: "heycen-9a9d8.firebasestorage.app",
+            messagingSenderId: "442359961958",
+            appId: "1:442359961958:web:815606d4836a66003d50a7",
+            measurementId: "G-XNQSP1R3JR"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         let tg = window.Telegram.WebApp;
         tg.expand();
 
@@ -135,40 +150,49 @@
         let userId = user ? user.id.toString() : "7757851056";
         let defaultName = user ? (user.first_name || "") : "";
 
-        // অটো ফিল করার জন্য
         document.getElementById('shipId').value = userId;
 
-        // লোকালস্টোরেজ থেকে আগের সেভ করা ডেটা লোড করা
-        if(localStorage.getItem('ship_name')) document.getElementById('shipName').value = localStorage.getItem('ship_name');
-        else document.getElementById('shipName').value = defaultName;
-
-        if(localStorage.getItem('ship_location')) document.getElementById('shipLocation').value = localStorage.getItem('ship_location');
-        if(localStorage.getItem('ship_zip')) document.getElementById('shipZip').value = localStorage.getItem('ship_zip');
-        if(localStorage.getItem('ship_phone')) document.getElementById('shipPhone').value = localStorage.getItem('ship_phone');
+        // পেজ লোড হওয়ার সময় ফায়ারবেস থেকে আগের সেভ করা ডেটা ফর্ম ইনপুটে নিয়ে আসা
+        db.ref('users/' + userId + '/address').once('value', snap => {
+            let data = snap.val();
+            if (data) {
+                document.getElementById('shipName').value = data.fullName || defaultName;
+                document.getElementById('shipLocation').value = data.address || '';
+                document.getElementById('shipZip').value = data.zip || '';
+                document.getElementById('shipPhone').value = data.phone || '';
+            } else {
+                document.getElementById('shipName').value = defaultName;
+            }
+        });
 
         function saveAddressData() {
-            let name = document.getElementById('shipName').value.trim();
-            let location = document.getElementById('shipLocation').value.trim();
+            let fullName = document.getElementById('shipName').value.trim();
+            let address = document.getElementById('shipLocation').value.trim();
             let zip = document.getElementById('shipZip').value.trim();
             let phone = document.getElementById('shipPhone').value.trim();
 
-            if(!name || !location || !zip || !phone) {
+            if(!fullName || !address || !zip || !phone) {
                 tg.showAlert("⚠️ Please fill in all the required fields!");
                 return;
             }
 
-            localStorage.setItem('ship_name', name);
-            localStorage.setItem('ship_location', location);
-            localStorage.setItem('ship_zip', zip);
-            localStorage.setItem('ship_phone', phone);
-            
-            // শপের কোডের সাথে সামঞ্জস্য রাখার জন্য
-            localStorage.setItem('shipping_address', `${location}, Zip: ${zip}, Ph: ${phone}`);
+            let addressData = {
+                fullName: fullName,
+                address: address,
+                zip: zip,
+                phone: phone,
+                updatedAt: Date.now()
+            };
 
-            tg.showAlert("✅ Shipping Address saved successfully!");
-            setTimeout(() => {
-                window.location.href = "profile.html";
-            }, 1200);
+            // সরাসরি ফায়ারবেসের ডাটাবেজে সেভ করা হচ্ছে যাতে Shopadmin.html থেকে দেখতে পাওয়া যায়
+            db.ref('users/' + userId + '/address').set(addressData).then(() => {
+                tg.showAlert("✅ Shipping Address saved successfully!");
+                setTimeout(() => {
+                    window.location.href = "profile.html";
+                }, 1200);
+            }).catch(error => {
+                tg.showAlert("❌ Error saving address: " + error.message);
+            });
         }
     </script>
 </body>
