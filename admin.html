@@ -23,8 +23,6 @@
         .back-nav { font-size: 20px; color: white; cursor: pointer; padding: 5px; }
 
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
-        
         .card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         
         .stat-box { background: #0a1226; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border); }
@@ -35,25 +33,16 @@
         .btn-blue { background: var(--blue); color: white; }
         .btn-green { background: var(--green); color: white; }
         .btn-red { background: var(--red); color: white; }
-        .btn-orange { background: var(--orange); color: white; }
-        .btn-purple { background: var(--purple); color: white; }
-        .btn-gray { background: #475569; color: white; }
 
-        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); cursor: pointer; transition: 0.2s; }
+        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); cursor: pointer; }
         .list-item:hover { border-color: var(--pink); background: #0e1730; }
         .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
         
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--pink); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
-        .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         
         .floating-back-container { display: flex; justify-content: center; margin: 25px 0 10px 0; }
-        .circle-back-btn {
-            background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
-            border: none; color: #fff; width: 48px; height: 48px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 18px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5);
-        }
+        .circle-back-btn { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); border: none; color: #fff; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; }
     </style>
 </head>
 <body>
@@ -66,7 +55,6 @@
 
         <div class="grid">
             <div class="stat-box"><small>Total Users</small><h2 id="st-users">0</h2></div>
-            <div class="stat-box"><small>Active (Live)</small><h2 id="st-active" style="color: var(--green);">0</h2></div>
             <div class="stat-box"><small>Pending Req</small><h2 id="st-pending" style="color: var(--orange);">0</h2></div>
             <div class="stat-box"><small>Total GP</small><h2 id="st-total-gp" style="color: var(--green);">0</h2></div>
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
@@ -79,16 +67,6 @@
             <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
                 <small style="color: #94a3b8;">Loading orders...</small>
             </div>
-        </div>
-
-        <div class="card" style="border-color: var(--purple);">
-            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests</h4>
-            <div id="agent-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--blue);">
-            <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Management</h4>
-            <div id="wd-list">Loading withdrawals...</div>
         </div>
 
         <div class="card">
@@ -109,7 +87,7 @@
         <div id="order-modal-content" style="font-size: 13px; line-height: 1.6; color: #e2e8f0;">
             <p>Loading details...</p>
         </div>
-        <button class="btn btn-gray" style="margin-top: 15px;" onclick="closeOrderModal()">Close</button>
+        <button class="btn" style="background:#475569; margin-top: 15px;" onclick="closeOrderModal()">Close</button>
     </div>
 
     <!-- User Management Modal -->
@@ -153,7 +131,6 @@
 
         function initAdmin() {
             loadShopOrders();
-            // ইউজার লিস্ট লোড
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
                 let banned = 0, totalGP = 0;
@@ -178,26 +155,8 @@
                 });
                 document.getElementById('user-list').innerHTML = html || "No users found.";
             });
-
-            // উইথড্র ও সেল রিকোয়েস্ট লোড
-            db.ref('sell_requests').on('value', snap => {
-                let html = "";
-                snap.forEach(c => {
-                    let req = c.val();
-                    if(req.status === "Pending") {
-                        html += `<div class="list-item"><b>${req.userName || 'User'}</b> - ${req.amount} GP
-                            <div class="grid" style="margin-top:8px;">
-                                <button class="btn btn-green" onclick="db.ref('sell_requests/${c.key}').update({status:'Approved'}); db.ref('users/${req.userId}').update({isVerified:true})">Approve</button>
-                                <button class="btn btn-red" onclick="db.ref('sell_requests/${c.key}').update({status:'Rejected'})">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('agent-req-list').innerHTML = html || "No requests.";
-            });
         }
 
-        // শপ অর্ডার লোড
         function loadShopOrders() {
             let container = document.getElementById('shop-orders-list');
             db.ref('shop_orders').on('value', snapshot => {
@@ -215,8 +174,8 @@
                                     <small>User: ${order.userName} (ID: ${order.userId})</small><br>
                                     <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small>
                                     <div style="margin-top: 4px; font-size: 11px; color: #38bdf8;"><i class="fas fa-phone-alt"></i> Tap box to view phone & address</div>
-                                    <div class="grid" style="margin-top:8px;" onclick="event.stopPropagation()">
-                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${order.itemName}')">Accept Order</button>
+                                    <div class="grid" style="margin-top:8px; grid-template-columns: 1fr 1fr;" onclick="event.stopPropagation()">
+                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${order.itemName}')">Accept</button>
                                         <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}', '${order.itemName}', ${order.price})">Reject & Refund</button>
                                     </div>
                                 </div>
@@ -232,7 +191,7 @@
             });
         }
 
-        // ইউজারের অ্যাড্রেস ও ফোন নম্বর ফায়ারবেস থেকে ফেচ করে দেখানোর ফাংশন (সব সম্ভাব্য পাথ হ্যান্ডেল করা হয়েছে)
+        // ইউজারের অ্যাড্রেস ও ফোন নম্বর ফায়ারবেস থেকে ফেচ করে দেখানোর ফাংশন
         function viewOrderDetails(targetUserId, itemName, price) {
             document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
             document.getElementById('orderOverlay').style.display = 'block';
@@ -240,7 +199,6 @@
 
             db.ref('users/' + targetUserId).once('value', snap => {
                 let uData = snap.val() || {};
-                // বিভিন্ন নামে অ্যাড্রেস সেভ থাকতে পারে, তাই সব চেক করা হচ্ছে
                 let addr = uData.shipping_address || uData.address || uData.profile_address || {};
 
                 let fullName = addr.fullName || addr.name || uData.name || uData.username || 'N/A';
@@ -273,9 +231,7 @@
 
         function approveShopOrder(orderKey, targetUserId, itemName) {
             if (confirm("Accept this order?")) {
-                // ১. মেইন শপ অর্ডারের স্ট্যাটাস Approved করা
                 db.ref('shop_orders/' + orderKey).update({ status: 'Approved' }).then(() => {
-                    // ২. ইউজারের নিজস্ব অর্ডার হিস্ট্রির স্ট্যাটাস ও আপডেট করা
                     db.ref('users/' + targetUserId + '/orders').once('value', snap => {
                         let orders = snap.val() || {};
                         Object.keys(orders).forEach(oKey => {
@@ -284,25 +240,14 @@
                             }
                         });
                     });
-
-                    db.ref('users/' + targetUserId + '/notifications').push({
-                        title: "Order Accepted! 🎉",
-                        message: `Your order for "${itemName}" has been accepted by admin!`,
-                        timestamp: Date.now(),
-                        isRead: false
-                    });
                     alert("Order accepted successfully!");
                 });
             }
         }
 
-        // অর্ডার রিজেক্ট ও ইউজারের GP রিফান্ড এবং প্রোফাইলে স্ট্যাটাস আপডেট করার ফাংশন
         function rejectShopOrder(orderKey, targetUserId, itemName, itemPrice) {
             if (confirm("Reject order and refund GP to user?")) {
-                // ১. মেইন শপ অর্ডারের স্ট্যাটাস Rejected করা
                 db.ref('shop_orders/' + orderKey).update({ status: 'Rejected' }).then(() => {
-                    
-                    // ২. ইউজারের ব্যালেন্স রিফান্ড করা এবং ইউজারের প্রোফাইলের ভেতর থাকা অর্ডার হিস্ট্রির স্ট্যাটাস 'Rejected' করা
                     db.ref('users/' + targetUserId).transaction(u => {
                         if (u) {
                             u.points = (u.points || 0) + itemPrice;
@@ -310,7 +255,6 @@
                         }
                         return u;
                     }).then(() => {
-                        // ইউজারের নিজস্ব orders নোড আপডেট
                         db.ref('users/' + targetUserId + '/orders').once('value', snap => {
                             let orders = snap.val() || {};
                             Object.keys(orders).forEach(oKey => {
@@ -318,13 +262,6 @@
                                     db.ref(`users/${targetUserId}/orders/${oKey}`).update({ status: 'Rejected' });
                                 }
                             });
-                        });
-
-                        db.ref('users/' + targetUserId + '/notifications').push({
-                            title: "Order Rejected & Refunded ❌",
-                            message: `Your order for "${itemName}" was rejected. ${itemPrice.toLocaleString()} GP has been refunded to your account.`,
-                            timestamp: Date.now(),
-                            isRead: false
                         });
                         alert("Order rejected and GP successfully refunded & updated in user profile!");
                     });
@@ -349,6 +286,13 @@
         function closeModal() { 
             document.getElementById('overlay').style.display = 'none'; 
             document.getElementById('modal').style.display = 'none'; 
+        }
+
+        function filterUsers() {
+            let q = document.getElementById('user-search').value.toLowerCase();
+            document.querySelectorAll('.user-item').forEach(it => {
+                it.style.display = it.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+            });
         }
     </script>
 </body>
