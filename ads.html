@@ -110,8 +110,8 @@
             <p>Watch video ads to earn extra GP</p>
         </div>
 
-        <!-- 6 Video Ads Section -->
-        <div class="section-title"><i class="fa-solid fa-play-circle"></i> Watch Video Ads (6 Available)</div>
+        <!-- 4 Video Ads Section -->
+        <div class="section-title"><i class="fa-solid fa-play-circle"></i> Watch Video Ads (4 Available)</div>
         <div class="video-grid" id="video-ads-container">
             <!-- Populated via JS -->
         </div>
@@ -152,7 +152,7 @@
         let userId = user ? user.id.toString() : "7757851056"; 
         let userRef = db.ref('users/' + userId);
 
-        let userData = { points: 0, gp: 0, tasksDone: 0 };
+        let userData = { points: 0, gp: 0, tasksDone: 0, adsTimer: {} };
 
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
@@ -161,8 +161,10 @@
                 let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
                 userData.points = currentPoints;
                 userData.gp = currentPoints;
+                userData.adsTimer = data.adsTimer || {};
+                renderAds();
             } else {
-                userRef.set({ points: 0, gp: 0, tasksDone: 0 });
+                userRef.set({ points: 0, gp: 0, tasksDone: 0, adsTimer: {} });
             }
         });
 
@@ -174,24 +176,40 @@
             }
         });
 
-        // Render 6 Video Ads
-        const videoContainer = document.getElementById('video-ads-container');
-        for (let i = 1; i <= 6; i++) {
-            videoContainer.innerHTML += `
-                <div class="video-card" id="vid-card-${i}">
-                    <div class="video-top">
-                        <div class="video-icon"><i class="fa-solid fa-video"></i></div>
-                        <div class="video-info">
-                            <h4>Video Ad #${i}</h4>
-                            <p>Watch full ad</p>
+        // Render 4 Video Ads with 24 Hours Cooldown Check
+        function renderAds() {
+            const videoContainer = document.getElementById('video-ads-container');
+            videoContainer.innerHTML = '';
+            
+            let currentTime = Date.now();
+            let adsTimer = userData.adsTimer || {};
+
+            for (let i = 1; i <= 4; i++) {
+                let lastWatched = adsTimer[i] || 0;
+                let cooldownTime = 24 * 60 * 60 * 1000; // ২৪ ঘণ্টা মিলিিসেকেন্ডে
+                let timeDifference = currentTime - lastWatched;
+                let isAvailable = timeDifference > cooldownTime;
+
+                let btnText = isAvailable ? "Watch" : "Wait 24h";
+                let btnClass = isAvailable ? "watch-btn" : "watch-btn done";
+                let onClickAttr = isAvailable ? `onclick="watchVideoAd(${i}, 50)"` : "";
+
+                videoContainer.innerHTML += `
+                    <div class="video-card" id="vid-card-${i}">
+                        <div class="video-top">
+                            <div class="video-icon"><i class="fa-solid fa-video"></i></div>
+                            <div class="video-info">
+                                <h4>Video Ad #${i}</h4>
+                                <p>Watch full ad</p>
+                            </div>
+                        </div>
+                        <div class="video-bottom">
+                            <div class="video-reward"><i class="fa-solid fa-coins"></i> +50 GP</div>
+                            <button class="${btnClass}" id="vid-btn-${i}" ${onClickAttr}>${btnText}</button>
                         </div>
                     </div>
-                    <div class="video-bottom">
-                        <div class="video-reward"><i class="fa-solid fa-coins"></i> +50 GP</div>
-                        <button class="watch-btn" id="vid-btn-${i}" onclick="watchVideoAd(${i}, 50)">Watch</button>
-                    </div>
-                </div>
-            `;
+                `;
+            }
         }
 
         function watchVideoAd(id, points) {
@@ -203,7 +221,6 @@
             if (adsgramController) {
                 adsgramController.show()
                     .then(() => {
-                        // User watched the ad completely
                         let currentPoints = userData.points !== undefined ? userData.points : (userData.gp || 0);
                         let newPoints = currentPoints + points;
                         let newTasksDone = (userData.tasksDone || 0) + 1;
@@ -212,19 +229,20 @@
                         userData.gp = newPoints;
                         userData.tasksDone = newTasksDone;
 
+                        // সেভ লাস্ট ওয়াচ টাইম ২৪ ঘণ্টার জন্য
+                        if (!userData.adsTimer) userData.adsTimer = {};
+                        userData.adsTimer[id] = Date.now();
+
                         userRef.set(userData).then(() => {
-                            btn.innerText = "Done ✓";
-                            btn.classList.add('done');
                             tg.showAlert(`Video Ad #${id} completed! +${points} GP added.`);
+                            renderAds();
                         });
                     })
                     .catch((result) => {
-                        // Ad was skipped or failed to show
                         btn.innerText = "Watch";
                         tg.showAlert("Ad was skipped or not available. Please try again!");
                     });
             } else {
-                // Fallback if Adsgram controller is not loaded yet
                 btn.innerText = "Watch";
                 tg.showAlert("Adsgram is still loading or not available!");
             }
