@@ -49,7 +49,6 @@
         .tasks-header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
         .tasks-header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
         
-        /* আগের মতো ২ কলামের গ্রিড ডিজাইন */
         .task-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -71,8 +70,12 @@
         .task-grid-info p { margin: 2px 0 0 0; font-size: 10px; color: var(--text-muted); }
         .task-grid-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 10px; }
         .task-grid-reward { font-size: 12px; font-weight: 700; color: #eab308; display: flex; align-items: center; gap: 4px; }
-        .task-start-btn { background: #7c3aed; color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; }
         
+        /* বাটনের ডিজাইন */
+        .task-start-btn { background: #7c3aed; color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .task-start-btn:disabled { background: #475569; cursor: not-allowed; }
+        .task-start-btn.completed { background: #10b981; }
+
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
@@ -96,7 +99,6 @@
             <p>Join channels below to earn 50 GP each</p>
         </div>
 
-        <!-- ডাইনামিক টাস্কগুলো এখানে লোড হবে -->
         <div class="task-grid" id="dynamicTaskGrid">
             <div class="loading-text">Loading tasks...</div>
         </div>
@@ -166,17 +168,33 @@
                     </div>
                     <div class="task-grid-bottom">
                         <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +50</div>
-                        <button class="task-start-btn" onclick="completeChannelTask('${channelName}')">Join</button>
+                        <button id="btn-${channelName}" class="task-start-btn" onclick="startTask('${channelName}')">Join</button>
                     </div>
                 </div>`;
                 grid.innerHTML += cardHTML;
             }
         }
 
-        function completeChannelTask(channelUsername) {
-            // ফিক্স: Telegram Web App API ব্যবহার করা হয়েছে লিংক ওপেন করার জন্য
+        // টাস্ক শুরু করার ফাংশন
+        function startTask(channelUsername) {
+            const btn = document.getElementById('btn-' + channelUsername);
+            if(btn.disabled) return;
+
+            // টেলিগ্রাম চ্যানেল ওপেন করা (অ্যাপ ব্যাকগ্রাউন্ডে চলে যাবে)
             tg.openTelegramLink('https://t.me/' + channelUsername);
 
+            // বাটনের স্টাইল ও টেক্সট পরিবর্তন (Waiting State)
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Wait 10s';
+            btn.disabled = true;
+
+            // ১০ সেকেন্ড পর পয়েন্ট অ্যাড করার টাইমার
+            setTimeout(() => {
+                completeAndReward(btn);
+            }, 10000);
+        }
+
+        // পয়েন্ট দেওয়ার ফাংশন
+        function completeAndReward(btn) {
             userRef.once('value').then((snapshot) => {
                 let data = snapshot.val() || { points: 0, gp: 0, tasksDone: 0 };
                 let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
@@ -190,8 +208,15 @@
                     gp: newPoints,
                     tasksDone: newTasksDone
                 }).then(() => {
+                    // বাটন "Completed" করা
+                    btn.innerHTML = 'Completed';
+                    btn.classList.add('completed');
+                    
+                    // সাকসেস মেসেজ দেখানো
                     tg.showAlert(`Task completed! +50 GP added.`);
-                    renderTasks(newTasksDone);
+                    
+                    // রিফ্রেশ করা হলো না, যাতে ইউজারের স্ক্রিন থেকে কার্ড গায়েব না হয়। 
+                    // পরেরবার অ্যাপ খুললে নতুন টাস্ক সামনে আসবে।
                 });
             });
         }
