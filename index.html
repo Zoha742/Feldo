@@ -49,7 +49,6 @@
         .header-icons { display: flex; align-items: center; gap: 12px; }
         .notification-btn { background: none; border: none; font-size: 20px; color: var(--text-main); cursor: pointer; position: relative; }
         
-        /* বেল আইকন ভাইব্রেট বা ঝাঁকানোর অ্যানিমেশন */
         @keyframes shakeBell {
             0% { transform: rotate(0deg); }
             15% { transform: rotate(14deg); }
@@ -87,24 +86,20 @@
         .bonus-card .icon { font-size: 18px; margin-bottom: 6px; color: #22c55e; }
         .bonus-card .reward { font-size: 11px; font-weight: 700; }
         
-        .task-card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px; border-radius: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .task-left { display: flex; align-items: center; gap: 12px; }
-        .task-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
-        .task-info h4 { margin: 0 0 4px 0; font-size: 14px; font-weight: 600; }
-        .task-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
-        .task-reward { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 700; color: #eab308; margin-top: 4px; }
-        .action-btn { background: #6366f1; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; }
-        .action-btn.red { background: #ef4444; }
-        .action-btn.green { background: #22c55e; }
-        .action-btn.purple { background: #8b5cf6; }
-        .action-btn.orange { background: #f97316; }
+        /* শপ ড্রেস গ্রিড স্টাইল (হোম পেজের জন্য) */
+        .shop-preview-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
+        .shop-preview-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+        .shop-preview-img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; background: #f1f5f9; margin-bottom: 8px; }
+        .shop-preview-title { font-size: 12px; font-weight: 600; margin: 0 0 4px 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .shop-preview-price { font-size: 12px; font-weight: 700; color: #eab308; margin-bottom: 8px; }
+        .shop-preview-btn { background: #ec4899; color: #fff; border: none; padding: 6px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; width: 100%; text-decoration: none; display: block; box-sizing: border-box; }
 
         .promo-banner { background: var(--primary-gradient); border-radius: 16px; padding: 16px; color: #fff; display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
         .promo-banner h3 { margin: 0 0 4px 0; font-size: 15px; }
         .promo-banner p { margin: 0; font-size: 11px; opacity: 0.9; }
         .promo-btn { background: rgba(255,255,255,0.25); border: none; color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; backdrop-filter: blur(5px); white-space: nowrap; }
         
-        /* বড় এবং আকর্ষণীয় নেভিগেশন বার */
+        /* নেভিগেশন বার (Ads অপশন বাদ দেওয়া হয়েছে) */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
@@ -152,9 +147,9 @@
                 <div class="menu-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
                 <div class="menu-label">Tasks</div>
             </a>
-            <div class="menu-item" onclick="location.href='agent.html'">
-                <div class="menu-icon" style="background: #3b82f6;"><i class="fa-solid fa-handshake"></i></div>
-                <div class="menu-label">Agent</div>
+            <div class="menu-item" onclick="location.href='shop.html'">
+                <div class="menu-icon" style="background: #ec4899;"><i class="fa-solid fa-store"></i></div>
+                <div class="menu-label">Shop</div>
             </div>
         </div>
 
@@ -165,35 +160,31 @@
         <div class="bonus-scroll" id="daily-bonus-container"></div>
 
         <div class="section-header">
-            <div class="section-title">Available Tasks</div>
-            <a href="task.html" style="font-size: 12px; color: #6366f1; text-decoration: none; font-weight: 600;">View All</a>
+            <div class="section-title">Featured Dresses</div>
+            <a href="shop.html" style="font-size: 12px; color: #ec4899; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
-        <div class="task-card">
-            <div class="task-left">
-                <div class="task-icon" style="background: #8b5cf6;"><i class="fa-solid fa-file-lines"></i></div>
-                <div class="task-info">
-                    <h4>Complete Survey</h4>
-                    <p>Watch ad & earn points</p>
-                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +150</div>
+        <!-- শপের ড্রেস প্রিভিউ গ্রিড -->
+        <div class="shop-preview-grid">
+            <div class="shop-preview-card">
+                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Dress">
+                <div>
+                    <h4 class="shop-preview-title">Royal Floral Gown</h4>
+                    <div class="shop-preview-price">🪙 12,000 GP</div>
                 </div>
+                <a href="shop.html" class="shop-preview-btn">Buy Now</a>
             </div>
-            <button class="action-btn purple" onclick="showComingSoon()">Start</button>
-        </div>
-
-        <div class="task-card">
-            <div class="task-left">
-                <div class="task-icon" style="background: #22c55e;"><i class="fa-solid fa-download"></i></div>
-                <div class="task-info">
-                    <h4>Download App</h4>
-                    <p>Watch ad & earn points</p>
-                    <div class="task-reward"><i class="fa-solid fa-coins"></i> +100</div>
+            <div class="shop-preview-card">
+                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" class="shop-preview-img" alt="Dress">
+                <div>
+                    <h4 class="shop-preview-title">Classic Party Dress</h4>
+                    <div class="shop-preview-price">🪙 13,500 GP</div>
                 </div>
+                <a href="shop.html" class="shop-preview-btn">Buy Now</a>
             </div>
-            <button class="action-btn green" onclick="showComingSoon()">Start</button>
         </div>
 
-        <div class="promo-banner" style="margin-top: 20px;">
+        <div class="promo-banner" style="margin-top: 10px;">
             <div>
                 <h3>Watch Ads & Earn More!</h3>
                 <p>Watch ads and earn unlimited points</p>
@@ -202,11 +193,10 @@
         </div>
     </div>
 
-    <!-- নেভিগেশন বার (Ads অপশনের ঠিক পাশে Shop অপশন যুক্ত করা হয়েছে) -->
+    <!-- নেভিগেশন বার (Ads অপশন রিমুভ করা হয়েছে) -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
         <a class="nav-item" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
         <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
@@ -312,10 +302,6 @@
             });
         }
 
-        function showComingSoon() {
-            tg.showAlert("Coming Soon!");
-        }
-
         // সোয়াইপ অ্যানিমেশন লজিক
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
@@ -357,7 +343,6 @@
             }
         });
 
-        // নতুন মেসেজ আসলে পপআপ শুধু একবার দেখানোর লজিক
         let isInitialLoad = true;
         notifRef.limitToLast(1).on('child_added', (snapshot) => {
             let notif = snapshot.val();
