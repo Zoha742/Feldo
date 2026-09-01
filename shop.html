@@ -87,7 +87,7 @@
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id.toString() : "7757851056";
         let username = user ? (user.first_name || "User") : "User";
-        let userPoints = 100;
+        let userPoints = 0;
 
         // ফায়ারবেস থেকে ইউজারের রিয়েল GP ব্যালেন্স লোড করা
         db.ref('users/' + userId).on('value', snap => {
@@ -98,7 +98,7 @@
             }
         });
 
-        // আপনার দেওয়া ক্লাউডিনারি লিংকগুলো দিয়ে ড্রেস লিস্ট তৈরি করা হলো[cite: 9]
+        // ক্লাউডিনারি লিংকগুলো দিয়ে ড্রেস লিস্ট
         const cloudDresses = [
             { name: "Royal Floral Gown", cat: "Gown", price: 12000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" },
             { name: "Classic Party Dress", cat: "Party", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" },
@@ -180,27 +180,39 @@
                 return;
             }
 
-            if (userPoints >= price) {
-                let newPoints = userPoints - price;
+            // শিপিং অ্যাড্রেস চেক করা
+            db.ref('users/' + userId + '/shipping_address').once('value', snapshot => {
+                let addressData = snapshot.val();
+                
+                if (!addressData && !localStorage.getItem('shipping_address')) {
+                    tg.showAlert("⚠️ Please set your Home Shipping Address first before placing an order!");
+                    setTimeout(() => {
+                        window.location.href = "address.html";
+                    }, 1200);
+                    return;
+                }
 
-                // ইউজারের ফায়ারবেস ব্যালেন্স আপডেট এবং অ্যাডমিন প্যানেলে অর্ডার পাঠানোর কোড
-                db.ref('users/' + userId).update({ points: newPoints, gp: newPoints }).then(() => {
-                    let orderData = {
-                        userId: userId,
-                        userName: username,
-                        itemName: `${dressName} [Size: ${chosenSize}]`,
-                        price: price,
-                        status: "Pending",
-                        timestamp: Date.now()
-                    };
+                if (userPoints >= price) {
+                    let newPoints = userPoints - price;
 
-                    db.ref('shop_orders').push(orderData).then(() => {
-                        tg.showAlert(`🎉 Order Confirmed! You bought "${dressName}" (Size: ${chosenSize}). Waiting for admin approval.`);
+                    db.ref('users/' + userId).update({ points: newPoints, gp: newPoints }).then(() => {
+                        let orderData = {
+                            userId: userId,
+                            userName: username,
+                            itemName: `${dressName} [Size: ${chosenSize}]`,
+                            price: price,
+                            status: "Pending",
+                            timestamp: Date.now()
+                        };
+
+                        db.ref('shop_orders').push(orderData).then(() => {
+                            tg.showAlert(`🎉 Order Confirmed! "${dressName}" (Size: ${chosenSize}) ordered successfully. Waiting for admin approval.`);
+                        });
                     });
-                });
-            } else {
-                tg.showAlert("❌ Insufficient Gold Points! Complete tasks to earn more GP.");
-            }
+                } else {
+                    tg.showAlert("❌ Insufficient Gold Points! Complete tasks to earn more GP.");
+                }
+            });
         }
     </script>
 </body>
