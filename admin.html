@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <!-- নোটিফিকেশন কন্ট্রোল সেকশন (ফিরে আনা হলো) -->
+        <!-- নোটিফিকেশন কন্ট্রোল সেকশন -->
         <div class="card" style="border-color: var(--blue);">
             <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send / Customize Notification</h4>
             <input type="hidden" id="edit-notif-key" value="">
@@ -227,7 +227,6 @@
             });
         }
 
-        // নোটিফিকেশন সেন্ড ও এডিট করার লজিক
         function saveOrSendNotification(actionType) {
             let editKey = document.getElementById('edit-notif-key').value.trim();
             let targetUid = document.getElementById('notif-target-uid').value.trim();
@@ -475,6 +474,7 @@
             });
         }
 
+        // ফায়ারবেসের যেকোনো নেমস্পেস বা সাব-অবজেক্ট থেকে ফোন নম্বর ও লোকেশন বের করার আপডেট ফাংশন
         function viewOrderDetails(targetUserId, itemName, price, orderTime) {
             document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
             document.getElementById('orderOverlay').style.display = 'block';
@@ -482,12 +482,15 @@
 
             db.ref('users/' + targetUserId).once('value', snap => {
                 let uData = snap.val() || {};
-                let addr = uData.address || uData.shipping_address || uData.profile_address || uData;
+                
+                // address, shipping_address অথবা সরাসরি রুট অবজেক্ট থেকে ফিল্ডগুলো নেওয়া হচ্ছে
+                let addr = uData.address || {};
+                let ship = uData.shipping_address || {};
 
-                let fullName = addr.fullName || addr.name || uData.name || uData.username || 'N/A';
-                let phoneNum = addr.phone || addr.number || addr.mobile || uData.phone || 'N/A';
-                let fullLocation = addr.address || addr.location || addr.full_address || 'N/A';
-                let zipCode = addr.zip || addr.zipCode || 'N/A';
+                let fullName = addr.fullName || addr.name || ship.fullName || ship.name || uData.name || uData.username || 'N/A';
+                let phoneNum = addr.phone || addr.number || addr.mobile || ship.phone || ship.number || ship.mobile || uData.phone || uData.number || 'N/A';
+                let fullLocation = addr.address || addr.location || ship.address || ship.location || uData.address || uData.location || 'N/A';
+                let zipCode = addr.zip || addr.zipCode || ship.zip || ship.zipCode || uData.zip || 'N/A';
 
                 let addressHtml = `
                     <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
