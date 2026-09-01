@@ -85,7 +85,7 @@
         <!-- শপ অর্ডার ম্যানেজমেন্ট সেকশন -->
         <div class="card" style="border-color: var(--pink);">
             <h4><i class="fas fa-store" style="color:var(--pink);"></i> Shop Orders (GP Payments)</h4>
-            <small style="color: #94a3b8; font-size: 11px;">Tap any order box to view full phone number & address.</small>
+            <small style="color: #94a3b8; font-size: 11px;">Tap any order box to view full phone number, address, date & time.</small>
             <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
                 <small style="color: #94a3b8;">Loading orders...</small>
             </div>
@@ -116,19 +116,16 @@
             </div>
         </div>
 
-        <!-- Agent GP Sale Requests -->
         <div class="card" style="border-color: var(--purple);">
-            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests (Agent)</h4>
+            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests</h4>
             <div id="agent-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
-        <!-- Mining Boost Proofs -->
         <div class="card" style="border-color: var(--orange);">
             <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Mining Boost Proofs</h4>
             <div id="boost-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
-        <!-- ID Verified Proofs -->
         <div class="card" style="border-color: var(--green);">
             <h4><i class="fas fa-id-card" style="color:var(--green);"></i> ID Verified Proofs</h4>
             <div id="agent-pay-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
@@ -213,37 +210,30 @@
             initAdmin();
         }
 
-        // GP Sale / Agent Requests Approve
         function approveAgentReq(reqKey, targetUserId, amount) {
-            if (confirm("Are you sure you want to approve this agent request?")) {
+            if (confirm("Are you sure you want to approve this request?")) {
                 db.ref('sell_requests/' + reqKey).update({ status: "Approved" }).then(() => {
                     db.ref('users/' + targetUserId).update({ isVerified: true }).then(() => {
                         db.ref('users/' + targetUserId + '/notifications').push({
                             title: "Request Approved! 🎉",
-                            message: "Your GP sale / agent request has been approved by admin!",
+                            message: "Your GP sale / verification request has been approved by admin!",
                             timestamp: Date.now(),
                             isRead: false
                         });
-                        alert("Agent request approved successfully!");
+                        alert("Request approved successfully!");
                     });
-                }).catch(error => {
-                    alert("Error: " + error.message);
                 });
             }
         }
 
-        // GP Sale / Agent Requests Reject
         function rejectAgentReq(reqKey) {
-            if (confirm("Are you sure you want to reject this agent request?")) {
+            if (confirm("Are you sure you want to reject this request?")) {
                 db.ref('sell_requests/' + reqKey).update({ status: "Rejected" }).then(() => {
-                    alert("Agent request rejected successfully!");
-                }).catch(error => {
-                    alert("Error: " + error.message);
+                    alert("Request rejected successfully!");
                 });
             }
         }
 
-        // Mining Boost Proofs Approve / Reject
         function loadBoostRequests() {
             let container = document.getElementById('boost-req-list');
             db.ref('pending_boosts').on('value', snap => {
@@ -289,7 +279,6 @@
             }
         }
 
-        // ID Verified Proofs Approve / Reject
         function loadIdVerifiedProofs() {
             let container = document.getElementById('agent-pay-req-list');
             db.ref('pending_agent_pay').on('value', snap => {
@@ -335,7 +324,7 @@
             }
         }
 
-        // শপ অর্ডার লোড ও ম্যানেজ করার ফাংশন (অ্যাড্রেস, ফোন ও রিফান্ডসহ)
+        // শপ অর্ডার লোড এবং সঠিক Date & Time সহ হ্যান্ডেল করার ফাংশন
         function loadShopOrders() {
             let container = document.getElementById('shop-orders-list');
             db.ref('shop_orders').on('value', snapshot => {
@@ -345,11 +334,13 @@
                         let orderKey = child.key;
                         let order = child.val();
                         if (order.status === 'Pending') {
+                            let orderTimeFormatted = order.timestamp ? new Date(order.timestamp).toLocaleString() : 'N/A';
                             html += `
-                                <div class="list-item" style="border-left-color: var(--pink);" onclick="viewOrderDetails('${order.userId}', '${order.itemName.replace(/'/g, "\\'")}', ${order.price})">
+                                <div class="list-item" style="border-left-color: var(--pink);" onclick="viewOrderDetails('${order.userId}', '${order.itemName.replace(/'/g, "\\'")}', ${order.price}, '${orderTimeFormatted}')">
                                     <b>Item: ${order.itemName}</b><br>
                                     <small>User: ${order.userName} (ID: ${order.userId})</small><br>
-                                    <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small>
+                                    <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small><br>
+                                    <small style="color:#94a3b8;">📅 Date: ${orderTimeFormatted}</small>
                                     <div style="margin-top: 4px; font-size: 11px; color: #38bdf8;"><i class="fas fa-phone-alt"></i> Tap box to view phone & address</div>
                                     <div class="grid" style="margin-top:8px;" onclick="event.stopPropagation()">
                                         <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${order.itemName}')">Accept Order</button>
@@ -366,33 +357,35 @@
             });
         }
 
-        // ইউজারের শিপিং অ্যাড্রেস ও ফোন নম্বর ফায়ারবেস থেকে ফেচ করে মডালে দেখানোর ফাংশন
-        function viewOrderDetails(targetUserId, itemName, price) {
+        // ইউজারের বিভিন্ন সম্ভাব্য পাথ চেক করে নিখুঁতভাবে ফোন নম্বর ও অ্যাড্রেস ফেচ করা
+        function viewOrderDetails(targetUserId, itemName, price, orderTime) {
             document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
             document.getElementById('orderOverlay').style.display = 'block';
             document.getElementById('orderModal').style.display = 'block';
 
             db.ref('users/' + targetUserId).once('value', snap => {
                 let uData = snap.val() || {};
-                let addr = uData.shipping_address || uData.address || {};
+                
+                // বিভিন্ন সম্ভাব্য নেমস্পেস থেকে অ্যাড্রেস ও ফোন খুঁজে বের করা
+                let addrObj = uData.shipping_address || uData.address || uData.profile_address || {};
+                
+                let fullName = addrObj.fullName || addrObj.name || uData.name || uData.username || 'N/A';
+                let phoneNum = addrObj.phone || addrObj.number || uData.phone || uData.mobile || 'N/A';
+                let fullLocation = addrObj.address || addrObj.location || addrObj.full_address || 'N/A';
 
-                let addressHtml = "";
-                if (addr && (addr.phone || addr.number || addr.address)) {
-                    addressHtml = `
-                        <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
-                            <p style="margin: 6px 0;"><b>👤 Full Name:</b> ${addr.fullName || addr.name || uData.name || 'N/A'}</p>
-                            <p style="margin: 6px 0;"><b>📞 Phone Number:</b> <a href="tel:${addr.phone || addr.number}" style="color:var(--green); font-weight:bold; text-decoration:underline;">${addr.phone || addr.number || 'N/A'}</a></p>
-                            <p style="margin: 6px 0;"><b>🏠 Address/Location:</b> ${addr.address || addr.location || 'N/A'}</p>
-                            <p style="margin: 6px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
-                        </div>
-                    `;
-                } else {
-                    addressHtml = `<p style="color:var(--red); margin-top:10px;">⚠️ User has not saved shipping address & phone number in profile yet!</p>`;
-                }
+                let addressHtml = `
+                    <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
+                        <p style="margin: 6px 0;"><b>👤 Full Name:</b> ${fullName}</p>
+                        <p style="margin: 6px 0;"><b>📞 Phone Number:</b> <a href="tel:${phoneNum}" style="color:var(--green); font-weight:bold; text-decoration:underline;">${phoneNum}</a></p>
+                        <p style="margin: 6px 0;"><b>🏠 Address/Location:</b> ${fullLocation}</p>
+                        <p style="margin: 6px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
+                    </div>
+                `;
 
                 document.getElementById('order-modal-content').innerHTML = `
                     <p style="margin: 4px 0;"><b>📦 Ordered Item:</b> <span style="color:#fbbf24;">${itemName}</span></p>
                     <p style="margin: 4px 0;"><b>🪙 Price:</b> ${price.toLocaleString()} GP</p>
+                    <p style="margin: 4px 0;"><b>🕒 Order Time:</b> ${orderTime}</p>
                     <hr style="border:0; height:1px; background:var(--border); margin:10px 0;">
                     <b>📍 Contact & Delivery Details:</b>
                     ${addressHtml}
@@ -428,7 +421,7 @@
             }
         }
 
-        // অর্ডার রিজেক্ট ও ইউজারের GP রিফান্ড করার ফাংশন
+        // অর্ডার রিজেক্ট ও ইউজারের প্রোফাইলে রিয়েল-টাইম 'Rejected' স্ট্যাটাস আপডেট ও রিফান্ড করার ফাংশন
         function rejectShopOrder(orderKey, targetUserId, itemName, itemPrice) {
             if (confirm("Reject order and refund GP to user?")) {
                 db.ref('shop_orders/' + orderKey).update({ status: 'Rejected' }).then(() => {
@@ -439,6 +432,7 @@
                         }
                         return u;
                     }).then(() => {
+                        // ইউজারের প্রোফাইলের ভেতর থাকা নিজস্ব orders নোড আপডেট করা
                         db.ref('users/' + targetUserId + '/orders').once('value', snap => {
                             let orders = snap.val() || {};
                             Object.keys(orders).forEach(oKey => {
@@ -460,7 +454,6 @@
             }
         }
 
-        // নোটিফিকেশন সেন্ড বা এডিট করার ফাংশন[cite: 8]
         function saveOrSendNotification(actionType) {
             let editKey = document.getElementById('edit-notif-key').value.trim();
             let targetUid = document.getElementById('notif-target-uid').value.trim();
@@ -584,7 +577,6 @@
             window.currentEditMedia = "";
         }
 
-        // অটো-ক্লিনআপসহ নোটিফিকেশন হিস্টরি লোড করার ফাংশন[cite: 8]
         function loadAdminNotifications() {
             let container = document.getElementById('admin-notif-list');
             container.innerHTML = `<small style="color: #94a3b8;">Loading history...</small>`;
@@ -701,7 +693,6 @@
             }
         }
 
-        // মেইন অ্যাডমিন ইনিট ফাংশন[cite: 8]
         function initAdmin() {
             loadAdminNotifications();
             loadShopOrders();
@@ -733,7 +724,6 @@
                 }
             });
 
-            // জিপি সেল রিকোয়েস্ট লোড (Agent Requests)
             db.ref('sell_requests').on('value', snap => {
                 let html = "";
                 snap.forEach(c => {
@@ -752,7 +742,6 @@
                 document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
             });
 
-            // ইউজার লিস্ট লোড[cite: 8]
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
                 let banned = 0, totalGP = 0, activeCount = 0;
@@ -795,7 +784,6 @@
                 document.getElementById('user-list').innerHTML = html || "No users found.";
             });
 
-            // উইথড্র রিকোয়েস্ট লোড[cite: 8]
             db.ref('withdraw_requests').on('value', snap => {
                 let pending = 0;
                 let html = "";
@@ -818,7 +806,6 @@
             });
         }
 
-        // ইউজার ম্যানেজমেন্ট মডাল ও অ্যাকশন ফাংশনসমূহ[cite: 8]
         function openUser(id, name, gp, isBanned) {
             window.targetU = id;
             window.targetBanned = isBanned;
@@ -889,7 +876,6 @@
             document.getElementById('modal').style.display = 'none'; 
         }
 
-        // সোয়াইপ সিস্টেম (হোমে যাওয়ার জন্য)[cite: 8]
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
