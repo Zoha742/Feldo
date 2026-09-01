@@ -96,7 +96,7 @@
     <div class="container" id="mainContainer">
         <div class="tasks-header-banner">
             <h2>🎁 Channel Tasks</h2>
-            <p>Join channels below to earn 50 GP each</p>
+            <p>Join channels below to earn 5 GP each</p>
         </div>
 
         <div class="task-grid" id="dynamicTaskGrid">
@@ -200,7 +200,7 @@
                 let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
                 let currentTasksDone = data.tasksDone || 0;
 
-                let newPoints = currentPoints + 50;
+                let newPoints = currentPoints + 5;
                 let newTasksDone = currentTasksDone + 1;
                 
                 userRef.update({ 
@@ -213,7 +213,7 @@
                     btn.classList.add('completed');
                     
                     // সাকসেস মেসেজ দেখানো
-                    tg.showAlert(`Task completed! +50 GP added.`);
+                    tg.showAlert(`Task completed! +5 GP added.`);
                     
                     // রিফ্রেশ করা হলো না, যাতে ইউজারের স্ক্রিন থেকে কার্ড গায়েব না হয়। 
                     // পরেরবার অ্যাপ খুললে নতুন টাস্ক সামনে আসবে।
