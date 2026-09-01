@@ -85,7 +85,7 @@
         <!-- শপ অর্ডার ম্যানেজমেন্ট সেকশন -->
         <div class="card" style="border-color: var(--pink);">
             <h4><i class="fas fa-store" style="color:var(--pink);"></i> Shop Orders (GP Payments)</h4>
-            <small style="color: #94a3b8; font-size: 11px;">Tap any order box to view full shipping details & address.</small>
+            <small style="color: #94a3b8; font-size: 11px;">Tap any order box to view full phone number & address.</small>
             <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
                 <small style="color: #94a3b8;">Loading orders...</small>
             </div>
@@ -210,7 +210,7 @@
             initAdmin();
         }
 
-        // GP Sale Requests অ্যাপ্রুভ করার ফাংশন
+        // GP Sale Requests অ্যাপ্রুভ করার ফাংশন[cite: 8]
         function approveAgentReq(reqKey, targetUserId, amount) {
             if (confirm("Are you sure you want to approve this request?")) {
                 db.ref('sell_requests/' + reqKey).update({ status: "Approved" }).then(() => {
@@ -240,7 +240,7 @@
             }
         }
 
-        // শপ অর্ডার লোড ও ম্যানেজ করার ফাংশন (অ্যাড্রেস ও ফোনসহ ডিটেইলস ভিউ সহ)
+        // শপ অর্ডার লোড ও ম্যানেজ করার ফাংশন (অ্যাড্রেস, ফোন ও রিফান্ডসহ)
         function loadShopOrders() {
             let container = document.getElementById('shop-orders-list');
             db.ref('shop_orders').on('value', snapshot => {
@@ -255,7 +255,7 @@
                                     <b>Item: ${order.itemName}</b><br>
                                     <small>User: ${order.userName} (ID: ${order.userId})</small><br>
                                     <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small>
-                                    <div style="margin-top: 4px; font-size: 11px; color: #38bdf8;"><i class="fas fa-info-circle"></i> Click to view address & details</div>
+                                    <div style="margin-top: 4px; font-size: 11px; color: #38bdf8;"><i class="fas fa-phone-alt"></i> Tap box to view phone & address</div>
                                     <div class="grid" style="margin-top:8px;" onclick="event.stopPropagation()">
                                         <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${order.itemName}')">Accept Order</button>
                                         <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}', '${order.itemName}', ${order.price})">Reject & Refund</button>
@@ -271,9 +271,9 @@
             });
         }
 
-        // ইউজারের শিপিং অ্যাড্রেস ফায়ারবেস থেকে ফেচ করে মডালে দেখানোর ফাংশন
+        // ইউজারের শিপিং অ্যাড্রেস ও ফোন নম্বর ফায়ারবেস থেকে ফেচ করে মডালে দেখানোর ফাংশন
         function viewOrderDetails(targetUserId, itemName, price) {
-            document.getElementById('order-modal-content').innerHTML = "Fetching user shipping address & details...";
+            document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
             document.getElementById('orderOverlay').style.display = 'block';
             document.getElementById('orderModal').style.display = 'block';
 
@@ -285,21 +285,21 @@
                 if (addr) {
                     addressHtml = `
                         <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
-                            <p style="margin: 4px 0;"><b>👤 Full Name:</b> ${addr.fullName || addr.name || 'N/A'}</p>
-                            <p style="margin: 4px 0;"><b>📞 Phone Number:</b> <span style="color:var(--green); font-weight:bold;">${addr.phone || addr.number || 'N/A'}</span></p>
-                            <p style="margin: 4px 0;"><b>🏠 Address/Location:</b> ${addr.address || addr.location || 'N/A'}</p>
-                            <p style="margin: 4px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
+                            <p style="margin: 6px 0;"><b>👤 Full Name:</b> ${addr.fullName || addr.name || 'N/A'}</p>
+                            <p style="margin: 6px 0;"><b>📞 Phone Number:</b> <a href="tel:${addr.phone || addr.number}" style="color:var(--green); font-weight:bold; text-decoration:underline;">${addr.phone || addr.number || 'N/A'}</a></p>
+                            <p style="margin: 6px 0;"><b>🏠 Address/Location:</b> ${addr.address || addr.location || 'N/A'}</p>
+                            <p style="margin: 6px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
                         </div>
                     `;
                 } else {
-                    addressHtml = `<p style="color:var(--red); margin-top:10px;">⚠️ User has not saved shipping address in profile yet!</p>`;
+                    addressHtml = `<p style="color:var(--red); margin-top:10px;">⚠️ User has not saved shipping address & phone number in profile yet!</p>`;
                 }
 
                 document.getElementById('order-modal-content').innerHTML = `
                     <p style="margin: 4px 0;"><b>📦 Ordered Item:</b> <span style="color:#fbbf24;">${itemName}</span></p>
                     <p style="margin: 4px 0;"><b>🪙 Price:</b> ${price.toLocaleString()} GP</p>
                     <hr style="border:0; height:1px; background:var(--border); margin:10px 0;">
-                    <b>📍 Shipping & Contact Information:</b>
+                    <b>📍 Contact & Delivery Details:</b>
                     ${addressHtml}
                 `;
             });
@@ -324,6 +324,7 @@
             }
         }
 
+        // অর্ডার রিজেক্ট ও ইউজারের GP রিফান্ড করার ফাংশন
         function rejectShopOrder(orderKey, targetUserId, itemName, itemPrice) {
             if (confirm("Reject order and refund GP to user?")) {
                 db.ref('shop_orders/' + orderKey).update({ status: 'Rejected' }).then(() => {
@@ -335,12 +336,12 @@
                         return u;
                     }).then(() => {
                         db.ref('users/' + targetUserId + '/notifications').push({
-                            title: "Order Rejected ❌",
-                            message: `Your order for "${itemName}" was rejected. ${itemPrice} GP refunded.`,
+                            title: "Order Rejected & Refunded ❌",
+                            message: `Your order for "${itemName}" was rejected. ${itemPrice.toLocaleString()} GP has been refunded to your account.`,
                             timestamp: Date.now(),
                             isRead: false
                         });
-                        alert("Order rejected and GP refunded.");
+                        alert("Order rejected and GP successfully refunded to user profile!");
                     });
                 });
             }
