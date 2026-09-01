@@ -81,6 +81,12 @@
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
 
+        <!-- বায়ার শপ অর্ডার ও পেমেন্ট প্রুফ (নিউ সেকশন) -->
+        <div class="card" style="border-color: var(--pink, #ec4899);">
+            <h4><i class="fas fa-shopping-bag" style="color:#ec4899;"></i> Dress Orders & Payment Proofs</h4>
+            <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;"><small style="color: #94a3b8;">Loading orders...</small></div>
+        </div>
+
         <!-- নোটিফিকেশন কন্ট্রোল সেকশন -->
         <div class="card" style="border-color: var(--blue);">
             <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send / Customize Notification</h4>
@@ -188,6 +194,68 @@
             window.location.href = "index.html";
         } else {
             initAdmin();
+        }
+
+        // শপ অর্ডার ও পেমেন্ট প্রুফ লোড করার ফাংশন
+        function loadShopOrders() {
+            let container = document.getElementById('shop-orders-list');
+            db.ref('shop_orders').on('value', snapshot => {
+                let html = "";
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        let orderKey = child.key;
+                        let order = child.val();
+                        if (order.status === 'Pending') {
+                            html += `
+                                <div class="list-item" style="border-left-color: #ec4899;">
+                                    <b>Dress: ${order.dressName}</b><br>
+                                    <small>User: ${order.userName} (ID: <b>${order.userId}</b>)</small><br>
+                                    <small>Price: <span style="color:#fbbf24; font-weight:bold;">$${order.price}</span></small><br>
+                                    ${order.screenshot ? `<a href="${order.screenshot}" target="_blank"><img src="${order.screenshot}" style="width:100%; max-height:150px; object-fit:cover; border-radius:8px; margin:8px 0;" alt="Payment Screenshot"></a>` : ''}
+                                    <div class="grid" style="margin-top:5px;">
+                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}')">Approve & Verify</button>
+                                        <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}')">Reject</button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                    container.innerHTML = html || `<small style="color: #94a3b8;">No pending dress orders.</small>`;
+                } else {
+                    container.innerHTML = `<small style="color: #94a3b8;">No pending dress orders.</small>`;
+                }
+            });
+        }
+
+        function approveShopOrder(orderKey, targetUserId) {
+            if (confirm("Approve this order and verify user account?")) {
+                db.ref('shop_orders/' + orderKey).update({ status: 'Approved' }).then(() => {
+                    // ইউজারের অ্যাকাউন্ট ভেরিফাই করা এবং নোটিফিকেশন পাঠানো
+                    db.ref('users/' + targetUserId).update({ isVerified: true }).then(() => {
+                        db.ref('users/' + targetUserId + '/notifications').push({
+                            title: "Dress Order Approved! 🎉",
+                            message: "Your payment was verified by admin. Your account is now Verified!",
+                            timestamp: Date.now(),
+                            isRead: false
+                        });
+                        alert("Order approved and user verified successfully!");
+                    });
+                });
+            }
+        }
+
+        function rejectShopOrder(orderKey, targetUserId) {
+            if (confirm("Reject this order?")) {
+                db.ref('shop_orders/' + orderKey).update({ status: 'Rejected' }).then(() => {
+                    db.ref('users/' + targetUserId + '/notifications').push({
+                        title: "Dress Order Rejected",
+                        message: "Your payment screenshot was invalid or rejected by admin.",
+                        timestamp: Date.now(),
+                        isRead: false
+                    });
+                    alert("Order rejected.");
+                });
+            }
         }
 
         // নোটিফিকেশন সেন্ড বা এডিট করার ফাংশন
@@ -324,23 +392,21 @@
                 if (snapshot.exists()) {
                     let items = snapshot.val();
                     let currentTime = Date.now();
-                    let sevenDaysMs = 7 * 24 * 60 * 60 * 1000; // ৭ দিনের মিলিগ্রাম
+                    let sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
                     let adminUpdates = {};
                     let hasExpired = false;
 
                     Object.keys(items).forEach(key => {
                         let item = items[key];
-                        // যদি অ্যাডমিন প্যানেলের মেসেজ ৭ দিনের বেশি পুরনো হয়, তবে এটি রিমুভ লিস্টে যোগ হবে
                         if (item.timestamp && (currentTime - item.timestamp > sevenDaysMs)) {
                             adminUpdates[key] = null;
                             hasExpired = true;
                         }
                     });
 
-                    // যদি ৭ দিনের বেশি পুরনো মেসেজ থাকে, তবে অ্যাডমিন প্যানেল থেকে অটো রিমুভ হবে
                     if (hasExpired) {
                         db.ref('admin_notifications').update(adminUpdates);
-                        return; // রিফ্রেশ হওয়ার পর লেটেস্ট ডাটা দেখাবে
+                        return;
                     }
 
                     Object.keys(items).reverse().forEach(key => {
@@ -433,15 +499,15 @@
             }
         }
 
-        // মেইন অ্যাডমিন ইনিট ফাংশন (যেখানে ইউজারদের ৩০ দিনের পুরনো নোটিফিকেশন অটো ক্লিনআপ লজিক আছে)
+        // মেইন অ্যাডমিন ইনিট ফাংশন
         function initAdmin() {
             loadAdminNotifications();
+            loadShopOrders();
 
-            // ব্যাকগ্রাউন্ডে সব ইউজারের ইনবক্স চেক করে ৩০ দিনের বেশি পুরনো নোটিফিকেশন রিমুভ করার কোড
             db.ref('users').once('value', snapshot => {
                 if (snapshot.exists()) {
                     let currentTime = Date.now();
-                    let thirtyDaysMs = 30 * 24 * 60 * 60 * 1000; // ৩০ দিনের মিলিগ্রাম
+                    let thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
                     let userUpdates = {};
 
                     snapshot.forEach(userChild => {
@@ -450,7 +516,6 @@
                         if (userData.notifications) {
                             Object.keys(userData.notifications).forEach(notifKey => {
                                 let userNotif = userData.notifications[notifKey];
-                                // যদি ইউজারের নোটিফিকেশন ৩০ দিনের বেশি পুরনো হয়
                                 if (userNotif.timestamp && (currentTime - userNotif.timestamp > thirtyDaysMs)) {
                                     userUpdates[`users/${uid}/notifications/${notifKey}`] = null;
                                 }
@@ -458,7 +523,6 @@
                         }
                     });
 
-                    // যদি ৩০ দিনের পুরনো মেসেজ থাকে, তবে সব ইউজারের ইনবক্স থেকে একসাথে ডিলিট হবে
                     if (Object.keys(userUpdates).length > 0) {
                         db.ref().update(userUpdates);
                     }
