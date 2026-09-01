@@ -33,6 +33,7 @@
         .btn-blue { background: var(--blue); color: white; }
         .btn-green { background: var(--green); color: white; }
         .btn-red { background: var(--red); color: white; }
+        .btn-purple { background: var(--purple); color: white; }
 
         .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); cursor: pointer; }
         .list-item:hover { border-color: var(--pink); background: #0e1730; }
@@ -55,7 +56,7 @@
 
         <div class="grid">
             <div class="stat-box"><small>Total Users</small><h2 id="st-users">0</h2></div>
-            <div class="stat-box"><small>Pending Req</small><h2 id="st-pending" style="color: var(--orange);">0</h2></div>
+            <div class="stat-box"><small>Pending Orders</small><h2 id="st-pending" style="color: var(--orange);">0</h2></div>
             <div class="stat-box"><small>Total GP</small><h2 id="st-total-gp" style="color: var(--green);">0</h2></div>
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
@@ -66,6 +67,14 @@
             <small style="color: #94a3b8; font-size: 11px;">Tap any order box to view full phone number & address.</small>
             <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
                 <small style="color: #94a3b8;">Loading orders...</small>
+            </div>
+        </div>
+
+        <!-- একাউন্ট ভেরিফিকেশন প্রুফ সেকশন (Image Verification) -->
+        <div class="card" style="border-color: var(--purple);">
+            <h4><i class="fas fa-id-card" style="color:var(--purple);"></i> Account Verification Requests</h4>
+            <div id="verify-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">
+                <small style="color: #94a3b8;">Loading verification proofs...</small>
             </div>
         </div>
 
@@ -88,6 +97,17 @@
             <p>Loading details...</p>
         </div>
         <button class="btn" style="background:#475569; margin-top: 15px;" onclick="closeOrderModal()">Close</button>
+    </div>
+
+    <!-- ভেরিফিকেশন প্রুফ ইমেজ প্রিভিউ মডাল -->
+    <div class="overlay" id="verifyOverlay" onclick="closeVerifyModal()"></div>
+    <div class="modal" id="verifyModal" style="border-color: var(--purple);">
+        <h3 style="margin-top:0; color:var(--purple);"><i class="fas fa-image"></i> Verification Proof</h3>
+        <div id="verify-modal-content" style="text-align: center;">
+            <img id="verify-proof-img" src="" style="max-width:100%; max-height:250px; border-radius:8px; margin-bottom:10px;" alt="Proof">
+            <div id="verify-modal-actions"></div>
+        </div>
+        <button class="btn" style="background:#475569; margin-top: 15px;" onclick="closeVerifyModal()">Close</button>
     </div>
 
     <!-- User Management Modal -->
@@ -131,6 +151,8 @@
 
         function initAdmin() {
             loadShopOrders();
+            loadVerificationProofs();
+
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
                 let banned = 0, totalGP = 0;
@@ -155,6 +177,76 @@
                 });
                 document.getElementById('user-list').innerHTML = html || "No users found.";
             });
+        }
+
+        // ভেরিফিকেশন প্রুফ লোড করার ফাংশন
+        function loadVerificationProofs() {
+            let container = document.getElementById('verify-req-list');
+            db.ref('verification_proofs').on('value', snap => {
+                let html = "";
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        let key = child.key;
+                        let req = child.val();
+                        if (req.status === 'Pending') {
+                            html += `
+                                <div class="list-item" style="border-left-color: var(--purple);" onclick="viewVerifyProof('${req.userId}', '${req.userName}', '${req.proofImage}', '${key}')">
+                                    <b>User: ${req.userName}</b><br>
+                                    <small>ID: ${req.userId}</small>
+                                    <div style="margin-top: 4px; font-size: 11px; color: #a855f7;"><i class="fas fa-image"></i> Click to view screenshot & verify</div>
+                                </div>
+                            `;
+                        }
+                    });
+                    container.innerHTML = html || `<small style="color: #94a3b8;">No pending verification proofs.</small>`;
+                } else {
+                    container.innerHTML = `<small style="color: #94a3b8;">No pending verification proofs.</small>`;
+                }
+            });
+        }
+
+        function viewVerifyProof(targetUserId, userName, imgUrl, reqKey) {
+            document.getElementById('verify-proof-img').src = imgUrl;
+            document.getElementById('verify-modal-actions').innerHTML = `
+                <p style="font-size:12px; margin:8px 0; color:#fbbf24;">User: ${userName} (${targetUserId})</p>
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap:8px;">
+                    <button class="btn btn-green" onclick="approveVerification('${reqKey}', '${targetUserId}')">Approve Badge</button>
+                    <button class="btn btn-red" onclick="rejectVerification('${reqKey}')">Reject</button>
+                </div>
+            `;
+            document.getElementById('verifyOverlay').style.display = 'block';
+            document.getElementById('verifyModal').style.display = 'block';
+        }
+
+        function closeVerifyModal() {
+            document.getElementById('verifyOverlay').style.display = 'none';
+            document.getElementById('verifyModal').style.display = 'none';
+        }
+
+        function approveVerification(reqKey, targetUserId) {
+            if (confirm("Approve account verification?")) {
+                db.ref('verification_proofs/' + reqKey).update({ status: 'Approved' }).then(() => {
+                    db.ref('users/' + targetUserId).update({ isVerified: true }).then(() => {
+                        db.ref('users/' + targetUserId + '/notifications').push({
+                            title: "Account Verified! 🎉",
+                            message: "Your account has been verified by admin with verified badge!",
+                            timestamp: Date.now(),
+                            isRead: false
+                        });
+                        alert("Account verified successfully!");
+                        closeVerifyModal();
+                    });
+                });
+            }
+        }
+
+        function rejectVerification(reqKey) {
+            if (confirm("Reject this verification proof?")) {
+                db.ref('verification_proofs/' + reqKey).update({ status: 'Rejected' }).then(() => {
+                    alert("Verification rejected.");
+                    closeVerifyModal();
+                });
+            }
         }
 
         function loadShopOrders() {
@@ -191,7 +283,6 @@
             });
         }
 
-        // ইউজারের অ্যাড্রেস ও ফোন নম্বর ফায়ারবেস থেকে ফেচ করে দেখানোর ফাংশন
         function viewOrderDetails(targetUserId, itemName, price) {
             document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
             document.getElementById('orderOverlay').style.display = 'block';
