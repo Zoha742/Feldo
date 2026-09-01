@@ -43,14 +43,6 @@
         .list-item:hover { border-color: var(--pink); background: #0e1730; }
         .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
         
-        .admin-notif-row {
-            background: #0a1226;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 12px;
-            margin-bottom: 10px;
-        }
-
         .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--pink); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
@@ -61,9 +53,7 @@
             border: none; color: #fff; width: 48px; height: 48px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             cursor: pointer; font-size: 18px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5);
-            transition: 0.2s;
         }
-        .circle-back-btn:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
@@ -91,44 +81,9 @@
             </div>
         </div>
 
-        <!-- নোটিফিকেশন কন্ট্রোল সেকশন -->
-        <div class="card" style="border-color: var(--blue);">
-            <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send / Customize Notification</h4>
-            <input type="hidden" id="edit-notif-key" value="">
-            <input type="text" id="notif-target-uid" class="input-box" placeholder="Target Telegram UID (Blank = ALL Users)">
-            <input type="text" id="notif-title" class="input-box" placeholder="Update Title (e.g. Hot News)">
-            <textarea id="notif-msg" class="input-box" placeholder="Write announcement text..." style="height: 70px; resize: none;"></textarea>
-            
-            <label style="font-size:11px; color:#94a3b8; display:block; margin-top:6px;">Attach Image/Video (Optional):</label>
-            <input type="file" id="notif-media-file" class="input-box" accept="image/*,video/*" style="font-size:12px;">
-
-            <div class="grid" style="margin-top: 10px;">
-                <button class="btn btn-blue" onclick="saveOrSendNotification('send')">Send / Update Now</button>
-                <button class="btn btn-purple" onclick="saveOrSendNotification('draft')">Save Draft</button>
-            </div>
-            <button class="btn btn-gray" onclick="clearNotifForm()">Cancel / Reset Form</button>
-        </div>
-
-        <div class="card" style="border-color: var(--red);">
-            <h4><i class="fas fa-history" style="color:var(--red);"></i> Notification History (Auto-clean > 7 Days)</h4>
-            <div id="admin-notif-list" style="max-height: 350px; overflow-y: auto; margin-top: 10px;">
-                <small style="color: #94a3b8;">Loading history...</small>
-            </div>
-        </div>
-
         <div class="card" style="border-color: var(--purple);">
             <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests</h4>
             <div id="agent-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--orange);">
-            <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Mining Boost Proofs</h4>
-            <div id="boost-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--green);">
-            <h4><i class="fas fa-id-card" style="color:var(--green);"></i> ID Verified Proofs</h4>
-            <div id="agent-pay-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
         <div class="card" style="border-color: var(--blue);">
@@ -147,7 +102,7 @@
         </div>
     </div>
 
-    <!-- অর্ডার ডিটেইলস পপআপ মডাল (Order Details Modal) -->
+    <!-- অর্ডার ডিটেইলস পপআপ মডাল -->
     <div class="overlay" id="orderOverlay" onclick="closeOrderModal()"></div>
     <div class="modal" id="orderModal">
         <h3 style="margin-top:0; color:var(--pink);"><i class="fas fa-box-open"></i> Order Full Details</h3>
@@ -163,21 +118,10 @@
         <h3 id="m-title">Manage User</h3>
         <p id="m-name-label" style="font-size: 14px; color: #fbbf24; margin: 5px 0; font-weight: bold;"></p>
         <p id="m-uid-label" style="font-size: 12px; color: var(--blue); margin-bottom: 10px;"></p>
-        <hr border="0" style="height:1px; background:var(--border); margin:10px 0;">
-        
+        <hr style="height:1px; background:var(--border); margin:10px 0;">
         <label style="font-size:12px;">Balance (GP)</label>
         <input type="number" id="m-gp" class="input-box">
-        
-        <div class="grid" style="margin-top:5px;">
-            <button class="btn btn-blue" onclick="updateUserGP()">Update GP</button>
-            <button class="btn btn-orange" onclick="makeGPZero()">Set GP to 0</button>
-        </div>
-
-        <div class="grid" style="margin-top:5px;">
-            <button class="btn btn-purple" onclick="resetUserData()">Reset Profile Data</button>
-            <button class="btn btn-red" id="ban-btn" onclick="toggleBan()">Ban User</button>
-        </div>
-
+        <button class="btn btn-blue" onclick="updateUserGP()">Update GP</button>
         <button class="btn" style="background:#334155; margin-top:10px;" onclick="closeModal()">Cancel</button>
     </div>
 
@@ -192,64 +136,79 @@
             appId: "1:442359961958:web:815606d4836a66003d50a7",
             measurementId: "G-XNQSP1R3JR"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
         let tg = window.Telegram.WebApp;
         tg.expand();
-
-        let user = tg.initDataUnsafe.user;
-        let userId = user ? user.id.toString() : "7757851056";
+        let userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id.toString() : "7757851056";
         const ADMIN_ID = "7757851056";
 
-        if (userId !== ADMIN_ID && userId !== "7757851056") {
-            alert("Access Denied! Unauthorized User.");
+        if (userId !== ADMIN_ID) {
+            alert("Access Denied!");
             window.location.href = "index.html";
         } else {
             initAdmin();
         }
 
-        // GP Sale Requests অ্যাপ্রুভ করার ফাংশন[cite: 8]
-        function approveAgentReq(reqKey, targetUserId, amount) {
-            if (confirm("Are you sure you want to approve this request?")) {
-                db.ref('sell_requests/' + reqKey).update({ status: "Approved" }).then(() => {
-                    db.ref('users/' + targetUserId).update({ isVerified: true }).then(() => {
-                        db.ref('users/' + targetUserId + '/notifications').push({
-                            title: "Request Approved! 🎉",
-                            message: "Your GP sale / verification request has been approved by admin!",
-                            timestamp: Date.now(),
-                            isRead: false
-                        });
-                        alert("Request approved and user qualified successfully!");
-                    });
-                }).catch(error => {
-                    alert("Error: " + error.message);
+        function initAdmin() {
+            loadShopOrders();
+            // ইউজার লিস্ট লোড
+            db.ref('users').on('value', snap => {
+                let count = snap.numChildren();
+                let banned = 0, totalGP = 0;
+                let usersArray = [];
+                snap.forEach(c => {
+                    let u = c.val();
+                    if(u.banned) banned++;
+                    let gp = u.points !== undefined ? u.points : (u.gp || 0);
+                    totalGP += gp;
+                    usersArray.push({ id: c.key, name: u.username || u.name || "Unknown", gp: gp, banned: u.banned || false });
                 });
-            }
+                document.getElementById('st-users').innerText = count;
+                document.getElementById('st-banned').innerText = banned;
+                document.getElementById('st-total-gp').innerText = totalGP.toLocaleString();
+                
+                let html = "";
+                usersArray.forEach(u => {
+                    html += `<div class="user-item">
+                        <div><b>${u.name}</b> (${u.id})<br><small>${u.gp.toLocaleString()} GP</small></div>
+                        <button class="btn btn-blue" style="width:auto; padding:5px 12px;" onclick="openUser('${u.id}', '${u.name}', ${u.gp})">Manage</button>
+                    </div>`;
+                });
+                document.getElementById('user-list').innerHTML = html || "No users found.";
+            });
+
+            // উইথড্র ও সেল রিকোয়েস্ট লোড
+            db.ref('sell_requests').on('value', snap => {
+                let html = "";
+                snap.forEach(c => {
+                    let req = c.val();
+                    if(req.status === "Pending") {
+                        html += `<div class="list-item"><b>${req.userName || 'User'}</b> - ${req.amount} GP
+                            <div class="grid" style="margin-top:8px;">
+                                <button class="btn btn-green" onclick="db.ref('sell_requests/${c.key}').update({status:'Approved'}); db.ref('users/${req.userId}').update({isVerified:true})">Approve</button>
+                                <button class="btn btn-red" onclick="db.ref('sell_requests/${c.key}').update({status:'Rejected'})">Reject</button>
+                            </div>
+                        </div>`;
+                    }
+                });
+                document.getElementById('agent-req-list').innerHTML = html || "No requests.";
+            });
         }
 
-        // GP Sale Requests রিজেক্ট করার ফাংশন[cite: 8]
-        function rejectAgentReq(reqKey) {
-            if (confirm("Are you sure you want to reject this request?")) {
-                db.ref('sell_requests/' + reqKey).update({ status: "Rejected" }).then(() => {
-                    alert("Request rejected successfully!");
-                }).catch(error => {
-                    alert("Error: " + error.message);
-                });
-            }
-        }
-
-        // শপ অর্ডার লোড ও ম্যানেজ করার ফাংশন (অ্যাড্রেস, ফোন ও রিফান্ডসহ)
+        // শপ অর্ডার লোড
         function loadShopOrders() {
             let container = document.getElementById('shop-orders-list');
             db.ref('shop_orders').on('value', snapshot => {
                 let html = "";
                 if (snapshot.exists()) {
+                    let pendingCount = 0;
                     snapshot.forEach(child => {
                         let orderKey = child.key;
                         let order = child.val();
                         if (order.status === 'Pending') {
+                            pendingCount++;
                             html += `
                                 <div class="list-item" style="border-left-color: var(--pink);" onclick="viewOrderDetails('${order.userId}', '${order.itemName.replace(/'/g, "\\'")}', ${order.price})">
                                     <b>Item: ${order.itemName}</b><br>
@@ -264,36 +223,38 @@
                             `;
                         }
                     });
+                    document.getElementById('st-pending').innerText = pendingCount;
                     container.innerHTML = html || `<small style="color: #94a3b8;">No pending shop orders.</small>`;
                 } else {
+                    document.getElementById('st-pending').innerText = 0;
                     container.innerHTML = `<small style="color: #94a3b8;">No pending shop orders.</small>`;
                 }
             });
         }
 
-        // ইউজারের শিপিং অ্যাড্রেস ও ফোন নম্বর ফায়ারবেস থেকে ফেচ করে মডালে দেখানোর ফাংশন
+        // ইউজারের অ্যাড্রেস ও ফোন নম্বর ফায়ারবেস থেকে ফেচ করে দেখানোর ফাংশন (সব সম্ভাব্য পাথ হ্যান্ডেল করা হয়েছে)
         function viewOrderDetails(targetUserId, itemName, price) {
             document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
             document.getElementById('orderOverlay').style.display = 'block';
             document.getElementById('orderModal').style.display = 'block';
 
             db.ref('users/' + targetUserId).once('value', snap => {
-                let uData = snap.val();
-                let addr = uData && uData.shipping_address ? uData.shipping_address : null;
+                let uData = snap.val() || {};
+                // বিভিন্ন নামে অ্যাড্রেস সেভ থাকতে পারে, তাই সব চেক করা হচ্ছে
+                let addr = uData.shipping_address || uData.address || uData.profile_address || {};
 
-                let addressHtml = "";
-                if (addr) {
-                    addressHtml = `
-                        <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
-                            <p style="margin: 6px 0;"><b>👤 Full Name:</b> ${addr.fullName || addr.name || 'N/A'}</p>
-                            <p style="margin: 6px 0;"><b>📞 Phone Number:</b> <a href="tel:${addr.phone || addr.number}" style="color:var(--green); font-weight:bold; text-decoration:underline;">${addr.phone || addr.number || 'N/A'}</a></p>
-                            <p style="margin: 6px 0;"><b>🏠 Address/Location:</b> ${addr.address || addr.location || 'N/A'}</p>
-                            <p style="margin: 6px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
-                        </div>
-                    `;
-                } else {
-                    addressHtml = `<p style="color:var(--red); margin-top:10px;">⚠️ User has not saved shipping address & phone number in profile yet!</p>`;
-                }
+                let fullName = addr.fullName || addr.name || uData.name || uData.username || 'N/A';
+                let phoneNum = addr.phone || addr.number || uData.phone || uData.mobile || 'N/A';
+                let fullLocation = addr.address || addr.location || addr.full_address || 'N/A';
+
+                let addressHtml = `
+                    <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
+                        <p style="margin: 6px 0;"><b>👤 Full Name:</b> ${fullName}</p>
+                        <p style="margin: 6px 0;"><b>📞 Phone Number:</b> <a href="tel:${phoneNum}" style="color:var(--green); font-weight:bold; text-decoration:underline;">${phoneNum}</a></p>
+                        <p style="margin: 6px 0;"><b>🏠 Address/Location:</b> ${fullLocation}</p>
+                        <p style="margin: 6px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
+                    </div>
+                `;
 
                 document.getElementById('order-modal-content').innerHTML = `
                     <p style="margin: 4px 0;"><b>📦 Ordered Item:</b> <span style="color:#fbbf24;">${itemName}</span></p>
@@ -312,7 +273,18 @@
 
         function approveShopOrder(orderKey, targetUserId, itemName) {
             if (confirm("Accept this order?")) {
+                // ১. মেইন শপ অর্ডারের স্ট্যাটাস Approved করা
                 db.ref('shop_orders/' + orderKey).update({ status: 'Approved' }).then(() => {
+                    // ২. ইউজারের নিজস্ব অর্ডার হিস্ট্রির স্ট্যাটাস ও আপডেট করা
+                    db.ref('users/' + targetUserId + '/orders').once('value', snap => {
+                        let orders = snap.val() || {};
+                        Object.keys(orders).forEach(oKey => {
+                            if (orders[oKey].itemName === itemName && orders[oKey].status === 'Pending') {
+                                db.ref(`users/${targetUserId}/orders/${oKey}`).update({ status: 'Approved' });
+                            }
+                        });
+                    });
+
                     db.ref('users/' + targetUserId + '/notifications').push({
                         title: "Order Accepted! 🎉",
                         message: `Your order for "${itemName}" has been accepted by admin!`,
@@ -324,10 +296,13 @@
             }
         }
 
-        // অর্ডার রিজেক্ট ও ইউজারের GP রিফান্ড করার ফাংশন
+        // অর্ডার রিজেক্ট ও ইউজারের GP রিফান্ড এবং প্রোফাইলে স্ট্যাটাস আপডেট করার ফাংশন
         function rejectShopOrder(orderKey, targetUserId, itemName, itemPrice) {
             if (confirm("Reject order and refund GP to user?")) {
+                // ১. মেইন শপ অর্ডারের স্ট্যাটাস Rejected করা
                 db.ref('shop_orders/' + orderKey).update({ status: 'Rejected' }).then(() => {
+                    
+                    // ২. ইউজারের ব্যালেন্স রিফান্ড করা এবং ইউজারের প্রোফাইলের ভেতর থাকা অর্ডার হিস্ট্রির স্ট্যাটাস 'Rejected' করা
                     db.ref('users/' + targetUserId).transaction(u => {
                         if (u) {
                             u.points = (u.points || 0) + itemPrice;
@@ -335,383 +310,33 @@
                         }
                         return u;
                     }).then(() => {
+                        // ইউজারের নিজস্ব orders নোড আপডেট
+                        db.ref('users/' + targetUserId + '/orders').once('value', snap => {
+                            let orders = snap.val() || {};
+                            Object.keys(orders).forEach(oKey => {
+                                if (orders[oKey].itemName === itemName && orders[oKey].status === 'Pending') {
+                                    db.ref(`users/${targetUserId}/orders/${oKey}`).update({ status: 'Rejected' });
+                                }
+                            });
+                        });
+
                         db.ref('users/' + targetUserId + '/notifications').push({
                             title: "Order Rejected & Refunded ❌",
                             message: `Your order for "${itemName}" was rejected. ${itemPrice.toLocaleString()} GP has been refunded to your account.`,
                             timestamp: Date.now(),
                             isRead: false
                         });
-                        alert("Order rejected and GP successfully refunded to user profile!");
+                        alert("Order rejected and GP successfully refunded & updated in user profile!");
                     });
                 });
             }
         }
 
-        // নোটিফিকেশন সেন্ড বা এডিট করার ফাংশন[cite: 8]
-        function saveOrSendNotification(actionType) {
-            let editKey = document.getElementById('edit-notif-key').value.trim();
-            let targetUid = document.getElementById('notif-target-uid').value.trim();
-            let title = document.getElementById('notif-title').value.trim() || "HeyCen Update";
-            let message = document.getElementById('notif-msg').value.trim();
-            let fileInput = document.getElementById('notif-media-file');
-
-            if (!message && fileInput.files.length === 0) {
-                alert("Please write a message or attach a media file!");
-                return;
-            }
-
-            let proceedAction = (mediaUrl = "") => {
-                let status = actionType === 'draft' ? 'draft' : 'sent';
-
-                let notifData = {
-                    targetUid: targetUid,
-                    title: title,
-                    message: message,
-                    media: mediaUrl,
-                    status: status,
-                    timestamp: Date.now(),
-                    isRead: false,
-                    hidden: false
-                };
-
-                if (editKey) {
-                    db.ref('admin_notifications/' + editKey).update(notifData).then(() => {
-                        if (status === 'sent') {
-                            updateDeliveredUsers(editKey, notifData);
-                        }
-                        alert("Notification updated successfully!");
-                        clearNotifForm();
-                    });
-                } else {
-                    let newRef = db.ref('admin_notifications').push();
-                    newRef.set(notifData).then(() => {
-                        if (status === 'sent') {
-                            deliverToUsers(newRef.key, notifData);
-                        }
-                        alert(status === 'draft' ? "Saved as Draft!" : "Notification sent successfully!");
-                        clearNotifForm();
-                    });
-                }
-            };
-
-            if (fileInput.files.length > 0) {
-                let file = fileInput.files[0];
-                let reader = new FileReader();
-                reader.onloadend = function() {
-                    proceedAction(reader.result);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                let existingMedia = window.currentEditMedia || "";
-                proceedAction(existingMedia);
-            }
-        }
-
-        function deliverToUsers(adminNotifKey, data) {
-            let userNotifPayload = {
-                title: data.title,
-                message: data.message,
-                media: data.media,
-                timestamp: Date.now(),
-                isRead: false,
-                adminKey: adminNotifKey
-            };
-
-            if (data.targetUid) {
-                db.ref('users/' + data.targetUid + '/notifications').push(userNotifPayload);
-            } else {
-                db.ref('users').once('value', snapshot => {
-                    if (snapshot.exists()) {
-                        let updates = {};
-                        snapshot.forEach(child => {
-                            let uId = child.key;
-                            let newKey = db.ref('users/' + uId + '/notifications').push().key;
-                            updates['users/' + uId + '/notifications/' + newKey] = userNotifPayload;
-                        });
-                        db.ref().update(updates);
-                    }
-                });
-            }
-        }
-
-        function updateDeliveredUsers(adminNotifKey, data) {
-            db.ref('users').once('value', snapshot => {
-                if (snapshot.exists()) {
-                    let updates = {};
-                    snapshot.forEach(userChild => {
-                        let uid = userChild.key;
-                        let userData = userChild.val();
-                        if (userData.notifications) {
-                            Object.keys(userData.notifications).forEach(notifKey => {
-                                let userNotif = userData.notifications[notifKey];
-                                if (userNotif.adminKey === adminNotifKey) {
-                                    updates[`users/${uid}/notifications/${notifKey}`] = {
-                                        title: data.title,
-                                        message: data.message,
-                                        media: data.media,
-                                        timestamp: userNotif.timestamp,
-                                        isRead: false,
-                                        adminKey: adminNotifKey
-                                    };
-                                }
-                            });
-                        }
-                    });
-                    db.ref().update(updates);
-                }
-            });
-        }
-
-        function clearNotifForm() {
-            document.getElementById('edit-notif-key').value = '';
-            document.getElementById('notif-target-uid').value = '';
-            document.getElementById('notif-title').value = '';
-            document.getElementById('notif-msg').value = '';
-            document.getElementById('notif-media-file').value = '';
-            window.currentEditMedia = "";
-        }
-
-        // অটো-ক্লিনআপসহ নোটিফিকেশন হিস্টরি লোড করার ফাংশন[cite: 8]
-        function loadAdminNotifications() {
-            let container = document.getElementById('admin-notif-list');
-            container.innerHTML = `<small style="color: #94a3b8;">Loading history...</small>`;
-
-            db.ref('admin_notifications').on('value', snapshot => {
-                let html = "";
-                if (snapshot.exists()) {
-                    let items = snapshot.val();
-                    let currentTime = Date.now();
-                    let sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-                    let adminUpdates = {};
-                    let hasExpired = false;
-
-                    Object.keys(items).forEach(key => {
-                        let item = items[key];
-                        if (item.timestamp && (currentTime - item.timestamp > sevenDaysMs)) {
-                            adminUpdates[key] = null;
-                            hasExpired = true;
-                        }
-                    });
-
-                    if (hasExpired) {
-                        db.ref('admin_notifications').update(adminUpdates);
-                        return;
-                    }
-
-                    Object.keys(items).reverse().forEach(key => {
-                        let item = items[key];
-                        let statusColor = item.status === 'sent' ? 'var(--green)' : 'var(--purple)';
-                        let hideStatus = item.hidden ? '<span style="color:var(--red); font-size:10px;">[HIDDEN]</span>' : '';
-                        let timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : "";
-
-                        html += `
-                            <div class="admin-notif-row" style="border-left: 4px solid ${statusColor};">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <b style="font-size: 13px; color: #fff;">${item.title} ${hideStatus}</b>
-                                    <span style="font-size: 10px; background: ${statusColor}; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${item.status}</span>
-                                </div>
-                                <small style="color: #94a3b8; display:block; margin: 4px 0;">${item.message}</small>
-                                <small style="color: #64748b; display:block; font-size:9px;">Target: ${item.targetUid || 'ALL Users'} | Date: ${timeStr}</small>
-                                
-                                <div class="grid" style="margin-top: 8px; grid-template-columns: repeat(4, 1fr);">
-                                    <button class="btn btn-blue" style="padding:4px; font-size:10px;" onclick="editAdminNotif('${key}')">Edit</button>
-                                    <button class="btn btn-purple" style="padding:4px; font-size:10px;" onclick="toggleHideNotif('${key}', ${item.hidden || false})">${item.hidden ? 'Unhide' : 'Hide'}</button>
-                                    <button class="btn btn-green" style="padding:4px; font-size:10px;" onclick="resendAdminNotif('${key}')">Send</button>
-                                    <button class="btn btn-red" style="padding:4px; font-size:10px;" onclick="deleteAdminNotif('${key}')">Delete</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    container.innerHTML = html;
-                } else {
-                    container.innerHTML = `<small style="color: #94a3b8;">No notification history found.</small>`;
-                }
-            });
-        }
-
-        function editAdminNotif(key) {
-            db.ref('admin_notifications/' + key).once('value', snap => {
-                let item = snap.val();
-                if (item) {
-                    document.getElementById('edit-notif-key').value = key;
-                    document.getElementById('notif-target-uid').value = item.targetUid || '';
-                    document.getElementById('notif-title').value = item.title || '';
-                    document.getElementById('notif-msg').value = item.message || '';
-                    window.currentEditMedia = item.media || '';
-                    alert("Loaded into form! Edit your message and click 'Send / Update Now'.");
-                }
-            });
-        }
-
-        function toggleHideNotif(key, currentHiddenState) {
-            db.ref('admin_notifications/' + key).update({ hidden: !currentHiddenState }).then(() => {
-                alert("Notification hidden state updated!");
-            });
-        }
-
-        function resendAdminNotif(key) {
-            db.ref('admin_notifications/' + key).once('value', snap => {
-                let item = snap.val();
-                if (item) {
-                    db.ref('admin_notifications/' + key).update({ status: 'sent' }).then(() => {
-                        deliverToUsers(key, item);
-                        alert("Notification sent to users successfully!");
-                    });
-                }
-            });
-        }
-
-        function deleteAdminNotif(key) {
-            if (confirm("Are you sure you want to delete this notification for all users?")) {
-                db.ref('admin_notifications/' + key).remove().then(() => {
-                    db.ref('users').once('value', snapshot => {
-                        if (snapshot.exists()) {
-                            let updates = {};
-                            snapshot.forEach(userChild => {
-                                let uid = userChild.key;
-                                let userData = userChild.val();
-                                if (userData.notifications) {
-                                    Object.keys(userData.notifications).forEach(notifKey => {
-                                        let userNotif = userData.notifications[notifKey];
-                                        if (userNotif.adminKey === key) {
-                                            updates[`users/${uid}/notifications/${notifKey}`] = null;
-                                        }
-                                    });
-                                }
-                            });
-                            db.ref().update(updates).then(() => {
-                                alert("Notification deleted successfully!");
-                            });
-                        }
-                    });
-                });
-            }
-        }
-
-        // মেইন অ্যাডমিন ইনিট ফাংশন[cite: 8]
-        function initAdmin() {
-            loadAdminNotifications();
-            loadShopOrders();
-
-            db.ref('users').once('value', snapshot => {
-                if (snapshot.exists()) {
-                    let currentTime = Date.now();
-                    let thirtyDaysMs = 30 * 24 * 60 * 60 * 1000;
-                    let userUpdates = {};
-
-                    snapshot.forEach(userChild => {
-                        let uid = userChild.key;
-                        let userData = userChild.val();
-                        if (userData.notifications) {
-                            Object.keys(userData.notifications).forEach(notifKey => {
-                                let userNotif = userData.notifications[notifKey];
-                                if (userNotif.timestamp && (currentTime - userNotif.timestamp > thirtyDaysMs)) {
-                                    userUpdates[`users/${uid}/notifications/${notifKey}`] = null;
-                                }
-                            });
-                        }
-                    });
-
-                    if (Object.keys(userUpdates).length > 0) {
-                        db.ref().update(userUpdates);
-                    }
-                }
-            });
-
-            // জিপি সেল রিকোয়েস্ট লোড[cite: 8]
-            db.ref('sell_requests').on('value', snap => {
-                let html = "";
-                snap.forEach(c => {
-                    let req = c.val();
-                    if(req.status === "Pending") {
-                        html += `<div class="list-item" style="border-left-color: var(--purple);">
-                            <b>User Name: ${req.userName || 'Unknown'}</b><br>
-                            <small>Telegram ID: <b>${req.userId}</b> | Selling: <span style="color:#fbbf24; font-weight:bold;">${req.amount} GP</span></small>
-                            <div class="grid" style="margin-top:10px;">
-                                <button class="btn btn-green" style="padding:6px;" onclick="approveAgentReq('${c.key}', '${req.userId}', ${req.amount})">Approve & Qualify</button>
-                                <button class="btn btn-red" style="padding:6px;" onclick="rejectAgentReq('${c.key}')">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
-            });
-
-            // ইউজার লিস্ট লোড[cite: 8]
-            db.ref('users').on('value', snap => {
-                let count = snap.numChildren();
-                let banned = 0, totalGP = 0, activeCount = 0;
-                let currentTime = Date.now();
-                let usersArray = [];
-                
-                snap.forEach(c => {
-                    let u = c.val();
-                    let uId = c.key;
-                    let uName = u.username || u.name || "Unknown";
-                    if(u.banned) banned++;
-                    
-                    let userPoints = u.points !== undefined ? u.points : (u.gp || 0);
-                    totalGP += userPoints;
-
-                    if (u.lastSeen && (currentTime - u.lastSeen) < (5 * 60 * 1000)) { 
-                        activeCount++; 
-                    }
-
-                    usersArray.push({ id: uId, name: uName, gp: userPoints, banned: u.banned || false });
-                });
-
-                usersArray.sort((a, b) => b.gp - a.gp);
-
-                let html = "";
-                usersArray.forEach(u => {
-                    html += `<div class="user-item">
-                        <div>
-                            <b>${u.name}</b> <small style="color:#94a3b8;">(${u.id})</small> ${u.banned ? '<span class="badge-banned">BANNED</span>' : ''}<br>
-                            <small>${u.gp.toLocaleString()} GP</small>
-                        </div>
-                        <button class="btn btn-blue" style="width:auto; padding:5px 12px;" onclick="openUser('${u.id}', '${u.name.replace(/'/g, "\\'")}', ${u.gp}, ${u.banned})">Manage</button>
-                    </div>`;
-                });
-
-                document.getElementById('st-users').innerText = count;
-                document.getElementById('st-active').innerText = activeCount;
-                document.getElementById('st-banned').innerText = banned;
-                document.getElementById('st-total-gp').innerText = totalGP.toLocaleString();
-                document.getElementById('user-list').innerHTML = html || "No users found.";
-            });
-
-            // উইথড্র রিকোয়েস্ট লোড[cite: 8]
-            db.ref('withdraw_requests').on('value', snap => {
-                let pending = 0;
-                let html = "";
-                snap.forEach(c => {
-                    let r = c.val();
-                    if(r.status === 'pending') {
-                        pending++;
-                        html += `<div class="list-item" style="border-left-color: var(--blue);">
-                            <b>ID: ${r.userId} - ${r.amount} GP</b><br>
-                            <small>Method: ${r.method} | Addr: ${r.address || r.number}</small>
-                            <div class="grid" style="margin-top:10px;">
-                                <button class="btn btn-green" style="padding:5px;" onclick="updateWD('${c.key}', 'approved', '${r.userId}', ${r.amount})">Accept</button>
-                                <button class="btn btn-red" style="padding:5px;" onclick="updateWD('${c.key}', 'rejected', '${r.userId}', ${r.amount})">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('st-pending').innerText = pending;
-                document.getElementById('wd-list').innerHTML = html || "No Pending Withdraw Requests.";
-            });
-        }
-
-        // ইউজার ম্যানেজমেন্ট মডাল ও অ্যাকশন ফাংশনসমূহ[cite: 8]
-        function openUser(id, name, gp, isBanned) {
+        function openUser(id, name, gp) {
             window.targetU = id;
-            window.targetBanned = isBanned;
             document.getElementById('m-name-label').innerText = "Name: " + name;
             document.getElementById('m-uid-label').innerText = "ID: " + id;
             document.getElementById('m-gp').value = gp;
-            document.getElementById('ban-btn').innerText = isBanned ? "Unban User" : "Ban User";
-            document.getElementById('ban-btn').className = isBanned ? "btn btn-green" : "btn btn-red";
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('modal').style.display = 'block';
         }
@@ -721,69 +346,10 @@
             db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
         }
 
-        function makeGPZero() {
-            if(confirm("Are you sure you want to make this user's GP 0?")) {
-                document.getElementById('m-gp').value = 0;
-                db.ref('users/' + window.targetU).update({ gp: 0, points: 0 }).then(() => { alert("User GP set to 0!"); closeModal(); });
-            }
-        }
-
-        function resetUserData() {
-            if(confirm("Warning: This will reset user's data! Proceed?")) {
-                db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
-                    alert("User data reset successfully!");
-                    closeModal();
-                });
-            }
-        }
-
-        function toggleBan() {
-            let newState = !window.targetBanned;
-            db.ref('users/' + window.targetU + '/banned').set(newState).then(() => { alert(newState ? "User Banned!" : "User Unbanned!"); closeModal(); });
-        }
-
-        function updateWD(key, status, uid, amt) {
-            if(confirm(`Confirm ${status}?`)) {
-                db.ref('withdraw_requests/' + key).update({ status: status }).then(() => {
-                    if(status === 'rejected') { 
-                        db.ref('users/' + uid).transaction(u => {
-                            if(u) { u.gp = (u.gp || 0) + amt; u.points = (u.points || 0) + amt; }
-                            return u;
-                        }); 
-                    }
-                    db.ref('users/' + uid + '/notifications').push({ 
-                        title: "Withdraw Update", 
-                        message: `Your withdraw of ${amt} GP was ${status}.`, 
-                        timestamp: Date.now(),
-                        isRead: false
-                    });
-                    alert("Request Updated!");
-                });
-            }
-        }
-
-        function filterUsers() {
-            let q = document.getElementById('user-search').value.toLowerCase();
-            document.querySelectorAll('.user-item').forEach(it => {
-                it.style.display = it.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
-            });
-        }
-
         function closeModal() { 
             document.getElementById('overlay').style.display = 'none'; 
             document.getElementById('modal').style.display = 'none'; 
         }
-
-        // সোয়াইপ সিস্টেম (হোমে যাওয়ার জন্য)[cite: 8]
-        let touchStartX = 0;
-        window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
-        window.addEventListener('touchend', e => {
-            let touchEndX = e.changedTouches[0].screenX;
-            let diff = touchEndX - touchStartX;
-            if (Math.abs(diff) > 70) {
-                window.location.href = "index.html";
-            }
-        });
     </script>
 </body>
 </html>
