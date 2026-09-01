@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HeyCen - Profile</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -25,12 +25,15 @@
             padding: 0 0 100px 0;
             display: flex;
             justify-content: center;
+            /* স্মুথ স্ক্রোলিং এবং ওভারবাউন্স রোধ */
+            overscroll-behavior-y: none;
+            -webkit-overflow-scrolling: touch;
         }
 
         .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
-        .top-header h1 { margin: 0 0 4px 0; font-size: 24px; color: #fff; }
-        .top-header p { margin: 0; font-size: 13px; color: var(--text-muted); }
+        .top-header h1 { margin: 0 0 10px 0; font-size: 24px; color: #fff; }
         
+        /* নরমাল প্রোফাইল কার্ড */
         .profile-card {
             background: linear-gradient(135deg, #0e1628 0%, #171c3a 100%);
             border: 1px solid #2d2456;
@@ -38,15 +41,29 @@
             padding: 16px;
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 16px;
+            transition: 0.3s ease;
         }
-        .profile-card.verified { border: 1px solid #a855f7; }
+        /* অ্যাডমিন ভেরিফাই করলে ড্যাশবোর্ড/প্রোফাইল কার্ডের কালার ও বর্ডার পরিবর্তন হবে */
+        .profile-card.verified { 
+            border: 2px solid #a855f7; 
+            background: linear-gradient(135deg, #121636 0%, #22164a 100%);
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+        }
 
         .profile-left { display: flex; align-items: center; gap: 14px; width: 100%; }
-        .avatar-container { width: 65px; height: 65px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #a855f7, #6366f1); flex-shrink: 0; }
+        .avatar-container { width: 65px; height: 65px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #a855f7, #6366f1); flex-shrink: 0; position: relative; }
         .avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         
+        /* শুধু ভেরিফাইড ইউজারদের জন্যই ব্যাজ শো করবে */
+        .verified-badge {
+            position: absolute; bottom: 0; right: 0;
+            background: #22c55e; color: #fff; width: 20px; height: 20px;
+            border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center;
+            border: 2px solid #0e1628; display: none;
+        }
+
         .profile-info { width: 100%; }
-        .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; color: #fff; }
+        .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; color: #fff; display: flex; align-items: center; gap: 6px; }
         .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
         .user-id-badge { font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block; background: rgba(139, 92, 246, 0.15); padding: 1px 6px; border-radius: 6px; }
 
@@ -56,36 +73,48 @@
         .stat-card .stat-label { font-size: 8.5px; color: var(--text-muted); }
 
         .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
-        .order-item-box { background: #070913; border: 1px solid #1e293b; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        
+        /* চিকন অর্ডার বক্স স্টাইল */
+        .order-item-box { 
+            background: #070913; 
+            border: 1px solid #1e293b; 
+            padding: 8px 10px; 
+            border-radius: 8px; 
+            margin-bottom: 6px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
 
         .menu-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-        .menu-row-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--text-main); }
+        .menu-row-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--text-main); transition: 0.2s; }
+        .menu-row-item:active { transform: scale(0.98); }
         .menu-row-left { display: flex; align-items: center; gap: 14px; }
         .menu-row-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; }
 
         .admin-row-item { background: linear-gradient(135deg, rgba(127, 29, 29, 0.25), rgba(69, 10, 10, 0.35)); border: 1px solid #ef4444; display: none; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card-bg); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; transition: 0.2s; }
         .nav-item.active { color: #c084fc; }
         .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
     </style>
 </head>
-<body>
+<body id="bodySwipeArea">
 
     <div class="container">
         <div class="top-header">
             <div>
                 <h1>Profile</h1>
-                <p>Manage your account & track your activity</p>
             </div>
         </div>
 
         <div class="profile-card" id="profileCardElement">
             <div class="profile-left">
                 <div class="avatar-container">
-                    <!-- টেলিগ্রাম প্রোফাইল ফটো লোড করার জন্য আইডি যুক্ত করা হয়েছে -->
                     <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
+                    <!-- ভেরিফাইড হলে এই ব্যাজটি শো করবে -->
+                    <div class="verified-badge" id="verifiedBadgeIcon"><i class="fa-solid fa-check"></i></div>
                 </div>
                 <div class="profile-info">
                     <h3 id="profile-name"><span id="name-text">User</span></h3>
@@ -116,8 +145,8 @@
 
         <!-- অর্ডার হিস্টরি কার্ড -->
         <div class="card">
-            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #fff;"><i class="fa-solid fa-bag-shopping" style="color: #ec4899;"></i> My Orders History</h4>
-            <div id="my-orders-list" style="max-height: 220px; overflow-y: auto;">
+            <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #fff;"><i class="fa-solid fa-bag-shopping" style="color: #ec4899;"></i> My Orders History</h4>
+            <div id="my-orders-list" style="max-height: 180px; overflow-y: auto;">
                 <small style="color: var(--text-muted);">Loading your orders...</small>
             </div>
         </div>
@@ -146,7 +175,7 @@
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
             </a>
 
-            <!-- Admin Panel 1: General Control (Admin.html) -->
+            <!-- Admin Panel 1: General Control -->
             <a class="menu-row-item admin-row-item" id="admin-panel-btn" href="Admin.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: #991b1b;"><i class="fa-solid fa-user-shield"></i></div>
@@ -158,7 +187,7 @@
                 <i class="fa-solid fa-chevron-right" style="color:#f87171;"></i>
             </a>
 
-            <!-- Admin Panel 2: Shop Orders Admin (Shopadmin.html) -->
+            <!-- Admin Panel 2: Shop Orders Admin -->
             <a class="menu-row-item admin-row-item" id="shop-admin-btn" href="Shopadmin.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: #be185d;"><i class="fa-solid fa-store"></i></div>
@@ -209,7 +238,6 @@
         document.getElementById('profile-username').innerText = username;
         document.getElementById('profile-id').innerText = `ID: ${userId} 📋`;
 
-        // টেলিগ্রাম প্রোফাইল পিকচার সেট করা (যদি টেলিগ্রাম থেকে ফটো পাওয়া যায়)
         if (user && user.photo_url) {
             document.getElementById('user-avatar').src = user.photo_url;
         }
@@ -219,16 +247,26 @@
             document.getElementById('shop-admin-btn').style.display = "flex";
         }
 
+        // ফায়ারবেস থেকে ইউজার ডাটা এবং ভেরিফিকেশন স্ট্যাটাস রিয়েল-টাইম চেক করা
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
             if(data) {
                 let points = data.points !== undefined ? data.points : (data.gp || 0);
                 document.getElementById('total-points').innerText = points.toLocaleString();
                 document.getElementById('total-tasks-done').innerText = (data.tasksDone || 0).toLocaleString();
+
+                // শুধুমাত্র অ্যাডমিন ভেরিফাই করলে ড্যাশবোর্ডের ডিজাইন ও ব্যাজ পরিবর্তন হবে
+                if (data.isVerified === true) {
+                    document.getElementById('profileCardElement').classList.add('verified');
+                    document.getElementById('verifiedBadgeIcon').style.display = 'flex';
+                } else {
+                    document.getElementById('profileCardElement').classList.remove('verified');
+                    document.getElementById('verifiedBadgeIcon').style.display = 'none';
+                }
             }
         });
 
-        // ইউজারের অর্ডার হিস্টরি রিয়েল-টাইম লোড এবং নতুন অর্ডার উপরে (Newest First) দেখানোর জন্য সর্টিং
+        // ইউজারের অর্ডার হিস্টরি (চিকন বক্স এবং নতুন অর্ডার উপরে)
         db.ref('users/' + userId + '/orders').on('value', snap => {
             let container = document.getElementById('my-orders-list');
             let html = "";
@@ -239,7 +277,6 @@
                     ordersArray.push(orderData);
                 });
 
-                // নতুন অর্ডার উপরে দেখানোর জন্য সর্টিং (Newest First)
                 ordersArray.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
                 ordersArray.forEach(order => {
@@ -259,11 +296,11 @@
                     html += `
                         <div class="order-item-box">
                             <div>
-                                <b style="font-size: 12px; color: #fff;">${order.itemName}</b><br>
-                                <small style="color: #fbbf24;">${order.price.toLocaleString()} GP</small><br>
-                                <small style="color: #94a3b8; font-size: 10px;">🕒 ${orderDate}</small>
+                                <b style="font-size: 11px; color: #fff;">${order.itemName}</b><br>
+                                <span style="color: #fbbf24; font-size: 11px;">${order.price.toLocaleString()} GP</span>
+                                <span style="color: #94a3b8; font-size: 9px; margin-left: 6px;">🕒 ${orderDate}</span>
                             </div>
-                            <span style="font-size: 11px; font-weight: bold; color: ${statusColor};">${statusText}</span>
+                            <span style="font-size: 10px; font-weight: bold; color: ${statusColor}; text-align: right;">${statusText}</span>
                         </div>
                     `;
                 });
@@ -272,6 +309,37 @@
                 container.innerHTML = `<small style="color: var(--text-muted);">No orders placed yet.</small>`;
             }
         });
+
+        // অ্যাপের নেভিগেশন ও পেজ পরিবর্তনের জন্য স্মুথ সোয়াইপ (Swipe) জেস্চার হ্যান্ডলিং
+        let touchStartX = 0;
+        let touchEndX = 0;
+        const pages = ['index.html', 'task.html', 'shop.html', 'hotcake.html', 'profile.html'];
+        const currentPageIndex = 4; // profile.html হলো ৫ম পেজ
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipeGesture();
+        }, {passive: true});
+
+        function handleSwipeGesture() {
+            let swipeThreshold = 70; // সোয়াইপের ন্যূনতম দূরত্ব
+            if (touchEndX < touchStartX - swipeThreshold) {
+                // বাম দিকে সোয়াইপ করলে পরের পেজে যাবে
+                if (currentPageIndex < pages.length - 1) {
+                    window.location.href = pages[currentPageIndex + 1];
+                }
+            }
+            if (touchEndX > touchStartX + swipeThreshold) {
+                // ডান দিকে সোয়াইপ করলে আগের পেজে যাবে
+                if (currentPageIndex > 0) {
+                    window.location.href = pages[currentPageIndex - 1];
+                }
+            }
+        }
     </script>
 </body>
 </html>
