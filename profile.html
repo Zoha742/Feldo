@@ -84,6 +84,7 @@
         <div class="profile-card" id="profileCardElement">
             <div class="profile-left">
                 <div class="avatar-container">
+                    <!-- টেলিগ্রাম প্রোফাইল ফটো লোড করার জন্য আইডি যুক্ত করা হয়েছে -->
                     <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
                 </div>
                 <div class="profile-info">
@@ -208,7 +209,11 @@
         document.getElementById('profile-username').innerText = username;
         document.getElementById('profile-id').innerText = `ID: ${userId} 📋`;
 
-        // যদি ইউজার অ্যাডমিন হয় তবে দুটি অ্যাডমিন প্যানেলের বাটনই শো করবে
+        // টেলিগ্রাম প্রোফাইল পিকচার সেট করা (যদি টেলিগ্রাম থেকে ফটো পাওয়া যায়)
+        if (user && user.photo_url) {
+            document.getElementById('user-avatar').src = user.photo_url;
+        }
+
         if (userId === ADMIN_USER_ID) {
             document.getElementById('admin-panel-btn').style.display = "flex";
             document.getElementById('shop-admin-btn').style.display = "flex";
@@ -223,13 +228,21 @@
             }
         });
 
-        // ইউজারের নিজস্ব অর্ডার হিস্টরি এবং টাইম-ডেট রিয়েল-টাইম লোড
+        // ইউজারের অর্ডার হিস্টরি রিয়েল-টাইম লোড এবং নতুন অর্ডার উপরে (Newest First) দেখানোর জন্য সর্টিং
         db.ref('users/' + userId + '/orders').on('value', snap => {
             let container = document.getElementById('my-orders-list');
             let html = "";
             if (snap.exists()) {
+                let ordersArray = [];
                 snap.forEach(child => {
-                    let order = child.val();
+                    let orderData = child.val();
+                    ordersArray.push(orderData);
+                });
+
+                // নতুন অর্ডার উপরে দেখানোর জন্য সর্টিং (Newest First)
+                ordersArray.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                ordersArray.forEach(order => {
                     let statusColor = '#f59e0b';
                     let statusText = 'Pending ⏳';
 
