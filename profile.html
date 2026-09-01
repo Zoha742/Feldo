@@ -143,26 +143,6 @@
         .level-progress-footer { font-size: 11px; color: var(--text-muted); text-align: right; }
         .level-progress-footer span { color: #c084fc; font-weight: 700; }
 
-        /* হোম অ্যাড্রেস সেটআপ বক্স */
-        .address-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        .address-card h4 { margin: 0 0 8px 0; font-size: 14px; color: #fff; display: flex; align-items: center; gap: 8px; }
-        .address-card h4 i { color: #38bdf8; }
-        .address-input-group { display: flex; gap: 8px; }
-        .address-input {
-            flex: 1; background: #070913; border: 1px solid var(--card-border);
-            padding: 10px 12px; border-radius: 10px; color: #fff; font-size: 13px; outline: none;
-        }
-        .save-address-btn {
-            background: #38bdf8; color: #070913; border: none; padding: 0 16px;
-            border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer;
-        }
-
         /* লিস্ট মেনু অপশনসমূহ */
         .menu-list {
             display: flex;
@@ -297,23 +277,14 @@
             </div>
         </div>
 
-        <!-- ইউজার হোম শিপিং অ্যাড্রেস সেটআপ বক্স -->
-        <div class="address-card">
-            <h4><i class="fa-solid fa-location-dot"></i> Home Shipping Address</h4>
-            <div class="address-input-group">
-                <input type="text" id="shippingAddressInput" class="address-input" placeholder="Enter your full shipping address...">
-                <button class="save-address-btn" onclick="saveShippingAddress()">Save</button>
-            </div>
-        </div>
-
-        <!-- লিস্ট মেনু অপশনসমূহ -->
+        <!-- লিস্ট মেনু অপশনসমূহ (যেখানে আলাদা address.html ফাইলের লিংক দেওয়া হয়েছে) -->
         <div class="menu-list">
-            <a class="menu-row-item" href="index.html">
+            <a class="menu-row-item" href="address.html">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-chart-pie"></i></div>
+                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #38bdf8, #0284c7);"><i class="fa-solid fa-location-dot"></i></div>
                     <div class="menu-row-info">
-                        <h5>Dashboard</h5>
-                        <p>View your overall activity summary</p>
+                        <h5>Shipping Address</h5>
+                        <p>Manage name, ID, location & phone</p>
                     </div>
                 </div>
                 <div class="menu-row-right"><i class="fa-solid fa-chevron-right"></i></div>
@@ -410,22 +381,6 @@
 
         if (user && user.photo_url) {
             document.getElementById('user-avatar').src = user.photo_url;
-        }
-
-        // লোকালস্টোরেজ থেকে সেভ করা শিপিং অ্যাড্রেস লোড করা
-        let savedAddr = localStorage.getItem('shipping_address');
-        if (savedAddr) {
-            document.getElementById('shippingAddressInput').value = savedAddr;
-        }
-
-        function saveShippingAddress() {
-            let addr = document.getElementById('shippingAddressInput').value.trim();
-            if (addr) {
-                localStorage.setItem('shipping_address', addr);
-                tg.showAlert("✅ Home Shipping Address saved successfully!");
-            } else {
-                tg.showAlert("⚠️ Please enter a valid address!");
-            }
         }
 
         // ফায়ারবেস থেকে ইউজারের রিয়েল ডেটা ও টাস্ক কাউন্ট লোড করা
