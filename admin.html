@@ -13,7 +13,7 @@
         :root { 
             --bg: #050a18; --card: #121e36; --border: #1e2d4d; 
             --blue: #3b82f6; --green: #22c55e; --red: #ef4444; 
-            --orange: #f59e0b; --purple: #a855f7; --primary: #fbbf24;
+            --orange: #f59e0b; --purple: #a855f7; --primary: #fbbf24; --pink: #ec4899;
         }
         body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 90px; display: flex; justify-content: center; }
         
@@ -81,10 +81,12 @@
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
 
-        <!-- বায়ার শপ অর্ডার ও পেমেন্ট প্রুফ (নিউ সেকশন) -->
-        <div class="card" style="border-color: var(--pink, #ec4899);">
-            <h4><i class="fas fa-shopping-bag" style="color:#ec4899;"></i> Dress Orders & Payment Proofs</h4>
-            <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;"><small style="color: #94a3b8;">Loading orders...</small></div>
+        <!-- নতুন শপ অর্ডার ম্যানেজমেন্ট সেকশন (যেকোনো আইটেম জিপি দিয়ে অর্ডার করলে এখানে শো করবে) -->
+        <div class="card" style="border-color: var(--pink);">
+            <h4><i class="fas fa-store" style="color:var(--pink);"></i> Shop Orders (GP Payments)</h4>
+            <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
+                <small style="color: #94a3b8;">Loading orders...</small>
+            </div>
         </div>
 
         <!-- নোটিফিকেশন কন্ট্রোল সেকশন -->
@@ -196,7 +198,7 @@
             initAdmin();
         }
 
-        // শপ অর্ডার ও পেমেন্ট প্রুফ লোড করার ফাংশন
+        // শপ অর্ডার লোড ও ম্যানেজ করার ফাংশন
         function loadShopOrders() {
             let container = document.getElementById('shop-orders-list');
             db.ref('shop_orders').on('value', snapshot => {
@@ -207,53 +209,57 @@
                         let order = child.val();
                         if (order.status === 'Pending') {
                             html += `
-                                <div class="list-item" style="border-left-color: #ec4899;">
-                                    <b>Dress: ${order.dressName}</b><br>
-                                    <small>User: ${order.userName} (ID: <b>${order.userId}</b>)</small><br>
-                                    <small>Price: <span style="color:#fbbf24; font-weight:bold;">$${order.price}</span></small><br>
-                                    ${order.screenshot ? `<a href="${order.screenshot}" target="_blank"><img src="${order.screenshot}" style="width:100%; max-height:150px; object-fit:cover; border-radius:8px; margin:8px 0;" alt="Payment Screenshot"></a>` : ''}
-                                    <div class="grid" style="margin-top:5px;">
-                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}')">Approve & Verify</button>
-                                        <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}')">Reject</button>
+                                <div class="list-item" style="border-left-color: var(--pink);">
+                                    <b>Item: ${order.itemName}</b><br>
+                                    <small>User: ${order.userName} (ID: ${order.userId})</small><br>
+                                    <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small>
+                                    <div class="grid" style="margin-top:8px;">
+                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${order.itemName}')">Accept Order</button>
+                                        <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}', '${order.itemName}', ${order.price})">Reject & Refund</button>
                                     </div>
                                 </div>
                             `;
                         }
                     });
-                    container.innerHTML = html || `<small style="color: #94a3b8;">No pending dress orders.</small>`;
+                    container.innerHTML = html || `<small style="color: #94a3b8;">No pending shop orders.</small>`;
                 } else {
-                    container.innerHTML = `<small style="color: #94a3b8;">No pending dress orders.</small>`;
+                    container.innerHTML = `<small style="color: #94a3b8;">No pending shop orders.</small>`;
                 }
             });
         }
 
-        function approveShopOrder(orderKey, targetUserId) {
-            if (confirm("Approve this order and verify user account?")) {
+        function approveShopOrder(orderKey, targetUserId, itemName) {
+            if (confirm("Accept this order?")) {
                 db.ref('shop_orders/' + orderKey).update({ status: 'Approved' }).then(() => {
-                    // ইউজারের অ্যাকাউন্ট ভেরিফাই করা এবং নোটিফিকেশন পাঠানো
-                    db.ref('users/' + targetUserId).update({ isVerified: true }).then(() => {
-                        db.ref('users/' + targetUserId + '/notifications').push({
-                            title: "Dress Order Approved! 🎉",
-                            message: "Your payment was verified by admin. Your account is now Verified!",
-                            timestamp: Date.now(),
-                            isRead: false
-                        });
-                        alert("Order approved and user verified successfully!");
+                    db.ref('users/' + targetUserId + '/notifications').push({
+                        title: "Order Accepted! 🎉",
+                        message: `Your order for "${itemName}" has been accepted by admin!`,
+                        timestamp: Date.now(),
+                        isRead: false
                     });
+                    alert("Order accepted successfully!");
                 });
             }
         }
 
-        function rejectShopOrder(orderKey, targetUserId) {
-            if (confirm("Reject this order?")) {
+        function rejectShopOrder(orderKey, targetUserId, itemName, itemPrice) {
+            if (confirm("Reject order and refund GP to user?")) {
                 db.ref('shop_orders/' + orderKey).update({ status: 'Rejected' }).then(() => {
-                    db.ref('users/' + targetUserId + '/notifications').push({
-                        title: "Dress Order Rejected",
-                        message: "Your payment screenshot was invalid or rejected by admin.",
-                        timestamp: Date.now(),
-                        isRead: false
+                    db.ref('users/' + targetUserId).transaction(u => {
+                        if (u) {
+                            u.points = (u.points || 0) + itemPrice;
+                            u.gp = (u.gp || 0) + itemPrice;
+                        }
+                        return u;
+                    }).then(() => {
+                        db.ref('users/' + targetUserId + '/notifications').push({
+                            title: "Order Rejected ❌",
+                            message: `Your order for "${itemName}" was rejected. ${itemPrice} GP refunded.`,
+                            timestamp: Date.now(),
+                            isRead: false
+                        });
+                        alert("Order rejected and GP refunded.");
                     });
-                    alert("Order rejected.");
                 });
             }
         }
