@@ -1,172 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
-    <meta charset="UTF-8"> 
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Profile</title>
+    <title>HeyCen - Shop Admin Panel</title>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root {
-            --bg-color: #070913;
-            --card-bg: #0e1628;
-            --card-border: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary-purple: #8b5cf6;
+        :root { 
+            --bg: #050a18; --card: #121e36; --border: #1e2d4d; 
+            --blue: #3b82f6; --green: #22c55e; --red: #ef4444; 
+            --orange: #f59e0b; --pink: #ec4899;
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0 0 100px 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
-        .top-header h1 { margin: 0 0 4px 0; font-size: 24px; color: #fff; }
-        .top-header p { margin: 0; font-size: 13px; color: var(--text-muted); }
-        
-        .profile-card {
-            background: linear-gradient(135deg, #0e1628 0%, #171c3a 100%);
-            border: 1px solid #2d2456;
-            border-radius: 20px;
-            padding: 16px;
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .profile-card.verified { border: 1px solid #a855f7; }
-
-        .profile-left { display: flex; align-items: center; gap: 14px; width: 100%; }
-        .avatar-container { width: 65px; height: 65px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #a855f7, #6366f1); flex-shrink: 0; }
-        .avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        
-        .profile-info { width: 100%; }
-        .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; color: #fff; }
-        .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-        .user-id-badge { font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block; background: rgba(139, 92, 246, 0.15); padding: 1px 6px; border-radius: 6px; }
-
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 4px; text-align: center; }
-        .stat-card .stat-value { font-size: 12px; font-weight: 800; margin-bottom: 2px; color: #fff; }
-        .stat-card .stat-label { font-size: 8.5px; color: var(--text-muted); }
-
-        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
-        .order-item-box { background: #070913; border: 1px solid #1e293b; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-
-        .menu-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-        .menu-row-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--text-main); }
-        .menu-row-left { display: flex; align-items: center; gap: 14px; }
-        .menu-row-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; }
-
-        .admin-row-item { background: linear-gradient(135deg, rgba(127, 29, 29, 0.25), rgba(69, 10, 10, 0.35)); border: 1px solid #ef4444; display: none; }
-
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card-bg); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
-        .nav-item.active { color: #c084fc; }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 90px; display: flex; justify-content: center; }
+        .container { padding: 15px; width: 100%; max-width: 480px; box-sizing: border-box; }
+        .header { background: var(--card); padding: 15px; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 100; display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-radius: 0 0 12px 12px; }
+        .back-nav { font-size: 20px; color: white; cursor: pointer; padding: 5px; }
+        .card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .btn { padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.3s; margin-top: 5px; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; }
+        .btn-green { background: var(--green); color: white; }
+        .btn-red { background: var(--red); color: white; }
+        .btn-gray { background: #475569; color: white; }
+        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--pink); cursor: pointer; transition: 0.2s; }
+        .list-item:hover { background: #0e1730; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--pink); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
+        .floating-back-container { display: flex; justify-content: center; margin: 25px 0 10px 0; }
+        .circle-back-btn { background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%); border: none; color: #fff; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.5); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="top-header">
-            <div>
-                <h1>Profile</h1>
-                <p>Manage your account & track your activity</p>
+        <div class="header">
+            <i class="fas fa-arrow-left back-nav" onclick="location.href='profile.html'"></i>
+            <h3 style="margin:0;"><i class="fas fa-store" style="color: var(--pink);"></i> Shop Orders Admin</h3>
+        </div>
+
+        <div class="card" style="border-color: var(--pink);">
+            <h4><i class="fas fa-box-open" style="color:var(--pink);"></i> Pending Shop Orders</h4>
+            <small style="color: #94a3b8; font-size: 11px;">Tap order box to view user phone, address, date & time.</small>
+            <div id="shop-orders-list" style="max-height: 450px; overflow-y: auto; margin-top: 10px;">
+                <small style="color: #94a3b8;">Loading orders...</small>
             </div>
         </div>
 
-        <div class="profile-card" id="profileCardElement">
-            <div class="profile-left">
-                <div class="avatar-container">
-                    <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
-                </div>
-                <div class="profile-info">
-                    <h3 id="profile-name"><span id="name-text">User</span></h3>
-                    <div class="username-text" id="profile-username">@user</div>
-                    <div><span class="user-id-badge" id="profile-id">ID: Loading... 📋</span></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-value" id="total-points">0</div>
-                <div class="stat-label">Total GP</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="total-tasks-done">0</div>
-                <div class="stat-label">Tasks Done</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="pending-points">0</div>
-                <div class="stat-label">Pending</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="withdrawn-points">0</div>
-                <div class="stat-label">Spent</div>
-            </div>
-        </div>
-
-        <!-- অর্ডার হিস্টরি কার্ড (Date & Time এবং Status সহ) -->
-        <div class="card">
-            <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #fff;"><i class="fa-solid fa-bag-shopping" style="color: #ec4899;"></i> My Orders History</h4>
-            <div id="my-orders-list" style="max-height: 220px; overflow-y: auto;">
-                <small style="color: var(--text-muted);">Loading your orders...</small>
-            </div>
-        </div>
-
-        <div class="menu-list">
-            <a class="menu-row-item" href="address.html">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #0284c7;"><i class="fa-solid fa-location-dot"></i></div>
-                    <div class="menu-row-info">
-                        <h5 style="margin:0; font-size:13px; color:#fff;">Shipping Address</h5>
-                        <p style="margin:0; font-size:11px; color:var(--text-muted);">Manage name, location & phone</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
-            </a>
-
-            <a class="menu-row-item" href="support.html">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #0891b2;"><i class="fa-solid fa-headset"></i></div>
-                    <div class="menu-row-info">
-                        <h5 style="margin:0; font-size:13px; color:#fff;">Help & Support</h5>
-                        <p style="margin:0; font-size:11px; color:var(--text-muted);">Get help and contact admin</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
-            </a>
-
-            <a class="menu-row-item admin-row-item" id="admin-panel-btn" href="admin.html">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #991b1b;"><i class="fa-solid fa-user-shield"></i></div>
-                    <div class="menu-row-info">
-                        <h5 style="margin:0; font-size:13px; color:#f87171;">Admin Panel</h5>
-                        <p style="margin:0; font-size:11px; color:#fca5a5;">Control center & management</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color:#f87171;"></i>
-            </a>
+        <div class="floating-back-container">
+            <button class="circle-back-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-arrow-left"></i></button>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
-        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a> 
-        <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+    <div class="overlay" id="orderOverlay" onclick="closeOrderModal()"></div>
+    <div class="modal" id="orderModal">
+        <h3 style="margin-top:0; color:var(--pink);"><i class="fas fa-address-card"></i> Order & Address Info</h3>
+        <div id="order-modal-content" style="font-size: 13px; line-height: 1.6; color: #e2e8f0;">
+            <p>Loading details...</p>
+        </div>
+        <button class="btn btn-gray" style="margin-top: 15px;" onclick="closeOrderModal()">Close</button>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
@@ -183,66 +79,127 @@
 
         let tg = window.Telegram.WebApp;
         tg.expand();
+        let userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id.toString() : "7757851056";
+        const ADMIN_ID = "7757851056";
 
-        let user = tg.initDataUnsafe.user;
-        let userId = user ? user.id.toString() : "7757851056"; 
-        let firstName = user ? (user.first_name || "User") : "User";
-        let username = (user && user.username) ? `@${user.username}` : `@user`;
-        const ADMIN_USER_ID = "7757851056";
-
-        document.getElementById('name-text').innerText = firstName;
-        document.getElementById('profile-username').innerText = username;
-        document.getElementById('profile-id').innerText = `ID: ${userId} 📋`;
-
-        if (userId === ADMIN_USER_ID) {
-            document.getElementById('admin-panel-btn').style.display = "flex";
+        if (userId !== ADMIN_ID) {
+            alert("Access Denied!");
+            window.location.href = "index.html";
+        } else {
+            loadShopOrders();
         }
 
-        db.ref('users/' + userId).on('value', snap => {
-            let data = snap.val();
-            if(data) {
-                let points = data.points !== undefined ? data.points : (data.gp || 0);
-                document.getElementById('total-points').innerText = points.toLocaleString();
-                document.getElementById('total-tasks-done').innerText = (data.tasksDone || 0).toLocaleString();
-            }
-        });
+        function loadShopOrders() {
+            let container = document.getElementById('shop-orders-list');
+            db.ref('shop_orders').on('value', snapshot => {
+                let html = "";
+                if (snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        let orderKey = child.key;
+                        let order = child.val();
+                        if (order.status === 'Pending') {
+                            let orderTimeFormatted = order.timestamp ? new Date(order.timestamp).toLocaleString() : 'N/A';
+                            let safeItemName = order.itemName.replace(/'/g, "\\'");
+                            html += `
+                                <div class="list-item" onclick="viewOrderDetails('${order.userId}', '${safeItemName}', ${order.price}, '${orderTimeFormatted}')">
+                                    <b>Item: ${order.itemName}</b><br>
+                                    <small>User: ${order.userName} (ID: ${order.userId})</small><br>
+                                    <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small><br>
+                                    <small style="color:#94a3b8;">🕒 ${orderTimeFormatted}</small>
+                                    <div style="margin-top: 4px; font-size: 11px; color: #38bdf8;"><i class="fas fa-eye"></i> Tap to view phone & address</div>
+                                    <div class="grid" onclick="event.stopPropagation()">
+                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${safeItemName}')">Accept</button>
+                                        <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}', '${safeItemName}', ${order.price})">Reject & Refund</button>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                    container.innerHTML = html || `<small style="color: #94a3b8;">No pending shop orders.</small>`;
+                } else {
+                    container.innerHTML = `<small style="color: #94a3b8;">No pending shop orders.</small>`;
+                }
+            });
+        }
 
-        // ইউজারের নিজস্ব অর্ডার হিস্টরি এবং টাইম-ডেট রিয়েল-টাইম লোড
-        db.ref('users/' + userId + '/orders').on('value', snap => {
-            let container = document.getElementById('my-orders-list');
-            let html = "";
-            if (snap.exists()) {
-                snap.forEach(child => {
-                    let order = child.val();
-                    let statusColor = '#f59e0b';
-                    let statusText = 'Pending ⏳';
+        function viewOrderDetails(targetUserId, itemName, price, orderTime) {
+            document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
+            document.getElementById('orderOverlay').style.display = 'block';
+            document.getElementById('orderModal').style.display = 'block';
 
-                    if (order.status === 'Approved') {
-                        statusColor = '#22c55e';
-                        statusText = 'Accepted ✅';
-                    } else if (order.status === 'Rejected') {
-                        statusColor = '#ef4444';
-                        statusText = 'Rejected ❌ (Refunded)';
-                    }
+            db.ref('users/' + targetUserId).once('value', snap => {
+                let uData = snap.val() || {};
+                let addr = uData.address || uData.shipping_address || uData.profile_address || uData;
 
-                    let orderDate = order.timestamp ? new Date(order.timestamp).toLocaleString() : 'N/A';
+                let fullName = addr.fullName || addr.name || uData.name || uData.username || 'N/A';
+                let phoneNum = addr.phone || addr.number || addr.mobile || uData.phone || 'N/A';
+                let fullLocation = addr.address || addr.location || addr.full_address || 'N/A';
+                let zipCode = addr.zip || addr.zipCode || 'N/A';
 
-                    html += `
-                        <div class="order-item-box">
-                            <div>
-                                <b style="font-size: 12px; color: #fff;">${order.itemName}</b><br>
-                                <small style="color: #fbbf24;">${order.price.toLocaleString()} GP</small><br>
-                                <small style="color: #94a3b8; font-size: 10px;">🕒 ${orderDate}</small>
-                            </div>
-                            <span style="font-size: 11px; font-weight: bold; color: ${statusColor};">${statusText}</span>
-                        </div>
-                    `;
+                let addressHtml = `
+                    <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
+                        <p style="margin: 6px 0;"><b>👤 Name:</b> ${fullName}</p>
+                        <p style="margin: 6px 0;"><b>📞 Phone:</b> <a href="tel:${phoneNum}" style="color:var(--green); font-weight:bold; text-decoration:underline;">${phoneNum}</a></p>
+                        <p style="margin: 6px 0;"><b>🏠 Address:</b> ${fullLocation} (Zip: ${zipCode})</p>
+                        <p style="margin: 6px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
+                    </div>
+                `;
+
+                document.getElementById('order-modal-content').innerHTML = `
+                    <p style="margin: 4px 0;"><b>📦 Item:</b> <span style="color:#fbbf24;">${itemName}</span></p>
+                    <p style="margin: 4px 0;"><b>🪙 Price:</b> ${price.toLocaleString()} GP</p>
+                    <p style="margin: 4px 0;"><b>🕒 Time:</b> ${orderTime}</p>
+                    <hr style="border:0; height:1px; background:var(--border); margin:10px 0;">
+                    <b>📍 Saved Shipping Info:</b>
+                    ${addressHtml}
+                `;
+            });
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderOverlay').style.display = 'none';
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        function approveShopOrder(orderKey, targetUserId, itemName) {
+            if (confirm("Accept this order?")) {
+                db.ref('shop_orders/' + orderKey).update({ status: 'Approved' }).then(() => {
+                    db.ref('users/' + targetUserId + '/orders').once('value', snap => {
+                        let orders = snap.val() || {};
+                        Object.keys(orders).forEach(oKey => {
+                            if (orders[oKey].itemName === itemName && orders[oKey].status === 'Pending') {
+                                db.ref(`users/${targetUserId}/orders/${oKey}`).update({ status: 'Approved' });
+                            }
+                        });
+                    });
+                    alert("Order accepted successfully!");
                 });
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = `<small style="color: var(--text-muted);">No orders placed yet.</small>`;
             }
-        });
+        }
+
+        function rejectShopOrder(orderKey, targetUserId, itemName, itemPrice) {
+            if (confirm("Reject order and refund GP to user?")) {
+                db.ref('shop_orders/' + orderKey).update({ status: 'Rejected' }).then(() => {
+                    db.ref('users/' + targetUserId).transaction(u => {
+                        if (u) {
+                            u.points = (u.points || 0) + itemPrice;
+                            u.gp = (u.gp || 0) + itemPrice;
+                        }
+                        return u;
+                    }).then(() => {
+                        db.ref('users/' + targetUserId + '/orders').once('value', snap => {
+                            let orders = snap.val() || {};
+                            Object.keys(orders).forEach(oKey => {
+                                if (orders[oKey].itemName === itemName && orders[oKey].status === 'Pending') {
+                                    db.ref(`users/${targetUserId}/orders/${oKey}`).update({ status: 'Rejected' });
+                                }
+                            });
+                        });
+                        alert("Order rejected and GP successfully refunded!");
+                    });
+                });
+            }
+        }
     </script>
 </body>
 </html>
