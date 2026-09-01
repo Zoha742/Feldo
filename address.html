@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyCen - Shipping Address</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #070913;
+            --card-bg: #0e1628;
+            --card-border: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 16px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 480px;
+            box-sizing: border-box;
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            width: 38px; height: 38px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        .form-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .form-input {
+            width: 100%;
+            background: #070913;
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 13px;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .form-input:focus {
+            border-color: #38bdf8;
+        }
+        .save-btn {
+            background: #38bdf8;
+            color: #070913;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+        .save-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <a href="profile.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+            <h2 style="margin:0; font-size: 18px; color: #fff;">Shipping Address</h2>
+        </div>
+
+        <div class="form-card">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="shipName" class="form-input" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label>Telegram ID</label>
+                <input type="text" id="shipId" class="form-input" readonly style="opacity: 0.7;">
+            </div>
+            <div class="form-group">
+                <label>Location / Address</label>
+                <input type="text" id="shipLocation" class="form-input" placeholder="Street, City, Area">
+            </div>
+            <div class="form-group">
+                <label>Zip Code</label>
+                <input type="text" id="shipZip" class="form-input" placeholder="Postal / Zip code">
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="shipPhone" class="form-input" placeholder="Enter phone number">
+            </div>
+            <button class="save-btn" onclick="saveAddressData()">Save Address</button>
+        </div>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let user = tg.initDataUnsafe.user;
+        let userId = user ? user.id.toString() : "7757851056";
+        let defaultName = user ? (user.first_name || "") : "";
+
+        // অটো ফিল করার জন্য
+        document.getElementById('shipId').value = userId;
+
+        // লোকালস্টোরেজ থেকে আগের সেভ করা ডেটা লোড করা
+        if(localStorage.getItem('ship_name')) document.getElementById('shipName').value = localStorage.getItem('ship_name');
+        else document.getElementById('shipName').value = defaultName;
+
+        if(localStorage.getItem('ship_location')) document.getElementById('shipLocation').value = localStorage.getItem('ship_location');
+        if(localStorage.getItem('ship_zip')) document.getElementById('shipZip').value = localStorage.getItem('ship_zip');
+        if(localStorage.getItem('ship_phone')) document.getElementById('shipPhone').value = localStorage.getItem('ship_phone');
+
+        function saveAddressData() {
+            let name = document.getElementById('shipName').value.trim();
+            let location = document.getElementById('shipLocation').value.trim();
+            let zip = document.getElementById('shipZip').value.trim();
+            let phone = document.getElementById('shipPhone').value.trim();
+
+            if(!name || !location || !zip || !phone) {
+                tg.showAlert("⚠️ Please fill in all the required fields!");
+                return;
+            }
+
+            localStorage.setItem('ship_name', name);
+            localStorage.setItem('ship_location', location);
+            localStorage.setItem('ship_zip', zip);
+            localStorage.setItem('ship_phone', phone);
+            
+            // শপের কোডের সাথে সামঞ্জস্য রাখার জন্য
+            localStorage.setItem('shipping_address', `${location}, Zip: ${zip}, Ph: ${phone}`);
+
+            tg.showAlert("✅ Shipping Address saved successfully!");
+            setTimeout(() => {
+                window.location.href = "profile.html";
+            }, 1200);
+        }
+    </script>
+</body>
+</html>
