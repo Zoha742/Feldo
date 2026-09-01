@@ -25,15 +25,23 @@
             padding: 0 0 100px 0;
             display: flex;
             justify-content: center;
-            /* স্মুথ স্ক্রোলিং এবং ওভারবাউন্স রোধ */
             overscroll-behavior-y: none;
             -webkit-overflow-scrolling: touch;
+            /* পেজ সোয়াইপের স্মুথ অ্যানিমেশনের জন্য */
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* পেজ ট্রানজিশন ইফেক্ট ক্লাস */
+        body.page-slide-out {
+            opacity: 0;
+            transform: translateX(-20px);
         }
 
         .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
         .top-header h1 { margin: 0 0 10px 0; font-size: 24px; color: #fff; }
         
-        /* নরমাল প্রোফাইল কার্ড */
         .profile-card {
             background: linear-gradient(135deg, #0e1628 0%, #171c3a 100%);
             border: 1px solid #2d2456;
@@ -43,7 +51,6 @@
             margin-bottom: 16px;
             transition: 0.3s ease;
         }
-        /* অ্যাডমিন ভেরিফাই করলে ড্যাশবোর্ড/প্রোফাইল কার্ডের কালার ও বর্ডার পরিবর্তন হবে */
         .profile-card.verified { 
             border: 2px solid #a855f7; 
             background: linear-gradient(135deg, #121636 0%, #22164a 100%);
@@ -54,7 +61,6 @@
         .avatar-container { width: 65px; height: 65px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #a855f7, #6366f1); flex-shrink: 0; position: relative; }
         .avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         
-        /* শুধু ভেরিফাইড ইউজারদের জন্যই ব্যাজ শো করবে */
         .verified-badge {
             position: absolute; bottom: 0; right: 0;
             background: #22c55e; color: #fff; width: 20px; height: 20px;
@@ -74,7 +80,6 @@
 
         .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
         
-        /* চিকন অর্ডার বক্স স্টাইল */
         .order-item-box { 
             background: #070913; 
             border: 1px solid #1e293b; 
@@ -92,7 +97,12 @@
         .menu-row-left { display: flex; align-items: center; gap: 14px; }
         .menu-row-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; }
 
-        .admin-row-item { background: linear-gradient(135deg, rgba(127, 29, 29, 0.25), rgba(69, 10, 10, 0.35)); border: 1px solid #ef4444; display: none; }
+        /* আপনার জন্য অ্যাডমিন প্যানেল বক্সের কালার গ্রিন (Green) করা হলো */
+        .admin-row-item { 
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.4), rgba(2, 44, 34, 0.6)); 
+            border: 1px solid #22c55e; 
+            display: none; 
+        }
 
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card-bg); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; }
         .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; transition: 0.2s; }
@@ -113,7 +123,6 @@
             <div class="profile-left">
                 <div class="avatar-container">
                     <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
-                    <!-- ভেরিফাইড হলে এই ব্যাজটি শো করবে -->
                     <div class="verified-badge" id="verifiedBadgeIcon"><i class="fa-solid fa-check"></i></div>
                 </div>
                 <div class="profile-info">
@@ -143,7 +152,6 @@
             </div>
         </div>
 
-        <!-- অর্ডার হিস্টরি কার্ড -->
         <div class="card">
             <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #fff;"><i class="fa-solid fa-bag-shopping" style="color: #ec4899;"></i> My Orders History</h4>
             <div id="my-orders-list" style="max-height: 180px; overflow-y: auto;">
@@ -151,7 +159,6 @@
             </div>
         </div>
 
-        <!-- মেনু লিস্ট এবং দুটি অ্যাডমিন বাটন -->
         <div class="menu-list">
             <a class="menu-row-item" href="address.html">
                 <div class="menu-row-left">
@@ -175,38 +182,38 @@
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
             </a>
 
-            <!-- Admin Panel 1: General Control -->
+            <!-- Admin Panel 1: General Control (Green Theme) -->
             <a class="menu-row-item admin-row-item" id="admin-panel-btn" href="admin.html">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #991b1b;"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="menu-row-icon" style="background: #059669;"><i class="fa-solid fa-user-shield"></i></div>
                     <div class="menu-row-info">
-                        <h5 style="margin:0; font-size:13px; color:#f87171;">Admin Panel</h5>
-                        <p style="margin:0; font-size:11px; color:#fca5a5;">Users, Boost, Withdraw & Notif</p>
+                        <h5 style="margin:0; font-size:13px; color:#34d399;">Admin Panel</h5>
+                        <p style="margin:0; font-size:11px; color:#a7f3d0;">Users, Boost, Withdraw & Notif</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="color:#f87171;"></i>
+                <i class="fa-solid fa-chevron-right" style="color:#34d399;"></i>
             </a>
 
-            <!-- Admin Panel 2: Shop Orders Admin -->
+            <!-- Admin Panel 2: Shop Orders Admin (Green Theme) -->
             <a class="menu-row-item admin-row-item" id="shop-admin-btn" href="shopadmin.html">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #be185d;"><i class="fa-solid fa-store"></i></div>
+                    <div class="menu-row-icon" style="background: #047857;"><i class="fa-solid fa-store"></i></div>
                     <div class="menu-row-info">
-                        <h5 style="margin:0; font-size:13px; color:#f472b6;">Shop Orders Admin</h5>
-                        <p style="margin:0; font-size:11px; color:#fbcfe8;">Manage orders, phone & address</p>
+                        <h5 style="margin:0; font-size:13px; color:#34d399;">Shop Orders Admin</h5>
+                        <p style="margin:0; font-size:11px; color:#a7f3d0;">Manage orders, phone & address</p>
                     </div>
                 </div>
-                <i class="fa-solid fa-chevron-right" style="color:#f472b6;"></i>
+                <i class="fa-solid fa-chevron-right" style="color:#34d399;"></i>
             </a>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
-        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
-        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a> 
-        <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
+        <a class="nav-item" href="index.html" onclick="navigateWithAnimation(event, 'index.html')"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html" onclick="navigateWithAnimation(event, 'task.html')"><i class="fa-solid fa-list-check"></i>Task</a>
+        <a class="nav-item" href="shop.html" onclick="navigateWithAnimation(event, 'shop.html')"><i class="fa-solid fa-store"></i>Shop</a>
+        <a class="nav-item" href="hotcake.html" onclick="navigateWithAnimation(event, 'hotcake.html')"><i class="fa-solid fa-hammer"></i>Hotcake</a> 
+        <a class="nav-item active" href="profile.html" onclick="navigateWithAnimation(event, 'profile.html')"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -247,7 +254,6 @@
             document.getElementById('shop-admin-btn').style.display = "flex";
         }
 
-        // ফায়ারবেস থেকে ইউজার ডাটা এবং ভেরিফিকেশন স্ট্যাটাস রিয়েল-টাইম চেক করা
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
             if(data) {
@@ -255,7 +261,6 @@
                 document.getElementById('total-points').innerText = points.toLocaleString();
                 document.getElementById('total-tasks-done').innerText = (data.tasksDone || 0).toLocaleString();
 
-                // শুধুমাত্র অ্যাডমিন ভেরিফাই করলে ড্যাশবোর্ডের ডিজাইন ও ব্যাজ পরিবর্তন হবে
                 if (data.isVerified === true) {
                     document.getElementById('profileCardElement').classList.add('verified');
                     document.getElementById('verifiedBadgeIcon').style.display = 'flex';
@@ -266,7 +271,6 @@
             }
         });
 
-        // ইউজারের অর্ডার হিস্টরি (চিকন বক্স এবং নতুন অর্ডার উপরে)
         db.ref('users/' + userId + '/orders').on('value', snap => {
             let container = document.getElementById('my-orders-list');
             let html = "";
@@ -310,11 +314,20 @@
             }
         });
 
-        // অ্যাপের নেভিগেশন ও পেজ পরিবর্তনের জন্য স্মুথ সোয়াইপ (Swipe) জেস্চার হ্যান্ডলিং
+        // স্মুথ ট্রানজিশন অ্যানিমেশন ফাংশন
+        function navigateWithAnimation(event, url) {
+            event.preventDefault();
+            document.body.classList.add('page-slide-out');
+            setTimeout(() => {
+                window.location.href = url;
+            }, 300);
+        }
+
+        // সোয়াইপ (Swipe) জেস্চার হ্যান্ডলিং (অ্যানিমেশন সহ)
         let touchStartX = 0;
         let touchEndX = 0;
         const pages = ['index.html', 'task.html', 'shop.html', 'hotcake.html', 'profile.html'];
-        const currentPageIndex = 4; // profile.html হলো ৫ম পেজ
+        const currentPageIndex = 4; // profile.html
 
         document.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].screenX;
@@ -326,17 +339,15 @@
         }, {passive: true});
 
         function handleSwipeGesture() {
-            let swipeThreshold = 70; // সোয়াইপের ন্যূনতম দূরত্ব
+            let swipeThreshold = 60;
             if (touchEndX < touchStartX - swipeThreshold) {
-                // বাম দিকে সোয়াইপ করলে পরের পেজে যাবে
                 if (currentPageIndex < pages.length - 1) {
-                    window.location.href = pages[currentPageIndex + 1];
+                    navigateWithAnimation({ preventDefault: () => {} }, pages[currentPageIndex + 1]);
                 }
             }
             if (touchEndX > touchStartX + swipeThreshold) {
-                // ডান দিকে সোয়াইপ করলে আগের পেজে যাবে
                 if (currentPageIndex > 0) {
-                    window.location.href = pages[currentPageIndex - 1];
+                    navigateWithAnimation({ preventDefault: () => {} }, pages[currentPageIndex - 1]);
                 }
             }
         }
