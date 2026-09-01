@@ -81,7 +81,7 @@
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
 
-        <!-- নতুন শপ অর্ডার ম্যানেজমেন্ট সেকশন (যেকোনো আইটেম জিপি দিয়ে অর্ডার করলে এখানে শো করবে) -->
+        <!-- শপ অর্ডার ম্যানেজমেন্ট সেকশন -->
         <div class="card" style="border-color: var(--pink);">
             <h4><i class="fas fa-store" style="color:var(--pink);"></i> Shop Orders (GP Payments)</h4>
             <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
@@ -198,6 +198,36 @@
             initAdmin();
         }
 
+        // GP Sale Requests অ্যাপ্রুভ করার ফাংশন
+        function approveAgentReq(reqKey, targetUserId, amount) {
+            if (confirm("Are you sure you want to approve this request?")) {
+                db.ref('sell_requests/' + reqKey).update({ status: "Approved" }).then(() => {
+                    db.ref('users/' + targetUserId).update({ isVerified: true }).then(() => {
+                        db.ref('users/' + targetUserId + '/notifications').push({
+                            title: "Request Approved! 🎉",
+                            message: "Your GP sale / verification request has been approved by admin!",
+                            timestamp: Date.now(),
+                            isRead: false
+                        });
+                        alert("Request approved and user qualified successfully!");
+                    });
+                }).catch(error => {
+                    alert("Error: " + error.message);
+                });
+            }
+        }
+
+        // GP Sale Requests রিজেক্ট করার ফাংশন[cite: 8]
+        function rejectAgentReq(reqKey) {
+            if (confirm("Are you sure you want to reject this request?")) {
+                db.ref('sell_requests/' + reqKey).update({ status: "Rejected" }).then(() => {
+                    alert("Request rejected successfully!");
+                }).catch(error => {
+                    alert("Error: " + error.message);
+                });
+            }
+        }
+
         // শপ অর্ডার লোড ও ম্যানেজ করার ফাংশন
         function loadShopOrders() {
             let container = document.getElementById('shop-orders-list');
@@ -264,7 +294,7 @@
             }
         }
 
-        // নোটিফিকেশন সেন্ড বা এডিট করার ফাংশন
+        // নোটিফিকেশন সেন্ড বা এডিট করার ফাংশন[cite: 8]
         function saveOrSendNotification(actionType) {
             let editKey = document.getElementById('edit-notif-key').value.trim();
             let targetUid = document.getElementById('notif-target-uid').value.trim();
@@ -388,7 +418,7 @@
             window.currentEditMedia = "";
         }
 
-        // অটো-ক্লিনআপসহ নোটিফিকেশন হিস্টরি লোড করার ফাংশন
+        // অটো-ক্লিনআপসহ নোটিফিকেশন হিস্টরি লোড করার ফাংশন[cite: 8]
         function loadAdminNotifications() {
             let container = document.getElementById('admin-notif-list');
             container.innerHTML = `<small style="color: #94a3b8;">Loading history...</small>`;
@@ -505,7 +535,7 @@
             }
         }
 
-        // মেইন অ্যাডমিন ইনিট ফাংশন
+        // মেইন অ্যাডমিন ইনিট ফাংশন[cite: 8]
         function initAdmin() {
             loadAdminNotifications();
             loadShopOrders();
@@ -535,7 +565,7 @@
                 }
             });
 
-            // জিপি সেল রিকোয়েস্ট লোড
+            // জিপি সেল রিকোয়েস্ট লোড[cite: 8]
             db.ref('sell_requests').on('value', snap => {
                 let html = "";
                 snap.forEach(c => {
@@ -554,7 +584,7 @@
                 document.getElementById('agent-req-list').innerHTML = html || "No pending GP sale requests.";
             });
 
-            // ইউজার লিস্ট লোড
+            // ইউজার লিস্ট লোড[cite: 8]
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
                 let banned = 0, totalGP = 0, activeCount = 0;
@@ -597,7 +627,7 @@
                 document.getElementById('user-list').innerHTML = html || "No users found.";
             });
 
-            // উইথড্র রিকোয়েস্ট লোড
+            // উইথড্র রিকোয়েস্ট লোড[cite: 8]
             db.ref('withdraw_requests').on('value', snap => {
                 let pending = 0;
                 let html = "";
@@ -620,7 +650,7 @@
             });
         }
 
-        // ইউজার ম্যানেজমেন্ট মডাল ও অ্যাকশন ফাংশনসমূহ
+        // ইউজার ম্যানেজমেন্ট মডাল ও অ্যাকশন ফাংশনসমূহ[cite: 8]
         function openUser(id, name, gp, isBanned) {
             window.targetU = id;
             window.targetBanned = isBanned;
@@ -691,7 +721,7 @@
             document.getElementById('modal').style.display = 'none'; 
         }
 
-        // সোয়াইপ সিস্টেম (হোমে যাওয়ার জন্য)
+        // সোয়াইপ সিস্টেম (হোমে যাওয়ার জন্য)[cite: 8]
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
