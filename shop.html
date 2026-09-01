@@ -72,7 +72,9 @@
     <!-- বটম নেভিগেশন বার -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
         <a class="nav-item active" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
+        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
@@ -109,9 +111,8 @@
             }
         });
 
-        // সমস্ত ফিমেল ড্রেস, বয়েজ ড্রেস, স্মার্টফোন ও গ্যাজেটসের সম্পূর্ণ তালিকা
+        // সমস্ত প্রোডাক্ট ও ক্লাউডিনারি ড্রেস লিস্ট
         const storeItems = [
-            // Female Dresses (Cloudinary Links)[cite: 7]
             { name: "Royal Floral Gown", cat: "Dress", price: 12000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp", hasSize: true },
             { name: "Classic Party Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp", hasSize: true },
             { name: "Elegance Evening Wear", cat: "Dress", price: 18000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/7_zz8gga.webp", hasSize: true },
@@ -224,10 +225,11 @@
                 itemNameFinal = `${itemName} [Size: ${chosenSize}]`;
             }
 
-            db.ref('users/' + userId + '/shipping_address').once('value', snapshot => {
-                let addressData = snapshot.val();
+            db.ref('users/' + userId).once('value', snapshot => {
+                let uData = snapshot.val() || {};
+                let addressData = uData.shipping_address || uData.address || localStorage.getItem('shipping_address');
                 
-                if (!addressData && !localStorage.getItem('shipping_address')) {
+                if (!addressData) {
                     tg.showAlert("⚠️ Please set your Home Shipping Address first before placing an order!");
                     setTimeout(() => {
                         window.location.href = "address.html";
@@ -248,7 +250,11 @@
                             timestamp: Date.now()
                         };
 
-                        db.ref('shop_orders').push(orderData).then(() => {
+                        // ১. মেইন অ্যাডমিন শপ অর্ডার লিস্টে পাঠানো
+                        db.ref('shop_orders').push(orderData);
+
+                        // ২. ইউজারের নিজস্ব প্রোফাইল অর্ডার হিস্টরিতে সেভ করা
+                        db.ref('users/' + userId + '/orders').push(orderData).then(() => {
                             tg.showAlert(`🎉 Order Confirmed! "${itemNameFinal}" ordered successfully. Waiting for admin approval.`);
                         });
                     });
