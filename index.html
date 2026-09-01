@@ -70,10 +70,13 @@
         .points-value { font-size: 34px; font-weight: 800; margin-bottom: 10px; }
         .usd-badge { display: inline-block; background: rgba(255, 255, 255, 0.2); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .history-btn { position: absolute; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.2); border: none; color: #ffffff; padding: 6px 14px; border-radius: 12px; font-size: 12px; cursor: pointer; backdrop-filter: blur(5px); }
-        .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
-        .menu-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px 8px; border-radius: 16px; text-align: center; cursor: pointer; text-decoration: none; color: var(--text-main); }
-        .menu-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px auto; font-size: 18px; color: #fff; }
+        
+        /* কুইক মেনু (৪টি অপশন) */
+        .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
+        .menu-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px 6px; border-radius: 14px; text-align: center; cursor: pointer; text-decoration: none; color: var(--text-main); }
+        .menu-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin: 0 auto 6px auto; font-size: 16px; color: #fff; }
         .menu-label { font-size: 11px; font-weight: 600; }
+
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .section-title { font-size: 16px; font-weight: 700; }
         .streak-badge { font-size: 12px; color: #f97316; font-weight: 600; }
@@ -86,7 +89,7 @@
         .bonus-card .icon { font-size: 18px; margin-bottom: 6px; color: #22c55e; }
         .bonus-card .reward { font-size: 11px; font-weight: 700; }
         
-        /* শপ ড্রেস গ্রিড স্টাইল (হোম পেজের জন্য) */
+        /* শপ ড্রেস প্রিভিউ গ্রিড (অ্যাক্ট্রাক্ট করার জন্য) */
         .shop-preview-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
         .shop-preview-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
         .shop-preview-img { width: 100%; height: 130px; object-fit: cover; border-radius: 10px; background: #f1f5f9; margin-bottom: 8px; }
@@ -99,7 +102,7 @@
         .promo-banner p { margin: 0; font-size: 11px; opacity: 0.9; }
         .promo-btn { background: rgba(255,255,255,0.25); border: none; color: #fff; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; backdrop-filter: blur(5px); white-space: nowrap; }
         
-        /* নেভিগেশন বার (Ads অপশন বাদ দেওয়া হয়েছে) */
+        /* নেভিগেশন বার */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
@@ -134,22 +137,23 @@
             <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
         </div>
 
+        <!-- কুইক মেনু (ডেইলি চেক-ইন, ওয়াচ অ্যাডস, টাস্ক এবং এজেন্ট) -->
         <div class="quick-menu">
             <div class="menu-item" onclick="claimDailyBonus()">
                 <div class="menu-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-check"></i></div>
-                <div class="menu-label">Daily Check-in</div>
+                <div class="menu-label">Check-in</div>
             </div>
             <div class="menu-item" onclick="location.href='ads.html'">
                 <div class="menu-icon" style="background: #ef4444;"><i class="fa-solid fa-play"></i></div>
-                <div class="menu-label">Watch Ads</div>
+                <div class="menu-label">Ads</div>
             </div>
             <a href="task.html" class="menu-item">
                 <div class="menu-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
                 <div class="menu-label">Tasks</div>
             </a>
-            <div class="menu-item" onclick="location.href='shop.html'">
-                <div class="menu-icon" style="background: #ec4899;"><i class="fa-solid fa-store"></i></div>
-                <div class="menu-label">Shop</div>
+            <div class="menu-item" onclick="location.href='agent.html'">
+                <div class="menu-icon" style="background: #3b82f6;"><i class="fa-solid fa-handshake"></i></div>
+                <div class="menu-label">Agent</div>
             </div>
         </div>
 
@@ -164,7 +168,7 @@
             <a href="shop.html" style="font-size: 12px; color: #ec4899; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
-        <!-- শপের ড্রেস প্রিভিউ গ্রিড -->
+        <!-- শপের আকর্ষণীয় ড্রেস প্রিভিউ গ্রিড -->
         <div class="shop-preview-grid">
             <div class="shop-preview-card">
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Dress">
@@ -193,7 +197,7 @@
         </div>
     </div>
 
-    <!-- নেভিগেশন বার (Ads অপশন রিমুভ করা হয়েছে) -->
+    <!-- নেভিগেশন বার -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
