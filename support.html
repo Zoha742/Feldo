@@ -173,11 +173,9 @@
         <div class="card">
             <label>Type of Problem:</label>
             <select id="issue-type">
-                <option value="Deposit Problem">Deposit Problem</option>
-                <option value="Withdraw Problem">Withdraw Problem</option>
-                <option value="GP Not Adding">GP Not Adding</option>
-                <option value="Account Issue">Account Issue</option>
-                <option value="Other">Other</option>
+                <option value="Dress Color Problem">Dress Color Problem</option>
+                <option value="Size Problem">Size Problem</option>
+                <option value="Others">Others</option>
             </select>
 
             <label>Provide Details:</label>
@@ -279,7 +277,7 @@
             listContainer.innerHTML = html;
         });
 
-        // সোয়াইপ অ্যানিমেশন লজিক (যেকোনো দিকে টানলেই প্রোফাইলে যাবে)
+        // সোয়াইপ অ্যানিমেশন লজিক
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
