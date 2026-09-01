@@ -39,7 +39,8 @@
         .btn-purple { background: var(--purple); color: white; }
         .btn-gray { background: #475569; color: white; }
 
-        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); }
+        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); cursor: pointer; transition: 0.2s; }
+        .list-item:hover { border-color: var(--pink); background: #0e1730; }
         .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
         
         .admin-notif-row {
@@ -50,7 +51,7 @@
             margin-bottom: 10px;
         }
 
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--blue); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 80vh; overflow-y: auto; box-sizing: border-box; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--pink); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         
@@ -84,6 +85,7 @@
         <!-- শপ অর্ডার ম্যানেজমেন্ট সেকশন -->
         <div class="card" style="border-color: var(--pink);">
             <h4><i class="fas fa-store" style="color:var(--pink);"></i> Shop Orders (GP Payments)</h4>
+            <small style="color: #94a3b8; font-size: 11px;">Tap any order box to view full shipping details & address.</small>
             <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
                 <small style="color: #94a3b8;">Loading orders...</small>
             </div>
@@ -143,6 +145,16 @@
         <div class="floating-back-container">
             <button class="circle-back-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-arrow-left"></i></button>
         </div>
+    </div>
+
+    <!-- অর্ডার ডিটেইলস পপআপ মডাল (Order Details Modal) -->
+    <div class="overlay" id="orderOverlay" onclick="closeOrderModal()"></div>
+    <div class="modal" id="orderModal">
+        <h3 style="margin-top:0; color:var(--pink);"><i class="fas fa-box-open"></i> Order Full Details</h3>
+        <div id="order-modal-content" style="font-size: 13px; line-height: 1.6; color: #e2e8f0;">
+            <p>Loading details...</p>
+        </div>
+        <button class="btn btn-gray" style="margin-top: 15px;" onclick="closeOrderModal()">Close</button>
     </div>
 
     <!-- User Management Modal -->
@@ -228,7 +240,7 @@
             }
         }
 
-        // শপ অর্ডার লোড ও ম্যানেজ করার ফাংশন
+        // শপ অর্ডার লোড ও ম্যানেজ করার ফাংশন (অ্যাড্রেস ও ফোনসহ ডিটেইলস ভিউ সহ)
         function loadShopOrders() {
             let container = document.getElementById('shop-orders-list');
             db.ref('shop_orders').on('value', snapshot => {
@@ -239,11 +251,12 @@
                         let order = child.val();
                         if (order.status === 'Pending') {
                             html += `
-                                <div class="list-item" style="border-left-color: var(--pink);">
+                                <div class="list-item" style="border-left-color: var(--pink);" onclick="viewOrderDetails('${order.userId}', '${order.itemName.replace(/'/g, "\\'")}', ${order.price})">
                                     <b>Item: ${order.itemName}</b><br>
                                     <small>User: ${order.userName} (ID: ${order.userId})</small><br>
                                     <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small>
-                                    <div class="grid" style="margin-top:8px;">
+                                    <div style="margin-top: 4px; font-size: 11px; color: #38bdf8;"><i class="fas fa-info-circle"></i> Click to view address & details</div>
+                                    <div class="grid" style="margin-top:8px;" onclick="event.stopPropagation()">
                                         <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${order.itemName}')">Accept Order</button>
                                         <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}', '${order.itemName}', ${order.price})">Reject & Refund</button>
                                     </div>
@@ -256,6 +269,45 @@
                     container.innerHTML = `<small style="color: #94a3b8;">No pending shop orders.</small>`;
                 }
             });
+        }
+
+        // ইউজারের শিপিং অ্যাড্রেস ফায়ারবেস থেকে ফেচ করে মডালে দেখানোর ফাংশন
+        function viewOrderDetails(targetUserId, itemName, price) {
+            document.getElementById('order-modal-content').innerHTML = "Fetching user shipping address & details...";
+            document.getElementById('orderOverlay').style.display = 'block';
+            document.getElementById('orderModal').style.display = 'block';
+
+            db.ref('users/' + targetUserId).once('value', snap => {
+                let uData = snap.val();
+                let addr = uData && uData.shipping_address ? uData.shipping_address : null;
+
+                let addressHtml = "";
+                if (addr) {
+                    addressHtml = `
+                        <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
+                            <p style="margin: 4px 0;"><b>👤 Full Name:</b> ${addr.fullName || addr.name || 'N/A'}</p>
+                            <p style="margin: 4px 0;"><b>📞 Phone Number:</b> <span style="color:var(--green); font-weight:bold;">${addr.phone || addr.number || 'N/A'}</span></p>
+                            <p style="margin: 4px 0;"><b>🏠 Address/Location:</b> ${addr.address || addr.location || 'N/A'}</p>
+                            <p style="margin: 4px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
+                        </div>
+                    `;
+                } else {
+                    addressHtml = `<p style="color:var(--red); margin-top:10px;">⚠️ User has not saved shipping address in profile yet!</p>`;
+                }
+
+                document.getElementById('order-modal-content').innerHTML = `
+                    <p style="margin: 4px 0;"><b>📦 Ordered Item:</b> <span style="color:#fbbf24;">${itemName}</span></p>
+                    <p style="margin: 4px 0;"><b>🪙 Price:</b> ${price.toLocaleString()} GP</p>
+                    <hr style="border:0; height:1px; background:var(--border); margin:10px 0;">
+                    <b>📍 Shipping & Contact Information:</b>
+                    ${addressHtml}
+                `;
+            });
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderOverlay').style.display = 'none';
+            document.getElementById('orderModal').style.display = 'none';
         }
 
         function approveShopOrder(orderKey, targetUserId, itemName) {
