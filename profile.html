@@ -72,18 +72,41 @@
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 16px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
         }
+        /* ভেরিফায়েড হলে কার্ডের বর্ডার ও গ্লো চেঞ্জ হবে */
+        .profile-card.verified {
+            background: linear-gradient(135deg, #0e1628 0%, #1a153b 100%);
+            border: 1px solid #a855f7;
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.25);
+        }
+
         .profile-left { display: flex; align-items: center; gap: 14px; width: 100%; }
         .avatar-container {
             width: 65px; height: 65px; border-radius: 50%; padding: 2px;
             background: linear-gradient(135deg, #a855f7, #6366f1);
             flex-shrink: 0; box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+            transition: all 0.3s ease;
+        }
+        .profile-card.verified .avatar-container {
+            background: linear-gradient(135deg, #f59e0b, #ec4899);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
         }
         .avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        
         .profile-info { width: 100%; }
         .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; color: #fff; }
-        .profile-info h3 i { color: #a855f7; font-size: 13px; }
         
+        /* ভেরিফায়েড ব্যাজ স্টাইল */
+        .verified-badge {
+            display: none;
+            color: #38bdf8;
+            font-size: 13px;
+        }
+        .profile-card.verified .verified-badge {
+            display: inline-block;
+        }
+
         .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
         .user-id-badge {
             font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block;
@@ -215,13 +238,16 @@
         </div>
 
         <!-- টপ ইউজার কার্ড -->
-        <div class="profile-card">
+        <div class="profile-card" id="profileCardElement">
             <div class="profile-left">
                 <div class="avatar-container">
                     <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
                 </div>
                 <div class="profile-info">
-                    <h3 id="profile-name">User <i class="fa-solid fa-circle-check"></i></h3>
+                    <h3 id="profile-name">
+                        <span id="name-text">User</span> 
+                        <i class="fa-solid fa-circle-check verified-badge" id="verifiedBadgeIcon" title="Verified Account"></i>
+                    </h3>
                     <div class="username-text" id="profile-username">@user</div>
                     <div><span class="user-id-badge" id="profile-id">ID: Loading... 📋</span></div>
                     <div class="level-row">
@@ -277,7 +303,7 @@
             </div>
         </div>
 
-        <!-- লিস্ট মেনু অপশনসমূহ (যেখানে আলাদা address.html ফাইলের লিংক দেওয়া হয়েছে) -->
+        <!-- লিস্ট মেনু অপশনসমূহ -->
         <div class="menu-list">
             <a class="menu-row-item" href="address.html">
                 <div class="menu-row-left">
@@ -338,6 +364,10 @@
         <a class="nav-item active" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
@@ -363,7 +393,7 @@
 
         const ADMIN_USER_ID = "7757851056";
 
-        document.getElementById('profile-name').innerHTML = `${firstName} <i class="fa-solid fa-circle-check"></i>`;
+        document.getElementById('name-text').innerText = firstName;
         document.getElementById('profile-username').innerText = username;
         
         let idBadgeElement = document.getElementById('profile-id');
@@ -383,16 +413,27 @@
             document.getElementById('user-avatar').src = user.photo_url;
         }
 
-        // ফায়ারবেস থেকে ইউজারের রিয়েল ডেটা ও টাস্ক কাউন্ট লোড করা
+        // ফায়ারবেস থেকে ইউজারের রিয়েল ডেটা, ভেরিফিকেশন ও টাস্ক কাউন্ট লোড করা
         let userRef = db.ref('users/' + userId);
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
             let userPoints = 0;
             let tasksDone = 0;
+            let isVerified = false;
 
             if (data) {
                 userPoints = data.points !== undefined ? data.points : (data.gp || 0);
                 tasksDone = data.tasksDone || 0;
+                // ফায়ারবেস ডেটাবেসে isVerified স্ট্যাটাস চেক করা (true হলে ভেরিফায়েড দেখাবে)
+                isVerified = data.isVerified === true; 
+            }
+
+            // অ্যাকাউন্ট ভেরিফায়েড হলে ডাইনামিক স্টাইল ও ব্যাজ অ্যাপ্লাই হবে
+            let profileCard = document.getElementById('profileCardElement');
+            if (isVerified) {
+                profileCard.classList.add('verified');
+            } else {
+                profileCard.classList.remove('verified');
             }
 
             document.getElementById('total-points').innerText = userPoints.toLocaleString();
