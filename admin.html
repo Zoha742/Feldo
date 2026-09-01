@@ -20,7 +20,6 @@
         .header { background: var(--card); padding: 15px; position: sticky; top: 0; border-bottom: 1px solid var(--border); z-index: 100; display: flex; align-items: center; gap: 15px; margin-bottom: 15px; border-radius: 0 0 12px 12px; }
         .back-nav { font-size: 20px; color: white; cursor: pointer; padding: 5px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        @media (min-width: 600px) { .grid { grid-template-columns: 1fr 1fr 1fr; } }
         .card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); }
         .stat-box { background: #0a1226; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid var(--border); }
         .stat-box h2 { margin: 5px 0; font-size: 20px; color: var(--blue); }
@@ -32,11 +31,10 @@
         .btn-orange { background: var(--orange); color: white; }
         .btn-purple { background: var(--purple); color: white; }
         .btn-gray { background: #475569; color: white; }
-        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); cursor: pointer; transition: 0.2s; }
-        .list-item:hover { border-color: var(--pink); background: #0e1730; }
+        .list-item { background: #0a1226; padding: 15px; border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--border); border-left: 4px solid var(--orange); }
         .user-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 10px; background: #0a1226; border-radius: 8px; border: 1px solid var(--border); }
         .admin-notif-row { background: #0a1226; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; }
-        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--pink); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
+        .modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--card); border: 2px solid var(--purple); padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1001; max-height: 85vh; overflow-y: auto; box-sizing: border-box; }
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; }
         .badge-banned { background: var(--red); color: white; padding: 2px 6px; border-radius: 4px; font-size: 10px; }
         .floating-back-container { display: flex; justify-content: center; margin: 25px 0 10px 0; }
@@ -45,71 +43,54 @@
 </head>
 <body>
 
-    <div class="container" id="admin-panel">
+    <div class="container">
         <div class="header">
             <i class="fas fa-arrow-left back-nav" onclick="location.href='profile.html'"></i>
-            <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> HeyCen Master Admin</h3>
+            <h3 style="margin:0;"><i class="fas fa-crown" style="color: gold;"></i> Master Admin Center</h3>
         </div>
 
         <div class="grid">
             <div class="stat-box"><small>Total Users</small><h2 id="st-users">0</h2></div>
-            <div class="stat-box"><small>Active (Live)</small><h2 id="st-active" style="color: var(--green);">0</h2></div>
-            <div class="stat-box"><small>Pending Req</small><h2 id="st-pending" style="color: var(--orange);">0</h2></div>
+            <div class="stat-box"><small>Active Live</small><h2 id="st-active" style="color: var(--green);">0</h2></div>
             <div class="stat-box"><small>Total GP</small><h2 id="st-total-gp" style="color: var(--green);">0</h2></div>
             <div class="stat-box"><small>Banned</small><h2 id="st-banned" style="color: var(--red);">0</h2></div>
         </div>
 
-        <!-- শপ অর্ডার ম্যানেজমেন্ট সেকশন -->
-        <div class="card" style="border-color: var(--pink);">
-            <h4><i class="fas fa-store" style="color:var(--pink);"></i> Shop Orders (GP Payments)</h4>
-            <small style="color: #94a3b8; font-size: 11px;">Tap any order box to view full phone number, address & time.</small>
-            <div id="shop-orders-list" style="max-height: 300px; overflow-y: auto; margin-top: 10px;">
-                <small style="color: #94a3b8;">Loading orders...</small>
-            </div>
-        </div>
-
-        <!-- নোটিফিকেশন কন্ট্রোল সেকশন -->
         <div class="card" style="border-color: var(--blue);">
-            <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send / Customize Notification</h4>
+            <h4><i class="fas fa-paper-plane" style="color:var(--blue);"></i> Send Notification</h4>
             <input type="hidden" id="edit-notif-key" value="">
-            <input type="text" id="notif-target-uid" class="input-box" placeholder="Target Telegram UID (Blank = ALL Users)">
-            <input type="text" id="notif-title" class="input-box" placeholder="Update Title (e.g. Hot News)">
-            <textarea id="notif-msg" class="input-box" placeholder="Write announcement text..." style="height: 70px; resize: none;"></textarea>
-            
-            <label style="font-size:11px; color:#94a3b8; display:block; margin-top:6px;">Attach Image/Video (Optional):</label>
+            <input type="text" id="notif-target-uid" class="input-box" placeholder="Target UID (Blank = ALL)">
+            <input type="text" id="notif-title" class="input-box" placeholder="Title">
+            <textarea id="notif-msg" class="input-box" placeholder="Message..." style="height: 60px; resize: none;"></textarea>
             <input type="file" id="notif-media-file" class="input-box" accept="image/*,video/*" style="font-size:12px;">
-
-            <div class="grid" style="margin-top: 10px;">
-                <button class="btn btn-blue" onclick="saveOrSendNotification('send')">Send / Update Now</button>
-                <button class="btn btn-purple" onclick="saveOrSendNotification('draft')">Save Draft</button>
+            <div class="grid" style="margin-top: 8px;">
+                <button class="btn btn-blue" onclick="saveOrSendNotification('send')">Send Now</button>
+                <button class="btn btn-purple" onclick="saveOrSendNotification('draft')">Draft</button>
             </div>
-            <button class="btn btn-gray" onclick="clearNotifForm()">Cancel / Reset Form</button>
         </div>
 
         <div class="card" style="border-color: var(--red);">
-            <h4><i class="fas fa-history" style="color:var(--red);"></i> Notification History (Auto-clean > 7 Days)</h4>
-            <div id="admin-notif-list" style="max-height: 350px; overflow-y: auto; margin-top: 10px;">
-                <small style="color: #94a3b8;">Loading history...</small>
-            </div>
+            <h4><i class="fas fa-history" style="color:var(--red);"></i> Notification History</h4>
+            <div id="admin-notif-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;"><small>Loading...</small></div>
         </div>
 
         <div class="card" style="border-color: var(--purple);">
             <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests</h4>
-            <div id="agent-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
+            <div id="agent-req-list" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
         <div class="card" style="border-color: var(--orange);">
             <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Mining Boost Proofs</h4>
-            <div id="boost-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
+            <div id="boost-req-list" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
         <div class="card" style="border-color: var(--green);">
             <h4><i class="fas fa-id-card" style="color:var(--green);"></i> ID Verified Proofs</h4>
-            <div id="agent-pay-req-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;">Loading...</div>
+            <div id="agent-pay-req-list" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">Loading...</div>
         </div>
 
         <div class="card" style="border-color: var(--blue);">
-            <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Management</h4>
+            <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Requests</h4>
             <div id="wd-list">Loading withdrawals...</div>
         </div>
 
@@ -124,38 +105,23 @@
         </div>
     </div>
 
-    <!-- অর্ডার ডিটেইলস মডাল -->
-    <div class="overlay" id="orderOverlay" onclick="closeOrderModal()"></div>
-    <div class="modal" id="orderModal">
-        <h3 style="margin-top:0; color:var(--pink);"><i class="fas fa-box-open"></i> Order Full Details</h3>
-        <div id="order-modal-content" style="font-size: 13px; line-height: 1.6; color: #e2e8f0;">
-            <p>Loading details...</p>
-        </div>
-        <button class="btn btn-gray" style="margin-top: 15px;" onclick="closeOrderModal()">Close</button>
-    </div>
-
-    <!-- User Management Modal -->
     <div class="overlay" id="overlay" onclick="closeModal()"></div>
     <div class="modal" id="modal">
         <h3 id="m-title">Manage User</h3>
         <p id="m-name-label" style="font-size: 14px; color: #fbbf24; margin: 5px 0; font-weight: bold;"></p>
         <p id="m-uid-label" style="font-size: 12px; color: var(--blue); margin-bottom: 10px;"></p>
         <hr border="0" style="height:1px; background:var(--border); margin:10px 0;">
-        
         <label style="font-size:12px;">Balance (GP)</label>
         <input type="number" id="m-gp" class="input-box">
-        
         <div class="grid" style="margin-top:5px;">
             <button class="btn btn-blue" onclick="updateUserGP()">Update GP</button>
-            <button class="btn btn-orange" onclick="makeGPZero()">Set GP to 0</button>
+            <button class="btn btn-orange" onclick="makeGPZero()">Set 0</button>
         </div>
-
         <div class="grid" style="margin-top:5px;">
-            <button class="btn btn-purple" onclick="resetUserData()">Reset Profile Data</button>
-            <button class="btn btn-red" id="ban-btn" onclick="toggleBan()">Ban User</button>
+            <button class="btn btn-purple" onclick="resetUserData()">Reset</button>
+            <button class="btn btn-red" id="ban-btn" onclick="toggleBan()">Ban</button>
         </div>
-
-        <button class="btn" style="background:#334155; margin-top:10px;" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-gray" style="margin-top:10px;" onclick="closeModal()">Cancel</button>
     </div>
 
     <script>
@@ -186,7 +152,8 @@
 
         function initAdmin() {
             loadAdminNotifications();
-            loadShopOrders();
+            loadBoostRequests();
+            loadIdVerifiedProofs();
 
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
@@ -199,14 +166,9 @@
                     let uId = c.key;
                     let uName = u.username || u.name || "Unknown";
                     if(u.banned) banned++;
-                    
                     let userPoints = u.points !== undefined ? u.points : (u.gp || 0);
                     totalGP += userPoints;
-
-                    if (u.lastSeen && (currentTime - u.lastSeen) < (5 * 60 * 1000)) { 
-                        activeCount++; 
-                    }
-
+                    if (u.lastSeen && (currentTime - u.lastSeen) < (5 * 60 * 1000)) activeCount++;
                     usersArray.push({ id: uId, name: uName, gp: userPoints, banned: u.banned || false });
                 });
 
@@ -225,336 +187,103 @@
                 });
                 document.getElementById('user-list').innerHTML = html || "No users found.";
             });
-        }
 
-        function saveOrSendNotification(actionType) {
-            let editKey = document.getElementById('edit-notif-key').value.trim();
-            let targetUid = document.getElementById('notif-target-uid').value.trim();
-            let title = document.getElementById('notif-title').value.trim() || "HeyCen Update";
-            let message = document.getElementById('notif-msg').value.trim();
-            let fileInput = document.getElementById('notif-media-file');
-
-            if (!message && fileInput.files.length === 0) {
-                alert("Please write a message or attach a media file!");
-                return;
-            }
-
-            let proceedAction = (mediaUrl = "") => {
-                let status = actionType === 'draft' ? 'draft' : 'sent';
-                let notifData = {
-                    targetUid: targetUid,
-                    title: title,
-                    message: message,
-                    media: mediaUrl,
-                    status: status,
-                    timestamp: Date.now(),
-                    isRead: false,
-                    hidden: false
-                };
-
-                if (editKey) {
-                    db.ref('admin_notifications/' + editKey).update(notifData).then(() => {
-                        if (status === 'sent') updateDeliveredUsers(editKey, notifData);
-                        alert("Notification updated successfully!");
-                        clearNotifForm();
-                    });
-                } else {
-                    let newRef = db.ref('admin_notifications').push();
-                    newRef.set(notifData).then(() => {
-                        if (status === 'sent') deliverToUsers(newRef.key, notifData);
-                        alert(status === 'draft' ? "Saved as Draft!" : "Notification sent successfully!");
-                        clearNotifForm();
-                    });
-                }
-            };
-
-            if (fileInput.files.length > 0) {
-                let file = fileInput.files[0];
-                let reader = new FileReader();
-                reader.onloadend = function() { proceedAction(reader.result); };
-                reader.readAsDataURL(file);
-            } else {
-                let existingMedia = window.currentEditMedia || "";
-                proceedAction(existingMedia);
-            }
-        }
-
-        function deliverToUsers(adminNotifKey, data) {
-            let userNotifPayload = {
-                title: data.title,
-                message: data.message,
-                media: data.media,
-                timestamp: Date.now(),
-                isRead: false,
-                adminKey: adminNotifKey
-            };
-
-            if (data.targetUid) {
-                db.ref('users/' + data.targetUid + '/notifications').push(userNotifPayload);
-            } else {
-                db.ref('users').once('value', snapshot => {
-                    if (snapshot.exists()) {
-                        let updates = {};
-                        snapshot.forEach(child => {
-                            let uId = child.key;
-                            let newKey = db.ref('users/' + uId + '/notifications').push().key;
-                            updates['users/' + uId + '/notifications/' + newKey] = userNotifPayload;
-                        });
-                        db.ref().update(updates);
+            db.ref('sell_requests').on('value', snap => {
+                let html = "";
+                snap.forEach(c => {
+                    let req = c.val();
+                    if(req.status === "Pending") {
+                        html += `<div class="list-item">
+                            <b>${req.userName || 'User'}</b> - ${req.amount} GP
+                            <div class="grid" style="margin-top:5px;">
+                                <button class="btn btn-green" onclick="db.ref('sell_requests/${c.key}').update({status:'Approved'}); db.ref('users/${req.userId}').update({isVerified:true})">Approve</button>
+                                <button class="btn btn-red" onclick="db.ref('sell_requests/${c.key}').update({status:'Rejected'})">Reject</button>
+                            </div>
+                        </div>`;
                     }
                 });
-            }
+                document.getElementById('agent-req-list').innerHTML = html || "No pending requests.";
+            });
+
+            db.ref('withdraw_requests').on('value', snap => {
+                let html = "";
+                snap.forEach(c => {
+                    let r = c.val();
+                    if(r.status === 'pending') {
+                        html += `<div class="list-item">
+                            <b>ID: ${r.userId} - ${r.amount} GP</b><br><small>${r.method} | ${r.address || r.number}</small>
+                            <div class="grid" style="margin-top:5px;">
+                                <button class="btn btn-green" onclick="updateWD('${c.key}', 'approved', '${r.userId}', ${r.amount})">Accept</button>
+                                <button class="btn btn-red" onclick="updateWD('${c.key}', 'rejected', '${r.userId}', ${r.amount})">Reject</button>
+                            </div>
+                        </div>`;
+                    }
+                });
+                document.getElementById('wd-list').innerHTML = html || "No pending withdraws.";
+            });
         }
 
-        function updateDeliveredUsers(adminNotifKey, data) {
-            db.ref('users').once('value', snapshot => {
-                if (snapshot.exists()) {
-                    let updates = {};
-                    snapshot.forEach(userChild => {
-                        let uid = userChild.key;
-                        let userData = userChild.val();
-                        if (userData.notifications) {
-                            Object.keys(userData.notifications).forEach(notifKey => {
-                                let userNotif = userData.notifications[notifKey];
-                                if (userNotif.adminKey === adminNotifKey) {
-                                    updates[`users/${uid}/notifications/${notifKey}`] = {
-                                        title: data.title,
-                                        message: data.message,
-                                        media: data.media,
-                                        timestamp: userNotif.timestamp,
-                                        isRead: false,
-                                        adminKey: adminNotifKey
-                                    };
-                                }
-                            });
+        function loadBoostRequests() {
+            db.ref('pending_boosts').on('value', snap => {
+                let html = "";
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        let req = c.val();
+                        if (req.status === 'Pending' || !req.status) {
+                            html += `<div class="list-item">
+                                <b>User ID: ${req.userId}</b><br><small>Boost: ${req.amount || 0}</small>
+                                <div class="grid" style="margin-top:5px;">
+                                    <button class="btn btn-green" onclick="db.ref('pending_boosts/${c.key}').update({status:'Approved'}); db.ref('users/${req.userId}/boosts').transaction(b=>(b||0)+${req.amount||0})">Approve</button>
+                                    <button class="btn btn-red" onclick="db.ref('pending_boosts/${c.key}').update({status:'Rejected'})">Reject</button>
+                                </div>
+                            </div>`;
                         }
                     });
-                    db.ref().update(updates);
+                    document.getElementById('boost-req-list').innerHTML = html || "No pending boosts.";
                 }
             });
         }
 
-        function clearNotifForm() {
-            document.getElementById('edit-notif-key').value = '';
-            document.getElementById('notif-target-uid').value = '';
-            document.getElementById('notif-title').value = '';
-            document.getElementById('notif-msg').value = '';
-            document.getElementById('notif-media-file').value = '';
-            window.currentEditMedia = "";
+        function loadIdVerifiedProofs() {
+            db.ref('pending_agent_pay').on('value', snap => {
+                let html = "";
+                if (snap.exists()) {
+                    snap.forEach(c => {
+                        let req = c.val();
+                        if (req.status === 'Pending' || !req.status) {
+                            html += `<div class="list-item">
+                                <b>User ID: ${req.userId}</b><br><small>${req.details || 'Proof'}</small>
+                                <div class="grid" style="margin-top:5px;">
+                                    <button class="btn btn-green" onclick="db.ref('pending_agent_pay/${c.key}').update({status:'Approved'}); db.ref('users/${req.userId}').update({isVerified:true})">Verify</button>
+                                    <button class="btn btn-red" onclick="db.ref('pending_agent_pay/${c.key}').update({status:'Rejected'})">Reject</button>
+                                </div>
+                            </div>`;
+                        }
+                    });
+                    document.getElementById('agent-pay-req-list').innerHTML = html || "No pending ID proofs.";
+                }
+            });
+        }
+
+        function saveOrSendNotification(type) {
+            let title = document.getElementById('notif-title').value.trim() || "HeyCen Update";
+            let msg = document.getElementById('notif-msg').value.trim();
+            if(!msg) { alert("Write a message!"); return; }
+            db.ref('admin_notifications').push({ title, message: msg, status: type, timestamp: Date.now() });
+            alert("Notification saved/sent!");
         }
 
         function loadAdminNotifications() {
-            let container = document.getElementById('admin-notif-list');
-            db.ref('admin_notifications').on('value', snapshot => {
+            db.ref('admin_notifications').on('value', snap => {
                 let html = "";
-                if (snapshot.exists()) {
-                    let items = snapshot.val();
-                    let currentTime = Date.now();
-                    let sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-                    let adminUpdates = {};
-                    let hasExpired = false;
-
-                    Object.keys(items).forEach(key => {
-                        let item = items[key];
-                        if (item.timestamp && (currentTime - item.timestamp > sevenDaysMs)) {
-                            adminUpdates[key] = null;
-                            hasExpired = true;
-                        }
+                if(snap.exists()) {
+                    snap.forEach(c => {
+                        let it = c.val();
+                        html += `<div class="admin-notif-row"><b>${it.title}</b><br><small>${it.message}</small></div>`;
                     });
-
-                    if (hasExpired) {
-                        db.ref('admin_notifications').update(adminUpdates);
-                        return;
-                    }
-
-                    Object.keys(items).reverse().forEach(key => {
-                        let item = items[key];
-                        let statusColor = item.status === 'sent' ? 'var(--green)' : 'var(--purple)';
-                        let hideStatus = item.hidden ? '<span style="color:var(--red); font-size:10px;">[HIDDEN]</span>' : '';
-                        let timeStr = item.timestamp ? new Date(item.timestamp).toLocaleString() : "";
-
-                        html += `
-                            <div class="admin-notif-row" style="border-left: 4px solid ${statusColor};">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <b style="font-size: 13px; color: #fff;">${item.title} ${hideStatus}</b>
-                                    <span style="font-size: 10px; background: ${statusColor}; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">${item.status}</span>
-                                </div>
-                                <small style="color: #94a3b8; display:block; margin: 4px 0;">${item.message}</small>
-                                <small style="color: #64748b; display:block; font-size:9px;">Target: ${item.targetUid || 'ALL Users'} | Date: ${timeStr}</small>
-                                
-                                <div class="grid" style="margin-top: 8px; grid-template-columns: repeat(4, 1fr);">
-                                    <button class="btn btn-blue" style="padding:4px; font-size:10px;" onclick="editAdminNotif('${key}')">Edit</button>
-                                    <button class="btn btn-purple" style="padding:4px; font-size:10px;" onclick="toggleHideNotif('${key}', ${item.hidden || false})">${item.hidden ? 'Unhide' : 'Hide'}</button>
-                                    <button class="btn btn-green" style="padding:4px; font-size:10px;" onclick="resendAdminNotif('${key}')">Send</button>
-                                    <button class="btn btn-red" style="padding:4px; font-size:10px;" onclick="deleteAdminNotif('${key}')">Delete</button>
-                                </div>
-                            </div>
-                        `;
-                    });
-                    container.innerHTML = html;
-                } else {
-                    container.innerHTML = `<small style="color: #94a3b8;">No notification history found.</small>`;
+                    document.getElementById('admin-notif-list').innerHTML = html;
                 }
             });
-        }
-
-        function editAdminNotif(key) {
-            db.ref('admin_notifications/' + key).once('value', snap => {
-                let item = snap.val();
-                if (item) {
-                    document.getElementById('edit-notif-key').value = key;
-                    document.getElementById('notif-target-uid').value = item.targetUid || '';
-                    document.getElementById('notif-title').value = item.title || '';
-                    document.getElementById('notif-msg').value = item.message || '';
-                    window.currentEditMedia = item.media || '';
-                    alert("Loaded into form! Edit your message and click 'Send / Update Now'.");
-                }
-            });
-        }
-
-        function toggleHideNotif(key, currentHiddenState) {
-            db.ref('admin_notifications/' + key).update({ hidden: !currentHiddenState }).then(() => {
-                alert("Notification hidden state updated!");
-            });
-        }
-
-        function resendAdminNotif(key) {
-            db.ref('admin_notifications/' + key).once('value', snap => {
-                let item = snap.val();
-                if (item) {
-                    db.ref('admin_notifications/' + key).update({ status: 'sent' }).then(() => {
-                        deliverToUsers(key, item);
-                        alert("Notification sent to users successfully!");
-                    });
-                }
-            });
-        }
-
-        function deleteAdminNotif(key) {
-            if (confirm("Are you sure you want to delete this notification for all users?")) {
-                db.ref('admin_notifications/' + key).remove().then(() => {
-                    alert("Notification deleted successfully!");
-                });
-            }
-        }
-
-        function loadShopOrders() {
-            let container = document.getElementById('shop-orders-list');
-            db.ref('shop_orders').on('value', snapshot => {
-                let html = "";
-                if (snapshot.exists()) {
-                    let pendingCount = 0;
-                    snapshot.forEach(child => {
-                        let orderKey = child.key;
-                        let order = child.val();
-                        if (order.status === 'Pending') {
-                            pendingCount++;
-                            let orderTimeFormatted = order.timestamp ? new Date(order.timestamp).toLocaleString() : 'N/A';
-                            let safeItemName = order.itemName.replace(/'/g, "\\'");
-                            html += `
-                                <div class="list-item" style="border-left-color: var(--pink);" onclick="viewOrderDetails('${order.userId}', '${safeItemName}', ${order.price}, '${orderTimeFormatted}')">
-                                    <b>Item: ${order.itemName}</b><br>
-                                    <small>User: ${order.userName} (ID: ${order.userId})</small><br>
-                                    <small style="color:#fbbf24; font-weight:bold;">Cost: ${order.price.toLocaleString()} GP</small>
-                                    <div style="margin-top: 4px; font-size: 11px; color: #38bdf8;"><i class="fas fa-phone-alt"></i> Tap box to view phone & address</div>
-                                    <div class="grid" style="margin-top:8px; grid-template-columns: 1fr 1fr;" onclick="event.stopPropagation()">
-                                        <button class="btn btn-green" onclick="approveShopOrder('${orderKey}', '${order.userId}', '${safeItemName}')">Accept</button>
-                                        <button class="btn btn-red" onclick="rejectShopOrder('${orderKey}', '${order.userId}', '${safeItemName}', ${order.price})">Reject & Refund</button>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    });
-                    document.getElementById('st-pending').innerText = pendingCount;
-                    container.innerHTML = html || `<small style="color: #94a3b8;">No pending shop orders.</small>`;
-                } else {
-                    document.getElementById('st-pending').innerText = 0;
-                    container.innerHTML = `<small style="color: #94a3b8;">No pending shop orders.</small>`;
-                }
-            });
-        }
-
-        // ফায়ারবেসের যেকোনো নেমস্পেস বা সাব-অবজেক্ট থেকে ফোন নম্বর ও লোকেশন বের করার আপডেট ফাংশন
-        function viewOrderDetails(targetUserId, itemName, price, orderTime) {
-            document.getElementById('order-modal-content').innerHTML = "Fetching user phone & address details...";
-            document.getElementById('orderOverlay').style.display = 'block';
-            document.getElementById('orderModal').style.display = 'block';
-
-            db.ref('users/' + targetUserId).once('value', snap => {
-                let uData = snap.val() || {};
-                
-                // address, shipping_address অথবা সরাসরি রুট অবজেক্ট থেকে ফিল্ডগুলো নেওয়া হচ্ছে
-                let addr = uData.address || {};
-                let ship = uData.shipping_address || {};
-
-                let fullName = addr.fullName || addr.name || ship.fullName || ship.name || uData.name || uData.username || 'N/A';
-                let phoneNum = addr.phone || addr.number || addr.mobile || ship.phone || ship.number || ship.mobile || uData.phone || uData.number || 'N/A';
-                let fullLocation = addr.address || addr.location || ship.address || ship.location || uData.address || uData.location || 'N/A';
-                let zipCode = addr.zip || addr.zipCode || ship.zip || ship.zipCode || uData.zip || 'N/A';
-
-                let addressHtml = `
-                    <div style="background: #0a1226; padding: 12px; border-radius: 8px; border: 1px solid var(--border); margin-top: 10px;">
-                        <p style="margin: 6px 0;"><b>👤 Full Name:</b> ${fullName}</p>
-                        <p style="margin: 6px 0;"><b>📞 Phone Number:</b> <a href="tel:${phoneNum}" style="color:var(--green); font-weight:bold; text-decoration:underline;">${phoneNum}</a></p>
-                        <p style="margin: 6px 0;"><b>🏠 Address/Location:</b> ${fullLocation} (Zip: ${zipCode})</p>
-                        <p style="margin: 6px 0;"><b>🆔 Telegram ID:</b> ${targetUserId}</p>
-                    </div>
-                `;
-
-                document.getElementById('order-modal-content').innerHTML = `
-                    <p style="margin: 4px 0;"><b>📦 Ordered Item:</b> <span style="color:#fbbf24;">${itemName}</span></p>
-                    <p style="margin: 4px 0;"><b>🪙 Price:</b> ${price.toLocaleString()} GP</p>
-                    <p style="margin: 4px 0;"><b>🕒 Order Time:</b> ${orderTime}</p>
-                    <hr style="border:0; height:1px; background:var(--border); margin:10px 0;">
-                    <b>📍 Contact & Delivery Details:</b>
-                    ${addressHtml}
-                `;
-            });
-        }
-
-        function closeOrderModal() {
-            document.getElementById('orderOverlay').style.display = 'none';
-            document.getElementById('orderModal').style.display = 'none';
-        }
-
-        function approveShopOrder(orderKey, targetUserId, itemName) {
-            if (confirm("Accept this order?")) {
-                db.ref('shop_orders/' + orderKey).update({ status: 'Approved' }).then(() => {
-                    db.ref('users/' + targetUserId + '/orders').once('value', snap => {
-                        let orders = snap.val() || {};
-                        Object.keys(orders).forEach(oKey => {
-                            if (orders[oKey].itemName === itemName && orders[oKey].status === 'Pending') {
-                                db.ref(`users/${targetUserId}/orders/${oKey}`).update({ status: 'Approved' });
-                            }
-                        });
-                    });
-                    alert("Order accepted successfully!");
-                });
-            }
-        }
-
-        function rejectShopOrder(orderKey, targetUserId, itemName, itemPrice) {
-            if (confirm("Reject order and refund GP to user?")) {
-                db.ref('shop_orders/' + orderKey).update({ status: 'Rejected' }).then(() => {
-                    db.ref('users/' + targetUserId).transaction(u => {
-                        if (u) {
-                            u.points = (u.points || 0) + itemPrice;
-                            u.gp = (u.gp || 0) + itemPrice;
-                        }
-                        return u;
-                    }).then(() => {
-                        db.ref('users/' + targetUserId + '/orders').once('value', snap => {
-                            let orders = snap.val() || {};
-                            Object.keys(orders).forEach(oKey => {
-                                if (orders[oKey].itemName === itemName && orders[oKey].status === 'Pending') {
-                                    db.ref(`users/${targetUserId}/orders/${oKey}`).update({ status: 'Rejected' });
-                                }
-                            });
-                        });
-                        alert("Order rejected and GP successfully refunded!");
-                    });
-                });
-            }
         }
 
         function openUserModal(id, name, gp, isBanned) {
@@ -563,36 +292,36 @@
             document.getElementById('m-name-label').innerText = "Name: " + name;
             document.getElementById('m-uid-label').innerText = "ID: " + id;
             document.getElementById('m-gp').value = gp;
-            document.getElementById('ban-btn').innerText = isBanned ? "Unban User" : "Ban User";
-            document.getElementById('ban-btn').className = isBanned ? "btn btn-green" : "btn btn-red";
+            document.getElementById('ban-btn').innerText = isBanned ? "Unban" : "Ban";
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('modal').style.display = 'block';
         }
 
         function updateUserGP() {
             let gp = parseInt(document.getElementById('m-gp').value) || 0;
-            db.ref('users/' + window.targetU).update({ gp: gp, points: gp }).then(() => { alert("GP Updated!"); closeModal(); });
+            db.ref('users/' + window.targetU).update({ gp, points: gp }).then(() => { alert("Updated!"); closeModal(); });
         }
 
         function makeGPZero() {
-            if(confirm("Are you sure you want to make this user's GP 0?")) {
-                document.getElementById('m-gp').value = 0;
-                db.ref('users/' + window.targetU).update({ gp: 0, points: 0 }).then(() => { alert("User GP set to 0!"); closeModal(); });
-            }
+            db.ref('users/' + window.targetU).update({ gp: 0, points: 0 }).then(() => { alert("Set to 0!"); closeModal(); });
         }
 
         function resetUserData() {
-            if(confirm("Warning: This will reset user's data! Proceed?")) {
-                db.ref('users/' + window.targetU).update({ boosts: null, pending_boosts: null, pending_agent_pay: null }).then(() => {
-                    alert("User data reset successfully!");
-                    closeModal();
-                });
-            }
+            db.ref('users/' + window.targetU).update({ boosts: null }).then(() => { alert("Reset!"); closeModal(); });
         }
 
         function toggleBan() {
-            let newState = !window.targetBanned;
-            db.ref('users/' + window.targetU + '/banned').set(newState).then(() => { alert(newState ? "User Banned!" : "User Unbanned!"); closeModal(); });
+            let ns = !window.targetBanned;
+            db.ref('users/' + window.targetU + '/banned').set(ns).then(() => { alert(ns ? "Banned!" : "Unbanned!"); closeModal(); });
+        }
+
+        function updateWD(key, status, uid, amt) {
+            db.ref('withdraw_requests/' + key).update({ status }).then(() => {
+                if(status === 'rejected') {
+                    db.ref('users/' + uid).transaction(u => { if(u){u.gp=(u.gp||0)+amt; u.points=(u.points||0)+amt;} return u; });
+                }
+                alert("Withdraw updated!");
+            });
         }
 
         function filterUsers() {
@@ -602,9 +331,9 @@
             });
         }
 
-        function closeModal() { 
-            document.getElementById('overlay').style.display = 'none'; 
-            document.getElementById('modal').style.display = 'none'; 
+        function closeModal() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('modal').style.display = 'none';
         }
     </script>
 </body>
