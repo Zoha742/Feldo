@@ -25,23 +25,10 @@
             padding: 0 0 100px 0;
             display: flex;
             justify-content: center;
-            overflow-x: hidden;
         }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 16px;
-            box-sizing: border-box;
-        }
-
-        .top-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-        }
-        .top-header h1 { margin: 0 0 4px 0; font-size: 24px; font-weight: 700; color: #fff; }
+        .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
+        .top-header h1 { margin: 0 0 4px 0; font-size: 24px; color: #fff; }
         .top-header p { margin: 0; font-size: 13px; color: var(--text-muted); }
         
         .profile-card {
@@ -51,106 +38,34 @@
             padding: 16px;
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
         }
-        .profile-card.verified {
-            border: 1px solid #a855f7;
-            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.25);
-        }
+        .profile-card.verified { border: 1px solid #a855f7; }
 
         .profile-left { display: flex; align-items: center; gap: 14px; width: 100%; }
-        .avatar-container {
-            width: 65px; height: 65px; border-radius: 50%; padding: 2px;
-            background: linear-gradient(135deg, #a855f7, #6366f1);
-            flex-shrink: 0;
-        }
-        .profile-card.verified .avatar-container {
-            background: linear-gradient(135deg, #f59e0b, #ec4899);
-        }
+        .avatar-container { width: 65px; height: 65px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #a855f7, #6366f1); flex-shrink: 0; }
         .avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         
         .profile-info { width: 100%; }
-        .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; display: flex; align-items: center; gap: 6px; color: #fff; }
-        
-        .verified-badge { display: none; color: #38bdf8; font-size: 13px; }
-        .profile-card.verified .verified-badge { display: inline-block; }
-
+        .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; color: #fff; }
         .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-        .user-id-badge {
-            font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block;
-            background: rgba(139, 92, 246, 0.15); padding: 1px 6px; border-radius: 6px;
-            border: 1px dashed rgba(168, 85, 247, 0.4); margin-bottom: 6px;
-        }
+        .user-id-badge { font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block; background: rgba(139, 92, 246, 0.15); padding: 1px 6px; border-radius: 6px; }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-bottom: 16px;
-        }
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 12px 4px;
-            text-align: center;
-        }
-        .stat-card .stat-icon {
-            width: 30px; height: 30px; border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 8px auto; font-size: 13px; color: #fff;
-        }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 4px; text-align: center; }
         .stat-card .stat-value { font-size: 12px; font-weight: 800; margin-bottom: 2px; color: #fff; }
         .stat-card .stat-label { font-size: 8.5px; color: var(--text-muted); }
 
-        .card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-        .order-item-box {
-            background: #070913;
-            border: 1px solid #1e293b;
-            padding: 10px 12px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
+        .order-item-box { background: #070913; border: 1px solid #1e293b; padding: 10px 12px; border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
 
         .menu-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
-        .menu-row-item {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 12px 16px;
-            display: flex; align-items: center; justify-content: space-between;
-            text-decoration: none; color: var(--text-main);
-        }
+        .menu-row-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--text-main); }
         .menu-row-left { display: flex; align-items: center; gap: 14px; }
-        .menu-row-icon {
-            width: 38px; height: 38px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center; font-size: 15px; color: #fff;
-        }
-        .menu-row-info h5 { margin: 0 0 2px 0; font-size: 13px; font-weight: 700; color: #fff; }
-        .menu-row-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .menu-row-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; }
 
-        .admin-row-item {
-            background: linear-gradient(135deg, rgba(127, 29, 29, 0.25), rgba(69, 10, 10, 0.35));
-            border: 1px solid #ef4444;
-            display: none;
-        }
+        .admin-row-item { background: linear-gradient(135deg, rgba(127, 29, 29, 0.25), rgba(69, 10, 10, 0.35)); border: 1px solid #ef4444; display: none; }
 
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
-            width: 100%; max-width: 480px; background: var(--card-bg);
-            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around;
-            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card-bg); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; }
         .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
         .nav-item.active { color: #c084fc; }
         .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
@@ -172,10 +87,7 @@
                     <img id="user-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar">
                 </div>
                 <div class="profile-info">
-                    <h3 id="profile-name">
-                        <span id="name-text">User</span> 
-                        <i class="fa-solid fa-circle-check verified-badge" title="Verified Account"></i>
-                    </h3>
+                    <h3 id="profile-name"><span id="name-text">User</span></h3>
                     <div class="username-text" id="profile-username">@user</div>
                     <div><span class="user-id-badge" id="profile-id">ID: Loading... 📋</span></div>
                 </div>
@@ -184,28 +96,24 @@
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);"><i class="fa-solid fa-coins"></i></div>
                 <div class="stat-value" id="total-points">0</div>
                 <div class="stat-label">Total GP</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fa-solid fa-list-check"></i></div>
                 <div class="stat-value" id="total-tasks-done">0</div>
                 <div class="stat-label">Tasks Done</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);"><i class="fa-solid fa-wallet"></i></div>
                 <div class="stat-value" id="pending-points">0</div>
                 <div class="stat-label">Pending</div>
             </div>
             <div class="stat-card">
-                <div class="stat-icon" style="background: linear-gradient(135deg, #a855f7, #7c3aed);"><i class="fa-solid fa-gift"></i></div>
                 <div class="stat-value" id="withdrawn-points">0</div>
                 <div class="stat-label">Spent</div>
             </div>
         </div>
 
-        <!-- অর্ডার হিস্টরি কার্ড (Rejected ও Approved স্ট্যাটাস রিয়েল-টাইম দেখাবে) -->
+        <!-- অর্ডার হিস্টরি কার্ড (Date & Time এবং Status সহ) -->
         <div class="card">
             <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #fff;"><i class="fa-solid fa-bag-shopping" style="color: #ec4899;"></i> My Orders History</h4>
             <div id="my-orders-list" style="max-height: 220px; overflow-y: auto;">
@@ -216,10 +124,10 @@
         <div class="menu-list">
             <a class="menu-row-item" href="address.html">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #38bdf8, #0284c7);"><i class="fa-solid fa-location-dot"></i></div>
+                    <div class="menu-row-icon" style="background: #0284c7;"><i class="fa-solid fa-location-dot"></i></div>
                     <div class="menu-row-info">
-                        <h5>Shipping Address</h5>
-                        <p>Manage name, ID, location & phone</p>
+                        <h5 style="margin:0; font-size:13px; color:#fff;">Shipping Address</h5>
+                        <p style="margin:0; font-size:11px; color:var(--text-muted);">Manage name, location & phone</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
@@ -227,10 +135,10 @@
 
             <a class="menu-row-item" href="support.html">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #06b6d4, #0891b2);"><i class="fa-solid fa-headset"></i></div>
+                    <div class="menu-row-icon" style="background: #0891b2;"><i class="fa-solid fa-headset"></i></div>
                     <div class="menu-row-info">
-                        <h5>Help & Support</h5>
-                        <p>Get help and contact admin</p>
+                        <h5 style="margin:0; font-size:13px; color:#fff;">Help & Support</h5>
+                        <p style="margin:0; font-size:11px; color:var(--text-muted);">Get help and contact admin</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
@@ -238,10 +146,10 @@
 
             <a class="menu-row-item admin-row-item" id="admin-panel-btn" href="admin.html">
                 <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: linear-gradient(135deg, #ef4444, #991b1b);"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="menu-row-icon" style="background: #991b1b;"><i class="fa-solid fa-user-shield"></i></div>
                     <div class="menu-row-info">
-                        <h5>Admin Panel</h5>
-                        <p>Control center & management</p>
+                        <h5 style="margin:0; font-size:13px; color:#f87171;">Admin Panel</h5>
+                        <p style="margin:0; font-size:11px; color:#fca5a5;">Control center & management</p>
                     </div>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="color:#f87171;"></i>
@@ -289,9 +197,6 @@
         if (userId === ADMIN_USER_ID) {
             document.getElementById('admin-panel-btn').style.display = "flex";
         }
-        if (user && user.photo_url) {
-            document.getElementById('user-avatar').src = user.photo_url;
-        }
 
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
@@ -299,16 +204,10 @@
                 let points = data.points !== undefined ? data.points : (data.gp || 0);
                 document.getElementById('total-points').innerText = points.toLocaleString();
                 document.getElementById('total-tasks-done').innerText = (data.tasksDone || 0).toLocaleString();
-
-                if (data.isVerified === true) {
-                    document.getElementById('profileCardElement').classList.add('verified');
-                } else {
-                    document.getElementById('profileCardElement').classList.remove('verified');
-                }
             }
         });
 
-        // ইউজারের নিজস্ব অর্ডার হিস্টরি রিয়েল-টাইম লোড (Pending, Approved, এবং Rejected স্ট্যাটাসসহ)
+        // ইউজারের নিজস্ব অর্ডার হিস্টরি এবং টাইম-ডেট রিয়েল-টাইম লোড
         db.ref('users/' + userId + '/orders').on('value', snap => {
             let container = document.getElementById('my-orders-list');
             let html = "";
@@ -326,11 +225,14 @@
                         statusText = 'Rejected ❌ (Refunded)';
                     }
 
+                    let orderDate = order.timestamp ? new Date(order.timestamp).toLocaleString() : 'N/A';
+
                     html += `
                         <div class="order-item-box">
                             <div>
                                 <b style="font-size: 12px; color: #fff;">${order.itemName}</b><br>
-                                <small style="color: #fbbf24;">${order.price.toLocaleString()} GP</small>
+                                <small style="color: #fbbf24;">${order.price.toLocaleString()} GP</small><br>
+                                <small style="color: #94a3b8; font-size: 10px;">🕒 ${orderDate}</small>
                             </div>
                             <span style="font-size: 11px; font-weight: bold; color: ${statusColor};">${statusText}</span>
                         </div>
