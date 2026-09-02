@@ -74,7 +74,6 @@
         .score-box { color: #fbbf24; }
         .timer-box { color: #f43f5e; }
 
-        /* গেম ক্যানভাস এরিয়া (বড় করা হয়েছে) */
         .game-canvas-wrapper {
             position: relative;
             width: 100%;
@@ -113,7 +112,6 @@
         .action-btn:hover { background: #6d28d9; }
         .action-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
 
-        /* Modal Popups for Rules */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
         .modal {
             display: none;
@@ -147,7 +145,6 @@
             cursor: pointer;
         }
 
-        /* বটম নেভিগেশন বার */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
@@ -163,7 +160,6 @@
 <body>
 
     <div class="container">
-        <!-- ওপরের হেডার যেখানে ব্যালেন্স এবং রুলস বাটন রয়েছে -->
         <div class="game-header">
             <h2 style="font-size: 15px; margin: 0;">⚡ Feldo Game</h2>
             <div class="balance-info">
@@ -200,7 +196,6 @@
         <button class="close-modal-btn" onclick="closeRulesModal()">Got It</button>
     </div>
 
-    <!-- সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item active" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
@@ -209,7 +204,6 @@
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
     <script>
@@ -237,9 +231,7 @@
         let userGold = 0;
         let freePlaysLeft = 2;
         let paidPlaysLeft = 5;
-        let lastPlayDate = "";
 
-        // ফায়ারবেস থেকে রিয়েল-টাইম ব্যালেন্স ও প্লে কাউন্ট চেক
         userRef.on('value', snap => {
             let data = snap.val() || {};
             userGp = data.gp !== undefined ? data.gp : (data.points || 0);
@@ -276,6 +268,7 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
+        // হাই-ডিফেনশন ডিসপ্লের জন্য ক্যানভাস স্কেলিং অপ্টিমাইজেশন (ল্যাগ দূর করতে)
         canvas.width = 360;
         canvas.height = 420;
 
@@ -306,7 +299,10 @@
             } else if (paidPlaysLeft > 0) {
                 cost = 50;
                 if (userGp < 50) {
-                    tg.showAlert("❌ Insufficient GP Fuel! You need 50 GP to play.");
+                    // অপর্যাপ্ত GP হলে অ্যালার্ট দেখানোর পর ক্লোজ করলে ইউজারকে Task অপশনে নিয়ে যাওয়া হবে
+                    tg.showAlert("❌ Insufficient GP Fuel! You need 50 GP to play.", () => {
+                        window.location.href = 'task.html';
+                    });
                     return;
                 }
             } else {
@@ -344,11 +340,9 @@
                 document.getElementById('startBtn').disabled = true;
                 document.getElementById('startBtn').innerText = "Game Running...";
 
-                // আইটেম স্পন করা
-                itemSpawner = setInterval(spawnItem, 450);
+                itemSpawner = setInterval(spawnItem, 500);
                 gameInterval = requestAnimationFrame(updateGame);
 
-                // ১৫ সেকেন্ডের টাইমার কাউন্টডাউন
                 countdownTimer = setInterval(() => {
                     timeLeftSec--;
                     document.getElementById('timeLeft').innerText = timeLeftSec;
@@ -380,9 +374,9 @@
             let speedMultiplier = isFrozen ? 0.4 : 1.0;
 
             items.push({
-                x: Math.random() * (canvas.width - 30) + 15,
-                y: -20,
-                speed: (Math.random() * 2 + 2.5) * speedMultiplier,
+                x: Math.random() * (canvas.width - 40) + 20,
+                y: -30,
+                speed: (Math.random() * 1.5 + 2) * speedMultiplier,
                 type: type,
                 text: text,
                 points: points
@@ -398,10 +392,10 @@
                 let item = items[i];
                 item.y += item.speed;
 
-                ctx.font = "24px Arial";
+                ctx.font = "26px Arial";
                 ctx.fillText(item.text, item.x - 12, item.y + 8);
 
-                if (item.y > canvas.height + 20) {
+                if (item.y > canvas.height + 30) {
                     items.splice(i, 1);
                 }
             }
@@ -409,7 +403,6 @@
             gameInterval = requestAnimationFrame(updateGame);
         }
 
-        // টাচ বা ক্লিক করে আইটেম ধরা
         canvas.addEventListener('pointerdown', (e) => {
             if (!gameRunning) return;
             const rect = canvas.getBoundingClientRect();
@@ -419,7 +412,7 @@
             for (let i = items.length - 1; i >= 0; i--) {
                 let item = items[i];
                 let dist = Math.hypot(clickX - item.x, clickY - item.y);
-                if (dist < 35) {
+                if (dist < 40) {
                     if (item.type === "freeze") {
                         isFrozen = true;
                         if (freezeTimeout) clearTimeout(freezeTimeout);
