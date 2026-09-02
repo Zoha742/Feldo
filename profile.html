@@ -9,12 +9,12 @@
     
     <style>
         :root {
-            --bg-color: #070913;
-            --card-bg: #0e1628;
-            --card-border: #1e293b;
+            --bg-color: #0b0f19;
+            --card-bg: #131c2e;
+            --card-border: #2a1b4e;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --primary-purple: #8b5cf6;
+            --primary-purple: #7c3aed;
         }
 
         body {
@@ -41,8 +41,8 @@
         .top-header h1 { margin: 0 0 10px 0; font-size: 24px; color: #fff; }
         
         .profile-card {
-            background: linear-gradient(135deg, #0e1628 0%, #171c3a 100%);
-            border: 1px solid #2d2456;
+            background: linear-gradient(135deg, #131c2e 0%, #1e1b4b 100%);
+            border: 1px solid var(--card-border);
             border-radius: 20px;
             padding: 16px;
             display: flex; align-items: center; justify-content: space-between;
@@ -50,37 +50,37 @@
             transition: 0.3s ease;
         }
         .profile-card.verified { 
-            border: 2px solid #a855f7; 
-            background: linear-gradient(135deg, #121636 0%, #22164a 100%);
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+            border: 2px solid #7c3aed; 
+            box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
         }
 
         .profile-left { display: flex; align-items: center; gap: 14px; width: 100%; }
-        .avatar-container { width: 65px; height: 65px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #a855f7, #6366f1); flex-shrink: 0; position: relative; }
+        .avatar-container { width: 65px; height: 65px; border-radius: 50%; padding: 2px; background: linear-gradient(135deg, #7c3aed, #4c1d95); flex-shrink: 0; position: relative; }
         .avatar-container img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         
         .verified-badge {
             position: absolute; bottom: 0; right: 0;
             background: #22c55e; color: #fff; width: 20px; height: 20px;
             border-radius: 50%; font-size: 10px; display: flex; align-items: center; justify-content: center;
-            border: 2px solid #0e1628; display: none;
+            border: 2px solid #131c2e; display: none;
         }
 
         .profile-info { width: 100%; }
         .profile-info h3 { margin: 0 0 2px 0; font-size: 16px; color: #fff; display: flex; align-items: center; gap: 6px; }
         .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
-        .user-id-badge { font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block; background: rgba(139, 92, 246, 0.15); padding: 1px 6px; border-radius: 6px; }
+        .user-id-badge { font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block; background: rgba(124, 58, 237, 0.15); padding: 1px 6px; border-radius: 6px; }
 
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
-        .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 4px; text-align: center; }
-        .stat-card .stat-value { font-size: 12px; font-weight: 800; margin-bottom: 2px; color: #fff; }
-        .stat-card .stat-label { font-size: 8.5px; color: var(--text-muted); }
+        /* ব্যালেন্স ও স্ট্যাটস গ্রিড (GP এবং Gold Coin আলাদাভাবে সাজানো) */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
+        .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; text-align: center; }
+        .stat-card .stat-value { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: #fbbf24; }
+        .stat-card .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
         .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
         
         .order-item-box { 
-            background: #070913; 
-            border: 1px solid #1e293b; 
+            background: #0b0f19; 
+            border: 1px solid var(--card-border); 
             padding: 8px 10px; 
             border-radius: 8px; 
             margin-bottom: 6px; 
@@ -130,22 +130,15 @@
             </div>
         </div>
 
+        <!-- GP এবং Gold Coin ব্যালেন্স কার্ড -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value" id="total-points">0</div>
-                <div class="stat-label">Total GP</div>
+                <div class="stat-value">⚡ <span id="total-gp">0</span> GP</div>
+                <div class="stat-label">Fuel Balance (GP)</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="total-tasks-done">0</div>
-                <div class="stat-label">Tasks Done</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="pending-points">0</div>
-                <div class="stat-label">Pending</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="withdrawn-points">0</div>
-                <div class="stat-label">Spent</div>
+                <div class="stat-value">🪙 <span id="total-gold">0</span> Gold</div>
+                <div class="stat-label">Shopping Coins (Gold)</div>
             </div>
         </div>
 
@@ -251,12 +244,15 @@
             document.getElementById('shop-admin-btn').style.display = "flex";
         }
 
+        // ফায়ারবেস থেকে GP এবং Gold পয়েন্ট রিয়েল-টাইম ফেচ করা
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
             if(data) {
-                let points = data.points !== undefined ? data.points : (data.gp || 0);
-                document.getElementById('total-points').innerText = points.toLocaleString();
-                document.getElementById('total-tasks-done').innerText = (data.tasksDone || 0).toLocaleString();
+                let gp = data.gp !== undefined ? data.gp : (data.points || 0);
+                let gold = data.gold !== undefined ? data.gold : 0;
+
+                document.getElementById('total-gp').innerText = gp.toLocaleString();
+                document.getElementById('total-gold').innerText = gold.toLocaleString();
 
                 if (data.isVerified === true) {
                     document.getElementById('profileCardElement').classList.add('verified');
@@ -298,7 +294,7 @@
                         <div class="order-item-box">
                             <div>
                                 <b style="font-size: 11px; color: #fff;">${order.itemName}</b><br>
-                                <span style="color: #fbbf24; font-size: 11px;">${order.price.toLocaleString()} GP</span>
+                                <span style="color: #fbbf24; font-size: 11px;">${order.price.toLocaleString()} Gold</span>
                                 <span style="color: #94a3b8; font-size: 9px; margin-left: 6px;">🕒 ${orderDate}</span>
                             </div>
                             <span style="font-size: 10px; font-weight: bold; color: ${statusColor}; text-align: right;">${statusText}</span>
@@ -317,34 +313,6 @@
             setTimeout(() => {
                 window.location.href = url;
             }, 300);
-        }
-
-        let touchStartX = 0;
-        let touchEndX = 0;
-        const pages = ['index.html', 'game.html', 'task.html', 'hotcake.html', 'profile.html'];
-        const currentPageIndex = 4;
-
-        document.addEventListener('touchstart', e => {
-            touchStartX = e.changedTouches[0].screenX;
-        }, {passive: true});
-
-        document.addEventListener('touchend', e => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipeGesture();
-        }, {passive: true});
-
-        function handleSwipeGesture() {
-            let swipeThreshold = 60;
-            if (touchEndX < touchStartX - swipeThreshold) {
-                if (currentPageIndex < pages.length - 1) {
-                    navigateWithAnimation({ preventDefault: () => {} }, pages[currentPageIndex + 1]);
-                }
-            }
-            if (touchEndX > touchStartX + swipeThreshold) {
-                if (currentPageIndex > 0) {
-                    navigateWithAnimation({ preventDefault: () => {} }, pages[currentPageIndex - 1]);
-                }
-            }
         }
     </script>
 </body>
