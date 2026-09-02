@@ -15,6 +15,7 @@
             --text-muted: #94a3b8;
             --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
             --border-color: #2a1b4e;
+            --modal-bg: #0b132b;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -48,21 +49,6 @@
         .header-icons { display: flex; align-items: center; gap: 12px; }
         .notification-btn { background: none; border: none; font-size: 20px; color: var(--text-main); cursor: pointer; position: relative; }
         
-        @keyframes shakeBell {
-            0% { transform: rotate(0deg); }
-            15% { transform: rotate(14deg); }
-            30% { transform: rotate(-14deg); }
-            45% { transform: rotate(10deg); }
-            60% { transform: rotate(-10deg); }
-            75% { transform: rotate(4deg); }
-            90% { transform: rotate(-4deg); }
-            100% { transform: rotate(0deg); }
-        }
-        .vibrating-bell {
-            animation: shakeBell 0.8s infinite ease-in-out;
-            color: #ef4444 !important;
-        }
-
         .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid #7c3aed; }
         
         .points-card { 
@@ -132,6 +118,42 @@
         .sponsor-banner h3 { margin: 0 0 6px 0; font-size: 16px; color: #c084fc; }
         .sponsor-banner p { margin: 0; font-size: 12px; color: var(--text-muted); }
 
+        /* পপআপ নোটিফিকেশন স্টাইল */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
+        .notice-modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--modal-bg);
+            border: 2px solid #7c3aed;
+            border-radius: 22px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            z-index: 1001;
+            box-sizing: border-box;
+            text-align: left;
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.4);
+        }
+        .notice-modal h3 { margin: 0 0 12px 0; font-size: 18px; color: #fbbf24; font-weight: 800; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .notice-modal ul { margin: 0 0 20px 0; padding-left: 18px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+        .notice-modal ul li { margin-bottom: 8px; }
+        .notice-modal ul li strong { color: #f8fafc; }
+        .close-notice-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .close-notice-btn:hover { background: #6d28d9; }
+
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
@@ -145,6 +167,19 @@
     </style>
 </head>
 <body>
+
+    <!-- নোটিফিকেশন পপআপ মোডাল -->
+    <div class="overlay" id="noticeOverlay"></div>
+    <div class="notice-modal" id="noticeModal">
+        <h3><i class="fa-solid fa-bullhorn" style="color: #c084fc;"></i> How to Play & Earn</h3>
+        <ul>
+            <li><strong>Task Complete:</strong> টাস্ক পূরণ করে প্রথমে <strong>GP (Fuel)</strong> পয়েন্ট অর্জন করুন[cite: 7]।</li>
+            <li><strong>Play Game:</strong> আবশ্যিকভাবে গেম খেলার জন্য GP পয়েন্ট খরচ করতে হবে[cite: 7]।</li>
+            <li><strong>Earn Gold:</strong> গেম খেলে হাই স্কোর করে শপিং করার জন্য <strong>Gold Point</strong> আর্ন করুন[cite: 7]।</li>
+            <li><strong>Shopping:</strong> অর্জিত গোল্ড পয়েন্ট দিয়ে শপ থেকে আকর্ষণীয় ড্রেস বা আইটেম কিনতে পারবেন[cite: 7]।</li>
+        </ul>
+        <button class="close-notice-btn" onclick="closeNoticeModal()">Got It, Let's Play!</button>
+    </div>
 
     <div class="container" id="mainContainer">
         <div class="header">
@@ -196,7 +231,6 @@
             <a href="shop.html" style="font-size: 12px; color: #c084fc; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
-        <!-- ৪টি ভিন্ন স্টাইলের ড্রেস (সঠিক ও ভ্যালিড ইমেজ লিংক সহ) -->
         <div class="shop-preview-grid">
             <div class="shop-preview-card">
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Royal Floral Gown">
@@ -294,7 +328,7 @@
 
         function updateUI() {
             let gp = userData.gp !== undefined ? userData.gp : (userData.points || 0);
-            let gold = userData.gold !== undefined ? userData.gold : 0;
+            let gold = userData.gold !== undefined ? data.gold : 0;
 
             document.getElementById('gp-balance').innerText = gp.toLocaleString();
             document.getElementById('gold-balance').innerText = gold.toLocaleString();
@@ -342,6 +376,29 @@
                 tg.showAlert(`Claimed Daily Bonus! +${rewardAmount} GP added.`);
             });
         }
+
+        // ৬ ঘণ্টা পর পর (১২ ঘণ্টায় দুইবার) পপআপ দেখানোর লজিক
+        function checkAndShowNotice() {
+            const SIX_HOURS = 6 * 60 * 60 * 1000;
+            let lastShownTime = localStorage.getItem('feldo_notice_time_' + userId);
+            let currentTime = Date.now();
+
+            if (!lastShownTime || (currentTime - parseInt(lastShownTime)) >= SIX_HOURS) {
+                document.getElementById('noticeOverlay').style.display = 'block';
+                document.getElementById('noticeModal').style.display = 'block';
+            }
+        }
+
+        function closeNoticeModal() {
+            document.getElementById('noticeOverlay').style.display = 'none';
+            document.getElementById('noticeModal').style.display = 'none';
+            localStorage.setItem('feldo_notice_time_' + userId, Date.now());
+        }
+
+        // পেজ লোড হওয়ার পর নোটিফিকেশন চেক করা
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(checkAndShowNotice, 1000);
+        });
     </script>
 </body>
 </html>
