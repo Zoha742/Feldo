@@ -148,23 +148,22 @@
             box-shadow: 0 15px 40px rgba(124, 58, 237, 0.3);
         }
         .modal h3 { margin: 0 0 8px 0; font-size: 18px; color: #fbbf24; font-weight: 800; }
-        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
+        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4; }
         
         .modal-btn {
             background: #111c38;
             border: 1px solid #2a3b68;
             color: white;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px;
+            border-radius: 10px;
             width: 100%;
-            margin-bottom: 10px;
-            font-size: 13px;
+            margin-bottom: 8px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
+            justify-content: space-between;
         }
         .modal-btn:hover { background: #1e293b; border-color: #7c3aed; }
         
@@ -233,30 +232,32 @@
         </div>
 
         <div class="hotcake-list" id="hotcakes-container">
-            <!-- Dynamic Hotcake Rigs -->
+            <!-- Dynamic GP Rigs -->
         </div>
     </div>
 
     <!-- Overlay & Modals -->
     <div class="overlay" id="overlay" onclick="closeModals()"></div>
 
-    <!-- Modal 1: Select Payment Method -->
-    <div class="modal" id="paymentMethodModal">
-        <h3>Boost <span id="modal-coin-name">Coin</span> ($2.5)</h3>
-        <p>Choose your preferred payment method to boost Hotcake speed for 15 days.</p>
-        <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
-            <i class="fa-solid fa-wallet" style="color: #f59e0b; font-size: 18px;"></i> Binance Pay
-        </button>
-        <button class="modal-btn" onclick="openProofModal('Bitget Wallet', '521132367')">
-            <i class="fa-solid fa-shield-halved" style="color: #38bdf8; font-size: 18px;"></i> Bitget Wallet
-        </button>
+    <!-- Modal 1: Select Boost Duration & Price (6 Types) -->
+    <div class="modal" id="boostPlanModal">
+        <h3>Boost <span id="modal-rig-name">GP Rig</span></h3>
+        <p>Select your desired boost duration and price plan:</p>
+        
+        <button class="modal-btn" onclick="selectBoostPlan(5, 2)"><span>⚡ 5 Days Boost</span> <b style="color:#fbbf24">$2</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan(10, 5)"><span>⚡ 10 Days Boost</span> <b style="color:#fbbf24">$5</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan(15, 8)"><span>⚡ 15 Days Boost</span> <b style="color:#fbbf24">$8</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan(20, 10)"><span>⚡ 20 Days Boost</span> <b style="color:#fbbf24">$10</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan(25, 15)"><span>⚡ 25 Days Boost</span> <b style="color:#fbbf24">$15</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan(30, 20)"><span>⚡ 30 Days Boost</span> <b style="color:#fbbf24">$20</b></button>
+
         <span class="cancel-text" onclick="closeModals()">Cancel</span>
     </div>
 
     <!-- Modal 2: Submit Proof -->
     <div class="modal" id="proofModal">
         <h3 id="proof-title">Payment Proof</h3>
-        <p>Copy admin UID to pay, then check your Telegram User ID and upload screenshot.</p>
+        <p>Send <b id="plan-price-text" style="color:#fbbf24"></b> to Admin UID, then upload your payment screenshot.</p>
         
         <div class="uid-box">
             <span id="admin-uid-text">UID - 9950270208</span>
@@ -269,12 +270,12 @@
         <div class="input-label">Upload Payment Proof / Screenshot:</div>
         <input type="file" id="proof-file" class="form-input" accept="image/*">
 
-        <button class="btn-submit-proof" onclick="submitBoostProof()">Submit Proof</button>
+        <button class="btn-submit-proof" onclick="submitBoostProof()">Submit for Admin Approval</button>
         <br>
         <span class="cancel-text" onclick="closeModals()">Cancel</span>
     </div>
 
-    <!-- সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার -->
+    <!-- বটম নেভিগেশন বার -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
@@ -311,19 +312,21 @@
 
         const COOLDOWN_TIME = 12 * 60 * 60 * 1000; // ১২ ঘণ্টা কুলডাউন
 
+        // ৬টি GP Rig লিস্ট (কোনো ক্রিপ্টো নাম নেই)
         let hotcakes = [
-            { id: 'btc', name: 'Bitcoin (BTC)', icon: 'fa-bitcoin-sign', normalGp: 50, boostedGp: 500 },
-            { id: 'bnb', name: 'Binance (BNB)', icon: 'fa-coins', normalGp: 50, boostedGp: 500 },
-            { id: 'gram', name: 'Gram Token (GRAM)', icon: 'fa-gem', normalGp: 50, boostedGp: 500 },
-            { id: 'avax', name: 'Avalanche (AVAX)', icon: 'fa-fire', normalGp: 50, boostedGp: 500 },
-            { id: 'sol', name: 'Solana (SOL)', icon: 'fa-bolt', normalGp: 50, boostedGp: 500 },
-            { id: 'doge', name: 'Dogecoin (DOGE)', icon: 'fa-dog', normalGp: 50, boostedGp: 500 }
+            { id: 'rig1', name: 'GP Miner Rig #1', icon: 'fa-bolt', normalGp: 50, boostedGp: 500 },
+            { id: 'rig2', name: 'GP Miner Rig #2', icon: 'fa-microchip', normalGp: 50, boostedGp: 500 },
+            { id: 'rig3', name: 'GP Miner Rig #3', icon: 'fa-server', normalGp: 50, boostedGp: 500 },
+            { id: 'rig4', name: 'GP Miner Rig #4', icon: 'fa-gauge-high', normalGp: 50, boostedGp: 500 },
+            { id: 'rig5', name: 'GP Miner Rig #5', icon: 'fa-atom', normalGp: 50, boostedGp: 500 },
+            { id: 'rig6', name: 'GP Miner Rig #6', icon: 'fa-fire-flame-curved', normalGp: 50, boostedGp: 500 }
         ];
 
         let userData = {};
-        let selectedHotcakeId = "";
-        let selectedMethod = "";
-        let currentAdminUid = "";
+        let selectedRigId = "";
+        let selectedDays = 0;
+        let selectedPrice = 0;
+        const ADMIN_UID = "9950270208";
 
         userRef.on('value', (snapshot) => {
             userData = snapshot.val() || {};
@@ -337,19 +340,16 @@
             let boosts = userData.boosts || {};
 
             hotcakes.forEach(item => {
-                let isBoosted = false;
                 let rewardGp = item.normalGp;
-                let boostBtnText = "Boost ($2.5)";
+                let boostBtnText = "Boost Rig";
                 let boostBtnClass = "action-btn boost-action-btn";
 
                 if (boosts[item.id] && boosts[item.id].expireTime > currentTime) {
-                    isBoosted = true;
                     rewardGp = item.boostedGp;
                     boostBtnText = "Boosted (Active)";
                     boostBtnClass = "action-btn boost-action-btn active";
                 }
 
-                // কুলডাউন চেক লজিক
                 let lastClaim = userData['lastClaim_' + item.id] || 0;
                 let timeLeft = (lastClaim + COOLDOWN_TIME) - currentTime;
                 let claimBtnDisabled = false;
@@ -369,12 +369,12 @@
                             <div class="coin-icon"><i class="fa-solid ${item.icon}"></i></div>
                             <div class="coin-info">
                                 <h4>${item.name}</h4>
-                                <p>Normal: ${item.normalGp} GP | Boosted: ${item.boostedGp} GP ($2.5 / 15 Days)</p>
+                                <p>Normal: ${item.normalGp} GP | Boosted: ${item.boostedGp} GP</p>
                             </div>
                         </div>
                         <div class="card-buttons">
                             <button id="claimBtn_${item.id}" class="action-btn claim-btn" ${claimBtnDisabled ? 'disabled' : ''} onclick="claimReward('${item.id}', ${rewardGp})">${claimBtnText}</button>
-                            <button class="${boostBtnClass}" onclick="openPaymentModal('${item.id}', '${item.name}')">${boostBtnText}</button>
+                            <button class="${boostBtnClass}" onclick="openBoostPlanModal('${item.id}', '${item.name}')">${boostBtnText}</button>
                         </div>
                     </div>
                 `;
@@ -400,27 +400,27 @@
             });
         }
 
-        // রিয়েল-টাইম কাউন্টডাউন টাইমার প্রতি ১ সেকেন্ডে আপডেট করার জন্য
         setInterval(() => {
             if (document.getElementById('hotcakes-container')) {
                 renderHotcakes();
             }
         }, 1000);
 
-        function openPaymentModal(hotcakeId, hotcakeName) {
-            selectedHotcakeId = hotcakeId;
-            document.getElementById('modal-coin-name').innerText = hotcakeName;
+        function openBoostPlanModal(rigId, rigName) {
+            selectedRigId = rigId;
+            document.getElementById('modal-rig-name').innerText = rigName;
             document.getElementById('overlay').style.display = 'block';
-            document.getElementById('paymentMethodModal').style.display = 'block';
+            document.getElementById('boostPlanModal').style.display = 'block';
         }
 
-        function openProofModal(method, adminUid) {
-            selectedMethod = method;
-            currentAdminUid = adminUid;
-            document.getElementById('paymentMethodModal').style.display = 'none';
-            
-            document.getElementById('proof-title').innerText = `${method} Boost Proof`;
-            document.getElementById('admin-uid-text').innerText = `UID - ${adminUid}`;
+        function selectBoostPlan(days, price) {
+            selectedDays = days;
+            selectedPrice = price;
+            document.getElementById('boostPlanModal').style.display = 'none';
+
+            document.getElementById('proof-title').innerText = `Boost for ${days} Days ($${price})`;
+            document.getElementById('plan-price-text').innerText = `$${price}`;
+            document.getElementById('admin-uid-text').innerText = `UID - ${ADMIN_UID}`;
             document.getElementById('user-tg-id').value = userId;
             document.getElementById('proof-file').value = "";
 
@@ -428,8 +428,8 @@
         }
 
         function copyAdminUid() {
-            navigator.clipboard.writeText(currentAdminUid).then(() => {
-                tg.showAlert(`Admin UID copied: ${currentAdminUid}`);
+            navigator.clipboard.writeText(ADMIN_UID).then(() => {
+                tg.showAlert(`Admin UID copied: ${ADMIN_UID}`);
             });
         }
 
@@ -448,15 +448,18 @@
                 let boostRequest = {
                     userId: userId,
                     userName: userName,
-                    method: selectedMethod,
+                    rigId: selectedRigId,
+                    days: selectedDays,
+                    priceUsd: selectedPrice,
                     screenshot: base64Image,
-                    status: true,
+                    status: "Pending", // Admin approve korle active hobe
                     timestamp: Date.now()
                 };
 
-                db.ref(`users/${userId}/pending_boosts/${selectedHotcakeId}`).set(boostRequest).then(() => {
+                // Admin-এর কাছে পেন্ডিং বুস্ট রিকোয়েস্ট হিসেবে সেভ হচ্ছে
+                db.ref(`users/${userId}/pending_boosts/${selectedRigId}`).set(boostRequest).then(() => {
                     closeModals();
-                    tg.showAlert("Boost payment proof submitted successfully! Admin will review and activate your boost.");
+                    tg.showAlert("Boost request submitted successfully! Waiting for Admin approval.");
                 });
             };
             reader.readAsDataURL(file);
@@ -464,7 +467,7 @@
 
         function closeModals() {
             document.getElementById('overlay').style.display = 'none';
-            document.getElementById('paymentMethodModal').style.display = 'none';
+            document.getElementById('boostPlanModal').style.display = 'none';
             document.getElementById('proofModal').style.display = 'none';
         }
     </script>
