@@ -111,19 +111,6 @@
         .stat-card .stat-value { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: #fbbf24; }
         .stat-card .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
 
-        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
-        
-        .order-item-box { 
-            background: #0b0f19; 
-            border: 1px solid var(--card-border); 
-            padding: 8px 10px; 
-            border-radius: 8px; 
-            margin-bottom: 6px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
         .menu-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
         .menu-row-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--text-main); transition: 0.2s; cursor: pointer; }
         .menu-row-item:active { transform: scale(0.98); }
@@ -214,25 +201,7 @@
             </div>
         </div>
 
-        <div class="card">
-            <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #fff;"><i class="fa-solid fa-bag-shopping" style="color: #ec4899;"></i> My Orders History</h4>
-            <div id="my-orders-list" style="max-height: 180px; overflow-y: auto;">
-                <small style="color: var(--text-muted);">Loading your orders...</small>
-            </div>
-        </div>
-
         <div class="menu-list">
-            <a class="menu-row-item" href="address.html">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #0284c7;"><i class="fa-solid fa-location-dot"></i></div>
-                    <div class="menu-row-info">
-                        <h5 style="margin:0; font-size:13px; color:#fff;">Shipping Address</h5>
-                        <p style="margin:0; font-size:11px; color:var(--text-muted);">Manage name, location & phone</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
-            </a>
-
             <a class="menu-row-item" href="support.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: #0891b2;"><i class="fa-solid fa-headset"></i></div>
@@ -343,49 +312,6 @@
                     document.getElementById('verifiedBadgeIcon').style.display = 'none';
                     document.getElementById('premiumBadgeTag').style.display = 'none';
                 }
-            }
-        });
-
-        db.ref('users/' + userId + '/orders').on('value', snap => {
-            let container = document.getElementById('my-orders-list');
-            let html = "";
-            if (snap.exists()) {
-                let ordersArray = [];
-                snap.forEach(child => {
-                    let orderData = child.val();
-                    ordersArray.push(orderData);
-                });
-
-                ordersArray.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-                ordersArray.forEach(order => {
-                    let statusColor = '#f59e0b';
-                    let statusText = 'Pending ⏳';
-
-                    if (order.status === 'Approved') {
-                        statusColor = '#22c55e';
-                        statusText = 'Accepted ✅';
-                    } else if (order.status === 'Rejected') {
-                        statusColor = '#ef4444';
-                        statusText = 'Rejected ❌ (Refunded)';
-                    }
-
-                    let orderDate = order.timestamp ? new Date(order.timestamp).toLocaleString() : 'N/A';
-
-                    html += `
-                        <div class="order-item-box">
-                            <div>
-                                <b style="font-size: 11px; color: #fff;">${order.itemName}</b><br>
-                                <span style="color: #fbbf24; font-size: 11px;">${order.price.toLocaleString()} Gold</span>
-                                <span style="color: #94a3b8; font-size: 9px; margin-left: 6px;">🕒 ${orderDate}</span>
-                            </div>
-                            <span style="font-size: 10px; font-weight: bold; color: ${statusColor}; text-align: right;">${statusText}</span>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } else {
-                container.innerHTML = `<small style="color: var(--text-muted);">No orders placed yet.</small>`;
             }
         });
 
