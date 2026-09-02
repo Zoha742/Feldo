@@ -29,14 +29,6 @@
             box-sizing: border-box;
             overscroll-behavior-y: none;
             -webkit-overflow-scrolling: touch;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        body.page-slide-out {
-            opacity: 0;
-            transform: translateX(-20px);
         }
 
         .container { 
@@ -46,6 +38,14 @@
             margin: 0 auto;
             padding-bottom: 110px; 
             box-sizing: border-box; 
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .container.page-slide-out {
+            opacity: 0;
+            transform: translateX(-20px);
         }
 
         .top-header h1 { margin: 0 0 10px 0; font-size: 24px; color: #fff; }
@@ -360,7 +360,7 @@
 
         function navigateWithAnimation(event, url) {
             event.preventDefault();
-            document.body.classList.add('page-slide-out');
+            document.querySelector('.container').classList.add('page-slide-out');
             setTimeout(() => {
                 window.location.href = url;
             }, 300);
