@@ -93,24 +93,33 @@
         .task-grid-info h4 { margin: 0; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; color: #fff; }
         .task-grid-info p { margin: 2px 0 0 0; font-size: 10px; color: var(--text-muted); }
         .task-grid-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 10px; }
-        .task-grid-reward { font-size: 12px; font-weight: 700; color: #fbbf24; display: flex; align-items: center; gap: 4px; }
+        .task-grid-reward { font-size: 11px; font-weight: 700; color: #fbbf24; display: flex; align-items: center; gap: 4px; }
         
         .task-start-btn { background: #7c3aed; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .task-start-btn:disabled { background: #475569; cursor: not-allowed; }
         
-        /* প্রিমিয়াম এবং ছোট কমপ্লিট ব্যাজ ডিজাইন */
-        .completed-badge {
+        /* ডান পাশে সবুজ রঙের Done ব্যাজ ডিজাইন */
+        .done-badge {
             background: linear-gradient(135deg, #10b981, #059669);
             color: #fff;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+        }
+
+        /* বাম পাশে কাউন্টডাউন টাইমার ডিজাইন */
+        .timer-display {
+            font-size: 10px;
+            font-weight: 700;
+            color: #f43f5e;
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            gap: 3px;
         }
 
         /* সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার */
@@ -266,11 +275,18 @@
 
                 let isCompleted = false;
                 let finishTime = 0;
+                let timeLeftStr = "";
 
                 if (completionData) {
                     finishTime = completionData.timestamp || 0;
-                    if (currentTime - finishTime < INTERVAL_12H) {
-                        isCompleted = true; // ১২ ঘণ্টা পার হয়নি, তাই লিস্টে থাকবে কিন্তু প্রিমিয়াম ছোট ব্যাজ দেখাবে
+                    let elapsed = currentTime - finishTime;
+                    if (elapsed < INTERVAL_12H) {
+                        isCompleted = true; 
+                        let remaining = INTERVAL_12H - elapsed;
+                        let h = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        let m = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+                        let s = Math.floor((remaining % (1000 * 60)) / 1000);
+                        timeLeftStr = `${h}h ${m}m ${s}s`;
                     }
                 }
 
@@ -278,11 +294,13 @@
                 if (visibleCount < 20) {
                     visibleCount++;
 
-                    let actionHtml = `<button id="btn-${channelName}" class="task-start-btn" onclick="startTask('${channelName}')">Join</button>`;
+                    let leftSideHtml = `<div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +5 GP</div>`;
+                    let rightSideHtml = `<button id="btn-${channelName}" class="task-start-btn" onclick="startTask('${channelName}')">Join</button>`;
                     let statusStyle = "";
 
                     if (isCompleted) {
-                        actionHtml = `<div class="completed-badge" title="Completed"><i class="fa-solid fa-check"></i></div>`;
+                        leftSideHtml = `<div class="timer-display"><i class="fa-solid fa-clock"></i> ${timeLeftStr}</div>`;
+                        rightSideHtml = `<div class="done-badge"><i class="fa-solid fa-check"></i> Done</div>`;
                         statusStyle = "opacity: 0.85;";
                     }
 
@@ -292,12 +310,12 @@
                             <div class="task-grid-icon"><i class="fa-brands fa-telegram"></i></div>
                             <div class="task-grid-info">
                                 <h4>@${channelName}</h4>
-                                <p>${isCompleted ? 'Done (12h cooldown)' : 'Join & earn'}</p>
+                                <p>${isCompleted ? 'Cooldown active' : 'Join & earn'}</p>
                             </div>
                         </div>
                         <div class="task-grid-bottom">
-                            <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +5 GP</div>
-                            ${actionHtml}
+                            ${leftSideHtml}
+                            ${rightSideHtml}
                         </div>
                     </div>`;
                 }
@@ -317,7 +335,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Wait 10s';
             btn.disabled = true;
 
-            // ১০ সেকেন্ড পর পয়েন্ট যোগ হবে এবং বাটনটি সুন্দর প্রিমিয়াম ছোট ব্যাজে রূপান্তর হবে
+            // ১০ সেকেন্ড পর পয়েন্ট যোগ হবে এবং বামে টাইমার ও ডানে সবুজ "Done" ব্যাজ শো করবে
             setTimeout(() => {
                 completeTaskAndReward(channelUsername);
             }, 10000);
@@ -336,13 +354,14 @@
                 completedChannels: completedChannels
             }).then(() => {
                 tg.showAlert(`Task completed! +5 GP added.`);
-                renderChannelTasks(); // পেজ আপডেট করে ছোট প্রিমিয়াম ব্যাজ শো করা
+                renderChannelTasks(); 
             });
         }
 
-        // প্রতি ১ সেকেন্ডে টাইমার আপডেট করার জন্য
+        // প্রতি ১ সেকেন্ডে অ্যাড এবং চ্যানেল কুলডাউন টাইমার আপডেট করার জন্য
         setInterval(() => {
             renderAds();
+            renderChannelTasks();
         }, 1000);
 
         // সোয়াইপ নেভিগেশন এফেক্ট
