@@ -139,20 +139,25 @@
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
-        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; display: none; }
+        /* আপডেট করা সিঙ্গেল এডমিন প্যানেল বাটন স্টাইল */
+        .admin-box-container { display: none; margin-bottom: 10px; }
         .admin-box-item {
             background: linear-gradient(135deg, rgba(6, 78, 59, 0.4), rgba(2, 44, 34, 0.6));
             border: 1px solid #22c55e;
             border-radius: 14px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             text-decoration: none;
             color: #34d399;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             transition: 0.2s;
         }
         .admin-box-item:active { transform: scale(0.98); }
-        .admin-box-item i { font-size: 18px; margin-bottom: 4px; display: block; }
-        .admin-box-item h5 { margin: 0; font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .admin-box-item i { font-size: 18px; }
+        .admin-box-item h5 { margin: 0; font-size: 13px; font-weight: 700; color: #fff; }
 
         .bottom-nav { 
             position: fixed; 
@@ -213,7 +218,7 @@
             </div>
         </div>
 
-        <!-- ভার্চুয়াল ওয়ার্ডরোব কালেকশন সেকশন (অর্ডার বা শিপিং স্ট্যাটাস ছাড়া) -->
+        <!-- ভার্চুয়াল ওয়ার্ডরোব কালেকশন সেকশন -->
         <div class="card">
             <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #fff;"><i class="fa-solid fa-shirt" style="color: #c084fc;"></i> My Wardrobe Collection</h4>
             <div id="my-collection-list" style="max-height: 180px; overflow-y: auto;">
@@ -222,6 +227,14 @@
         </div>
 
         <div class="menu-list">
+            <!-- শপঅ্যাডমিন রিমুভ করে appboss.html নামের একক এডমিন প্যানেল বাটন যুক্ত করা হয়েছে -->
+            <div class="admin-box-container" id="adminContainer">
+                <a class="admin-box-item" href="appboss.html">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <h5>Admin Panel</h5>
+                </a>
+            </div>
+
             <a class="menu-row-item" href="support.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: #0891b2;"><i class="fa-solid fa-headset"></i></div>
@@ -254,21 +267,10 @@
                 </div>
                 <span class="coming-soon-badge">Soon</span>
             </div>
-
-            <div class="admin-grid" id="adminGridContainer">
-                <a class="admin-box-item" href="admin.html">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <h5>Admin Panel</h5>
-                </a>
-                <a class="admin-box-item" href="shopadmin.html">
-                    <i class="fa-solid fa-store"></i>
-                    <h5>Shop Admin</h5>
-                </a>
-            </div>
         </div>
     </div>
 
-    <!-- বটম নেভিগেশন বার থেকে Hotcake অপশন বাদ দেওয়া হয়েছে -->
+    <!-- বটম নেভিগেশন বার -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html" onclick="navigateWithAnimation(event, 'index.html')"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="game.html" onclick="navigateWithAnimation(event, 'game.html')"><i class="fa-solid fa-gamepad"></i>Game</a>
@@ -310,7 +312,7 @@
         }
 
         if (userId === ADMIN_USER_ID) {
-            document.getElementById('adminGridContainer').style.display = "grid";
+            document.getElementById('adminContainer').style.display = "block";
         }
 
         // ফায়ারবেস থেকে ভেরিফাইড স্ট্যাটাস ও ব্যালেন্স চেক করা
