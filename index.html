@@ -68,7 +68,7 @@
         .points-card { 
             background: var(--primary-gradient); 
             border-radius: 20px; 
-            padding: 24px; 
+            padding: 20px 16px; 
             color: #ffffff; 
             position: relative; 
             overflow: hidden; 
@@ -80,12 +80,29 @@
             0% { box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.4); }
             100% { box-shadow: 0 15px 35px -5px rgba(124, 58, 237, 0.7); }
         }
-        .points-title { font-size: 13px; opacity: 0.9; margin-bottom: 6px; }
-        .points-value { font-size: 32px; font-weight: 800; margin-bottom: 8px; display: flex; gap: 15px; align-items: center; }
-        .currency-box { font-size: 18px; background: rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 10px; display: inline-flex; align-items: center; gap: 5px; }
-        .currency-box span { font-size: 24px; font-weight: 700; }
+        .points-title { font-size: 13px; opacity: 0.9; margin-bottom: 8px; }
         
-        .history-btn { position: absolute; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.2); border: none; color: #ffffff; padding: 6px 14px; border-radius: 12px; font-size: 12px; cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s; }
+        /* ব্যালেন্স লেআউট ফিক্সড করার জন্য ফ্লেক্স ও গ্যাপ অ্যাডজাস্ট করা হলো */
+        .points-value { 
+            display: flex; 
+            gap: 10px; 
+            align-items: center; 
+            margin-bottom: 12px; 
+        }
+        .currency-box { 
+            font-size: 14px; 
+            background: rgba(255,255,255,0.15); 
+            padding: 8px 12px; 
+            border-radius: 12px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 6px; 
+            flex: 1;
+            justify-content: center;
+        }
+        .currency-box span { font-size: 20px; font-weight: 800; }
+        
+        .history-btn { position: absolute; bottom: 16px; right: 16px; background: rgba(255, 255, 255, 0.2); border: none; color: #ffffff; padding: 6px 12px; border-radius: 10px; font-size: 11px; cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s; }
         .history-btn:hover { background: rgba(255, 255, 255, 0.3); }
         
         .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
@@ -120,7 +137,6 @@
         .sponsor-banner h3 { margin: 0 0 6px 0; font-size: 16px; color: #c084fc; }
         .sponsor-banner p { margin: 0; font-size: 12px; color: var(--text-muted); }
 
-        /* সুন্দর 5-অপশন নেভিগেশন বার */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
@@ -150,8 +166,8 @@
         <div class="points-card">
             <div class="points-title">Your Balance</div>
             <div class="points-value">
-                <div class="currency-box" title="GP Points (Fuel)">⚡ <span id="gp-balance">0</span></div>
-                <div class="currency-box" title="Gold Points (Shopping)">🪙 <span id="gold-balance">0</span></div>
+                <div class="currency-box" title="GP Points (Fuel)">⚡ <span id="gp-balance">0</span> GP</div>
+                <div class="currency-box" title="Gold Points (Shopping)">🪙 <span id="gold-balance">0</span> Gold</div>
             </div>
             <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
         </div>
@@ -191,7 +207,7 @@
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Dress">
                 <div>
                     <h4 class="shop-preview-title">Royal Floral Gown</h4>
-                    <div class="shop-preview-price">🪙 12,000 Gold</div>
+                    <div class="shop-preview-price">🪙 15,000 Gold</div>
                 </div>
                 <a href="shop.html" class="shop-preview-btn">Buy Now</a>
             </div>
@@ -199,7 +215,7 @@
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" class="shop-preview-img" alt="Dress">
                 <div>
                     <h4 class="shop-preview-title">Classic Party Dress</h4>
-                    <div class="shop-preview-price">🪙 13,500 Gold</div>
+                    <div class="shop-preview-price">🪙 20,000 Gold</div>
                 </div>
                 <a href="shop.html" class="shop-preview-btn">Buy Now</a>
             </div>
