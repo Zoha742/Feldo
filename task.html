@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - Tasks</title>
+    <title>Feldo - Tasks</title>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -35,8 +35,8 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .page-slide-left { transform: translateX(-100px); opacity: 0; }
-        .page-slide-right { transform: translateX(100px); opacity: 0; }
+        .page-slide-left { transform: translateX(-50px); opacity: 0; }
+        .page-slide-right { transform: translateX(50px); opacity: 0; }
 
         .tasks-header-banner {
             background: var(--primary-gradient);
@@ -45,10 +45,34 @@
             color: #fff;
             text-align: center;
             margin-bottom: 20px;
+            box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.4);
         }
-        .tasks-header-banner h2 { margin: 0 0 6px 0; font-size: 20px; }
+        .tasks-header-banner h2 { margin: 0 0 6px 0; font-size: 20px; color: #fff; }
         .tasks-header-banner p { margin: 0; font-size: 12px; opacity: 0.9; }
+
+        .section-title { font-size: 15px; font-weight: 700; color: #c084fc; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+
+        /* অ্যাড সেকশন কার্ড */
+        .ad-task-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        .ad-task-card:hover { border-color: #7c3aed; }
+        .ad-info { display: flex; align-items: center; gap: 12px; }
+        .ad-icon { width: 42px; height: 42px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .ad-details h4 { margin: 0 0 4px 0; font-size: 14px; font-weight: 700; color: #fff; }
+        .ad-details p { margin: 0; font-size: 11px; color: #fbbf24; font-weight: 600; }
         
+        .ad-action-btn { background: #ef4444; color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .ad-action-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
+
         .task-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -65,28 +89,27 @@
             justify-content: space-between;
         }
         .task-grid-top { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-        .task-grid-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; }
-        .task-grid-info h4 { margin: 0; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; }
+        .task-grid-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; background: #3b82f6; }
+        .task-grid-info h4 { margin: 0; font-size: 13px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px; color: #fff; }
         .task-grid-info p { margin: 2px 0 0 0; font-size: 10px; color: var(--text-muted); }
         .task-grid-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--card-border); padding-top: 10px; }
-        .task-grid-reward { font-size: 12px; font-weight: 700; color: #eab308; display: flex; align-items: center; gap: 4px; }
+        .task-grid-reward { font-size: 12px; font-weight: 700; color: #fbbf24; display: flex; align-items: center; gap: 4px; }
         
-        /* বাটনের ডিজাইন */
         .task-start-btn { background: #7c3aed; color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .task-start-btn:disabled { background: #475569; cursor: not-allowed; }
         .task-start-btn.completed { background: #10b981; }
 
+        /* সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার */
         .bottom-nav { 
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
             border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; 
-            padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; 
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-            transition: background 0.3s ease;
+            padding: 12px 0 14px 0; box-sizing: border-box; z-index: 100; 
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
         }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; }
-        .nav-item.active { color: #c084fc; }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 5px; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; transition: color 0.2s, transform 0.2s; }
+        .nav-item.active { color: #c084fc; transform: translateY(-2px); }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
 
         .loading-text { text-align: center; color: var(--text-muted); font-size: 14px; margin-top: 20px; grid-column: span 2; }
     </style>
@@ -95,20 +118,48 @@
 
     <div class="container" id="mainContainer">
         <div class="tasks-header-banner">
-            <h2>🎁 Channel Tasks</h2>
-            <p>Join channels below to earn 5 GP each</p>
+            <h2>🎁 Earn GP Fuel</h2>
+            <p>Watch ads & join channels to collect GP for gaming</p>
         </div>
 
+        <!-- ২ টি ভিডিও অ্যাড সেকশন (১২ ঘণ্টা কুলডাউন সহ) -->
+        <div class="section-title"><i class="fa-solid fa-play-circle"></i> Rewarded Video Ads</div>
+        
+        <div class="ad-task-card">
+            <div class="ad-info">
+                <div class="ad-icon"><i class="fa-solid fa-video"></i></div>
+                <div class="ad-details">
+                    <h4>Watch Ad #1</h4>
+                    <p>Reward: +50 GP Fuel</p>
+                </div>
+            </div>
+            <button id="adBtn1" class="ad-action-btn" onclick="watchAd(1, 50)">Watch Ad</button>
+        </div>
+
+        <div class="ad-task-card" style="margin-bottom: 24px;">
+            <div class="ad-info">
+                <div class="ad-icon"><i class="fa-solid fa-video"></i></div>
+                <div class="ad-details">
+                    <h4>Watch Ad #2</h4>
+                    <p>Reward: +50 GP Fuel</p>
+                </div>
+            </div>
+            <button id="adBtn2" class="ad-action-btn" onclick="watchAd(2, 50)">Watch Ad</button>
+        </div>
+
+        <!-- টেলিগ্রাম চ্যানেল টাস্ক লিস্ট -->
+        <div class="section-title"><i class="fa-brands fa-telegram"></i> Telegram Channel Tasks</div>
+        
         <div class="task-grid" id="dynamicTaskGrid">
-            <div class="loading-text">Loading tasks...</div>
+            <div class="loading-text">Loading channels...</div>
         </div>
     </div>
 
-    <!-- Navigation Bar -->
+    <!-- সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
         <a class="nav-item active" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="ads.html"><i class="fa-solid fa-play"></i>Ads</a>
         <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
@@ -143,31 +194,33 @@
             "Xoypo", "Xoyfo", "Xoyco", "Xoyvo", "Xoyqo", "Xoywo", "Ogeeu", "Foyko", "Royci", "Royqo", "Keoiv", "Keoiz", "Bivbo", "Mivbo", "Oviib", "Qeoil", "EoPay", "cyriv", "cypit", "Bypir", "cypij", "Cypia", "Psirt", "Wjstv", "Doyvi", "Foyvi", "Jtrtv", "Apsox", "Apgox", "Oamgo", "Cisot", "Orous", "Okous", "Oeous", "uoike", "Foike", "Doike", "Uniwo", "hizdo", "Eopse", "Risof", "Roiho", "Tebvi", "Coaic", "icoji", "Uaffi", "Xafbi", "Coijo", "Cexmo", "Pexmo", "Wopse", "tavfo", "Kavfo", "Oanlo", "Eamvo", "Oanvo", "oofti", "Foqro", "Foqxo", "Joivo", "Xijci", "Foyzo", "Foljo", "Fuuqo", "fusqo", "fuyqo", "tiqoo", "Qifoo", "Hoyqo", "Qelfo", "Qeljo", "Fnntv", "Jnntv", "Fnitv", "Fbntv", "Cbigo", "Eavno", "Eapno", "Foyqo", "Upbif", "Upbib", "Upbir", "Upbip", "Upbim", "Oesno", "Lanvo", "Yovki", "Oovki", "Uovki", "syfox", "Spyzo", "Vavfo", "Cavfo", "Eavdo", "Coixo", "Fovgi", "Tafvi", "Guzna", "Aovji", "Oelgo", "Yelfo", "Zoosy", "Zivfo", "Uesgo", "Ripfo", "Fovmi", "Wovti", "Jafki", "Dikto", "Joizo", "Uxdao", "Wxdao", "Movti", "Fovti", "Oafki", "Eafki", "Oafmi", "Uafmi", "Vafmi", "Eafmi", "Gigxe", "Eooti", "Eovmi", "Pafbi", "Livbo", "Dapbo", "Roiwo", "Foiqo", "Wigdo", "Diczo", "Oafvi", "Dijzo", "Kovmi", "Oubuy", "Jafvi", "Kafvi", "Cafvi", "Eapti", "Xafti", "Cekio", "Ualjo", "Ealjo", "Uofti", "Eofti", "Pofti", "Vunki", "dagpi", "Hagpi", "Eagpi", "Cagpi", "Zidme", "Relbo", "Eelvo", "Yelvo", "Ohous", "Opous", "Tewvi", "Epegi", "Uafti", "dysel", "dycel", "Oviwo", "Dojvi", "Fisdo", "Rirbo", "Uanbo", "Oamco", "Zisvo", "Oisvo", "Wisvo", "Oispo", "reljo", "uepax", "uevax", "aekax", "Cigzo", "Uevio", "Xikvi", "Oeyvi", "Ueyvi", "Qittoo", "ZilMal", "ZilXal", "XilXal", "BikNak", "BikVak", "BakVak", "XilMal", "Zilfal", "ZilSal", "XalXil", "XikMik", "XilMil", "XikXaq", "HakVak", "HakBak", "HikDik"
         ];
 
-        userRef.once('value').then((snapshot) => {
+        // ইউজারের ডাটা চেক করে অ্যাড কুলডাউন এবং টাস্ক রেন্ডার করা
+        userRef.on('value', (snapshot) => {
             let data = snapshot.val() || { tasksDone: 0 };
             let currentTasksDone = data.tasksDone || 0;
             renderTasks(currentTasksDone);
+            checkAdCooldowns(data);
         });
 
         function renderTasks(startIndex) {
             const grid = document.getElementById('dynamicTaskGrid');
             grid.innerHTML = ''; 
 
-            for(let i = 0; i < 20; i++) {
+            for(let i = 0; i < 10; i++) {
                 let channelIndex = (startIndex + i) % channelList.length;
                 let channelName = channelList[channelIndex];
                 
                 let cardHTML = `
                 <div class="task-grid-card">
                     <div class="task-grid-top">
-                        <div class="task-grid-icon" style="background: #3b82f6;"><i class="fa-brands fa-telegram"></i></div>
+                        <div class="task-grid-icon"><i class="fa-brands fa-telegram"></i></div>
                         <div class="task-grid-info">
                             <h4>@${channelName}</h4>
                             <p>Join & earn</p>
                         </div>
                     </div>
                     <div class="task-grid-bottom">
-                        <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +5</div>
+                        <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +5 GP</div>
                         <button id="btn-${channelName}" class="task-start-btn" onclick="startTask('${channelName}')">Join</button>
                     </div>
                 </div>`;
@@ -175,69 +228,126 @@
             }
         }
 
-        // টাস্ক শুরু করার ফাংশন
         function startTask(channelUsername) {
             const btn = document.getElementById('btn-' + channelUsername);
             if(btn.disabled) return;
 
-            // টেলিগ্রাম চ্যানেল ওপেন করা (অ্যাপ ব্যাকগ্রাউন্ডে চলে যাবে)
             tg.openTelegramLink('https://t.me/' + channelUsername);
 
-            // বাটনের স্টাইল ও টেক্সট পরিবর্তন (Waiting State)
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Wait 10s';
             btn.disabled = true;
 
-            // ১০ সেকেন্ড পর পয়েন্ট অ্যাড করার টাইমার
             setTimeout(() => {
-                completeAndReward(btn);
+                completeTaskAndReward(btn);
             }, 10000);
         }
 
-        // পয়েন্ট দেওয়ার ফাংশন
-        function completeAndReward(btn) {
+        function completeTaskAndReward(btn) {
             userRef.once('value').then((snapshot) => {
-                let data = snapshot.val() || { points: 0, gp: 0, tasksDone: 0 };
-                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                let data = snapshot.val() || { gp: 0, tasksDone: 0 };
+                let currentGp = data.gp !== undefined ? data.gp : (data.points || 0);
                 let currentTasksDone = data.tasksDone || 0;
 
-                let newPoints = currentPoints + 5;
+                let newGp = currentGp + 5;
                 let newTasksDone = currentTasksDone + 1;
                 
                 userRef.update({ 
-                    points: newPoints,
-                    gp: newPoints,
+                    gp: newGp,
+                    points: newGp,
                     tasksDone: newTasksDone
                 }).then(() => {
-                    // বাটন "Completed" করা
                     btn.innerHTML = 'Completed';
                     btn.classList.add('completed');
-                    
-                    // সাকসেস মেসেজ দেখানো
                     tg.showAlert(`Task completed! +5 GP added.`);
-                    
-                    // রিফ্রেশ করা হলো না, যাতে ইউজারের স্ক্রিন থেকে কার্ড গায়েব না হয়। 
-                    // পরেরবার অ্যাপ খুললে নতুন টাস্ক সামনে আসবে।
                 });
             });
         }
 
+        // ১২ ঘণ্টার অ্যাড কুলডাউন ম্যানেজমেন্ট সিস্টেম
+        const COOLDOWN_TIME = 12 * 60 * 60 * 1000; // ১২ ঘণ্টা মিলিসেকেন্ডে
+
+        function checkAdCooldowns(data) {
+            let now = Date.now();
+            
+            // Ad 1 Check
+            let lastAd1 = data.lastAd1Time || 0;
+            if (now - lastAd1 < COOLDOWN_TIME) {
+                startAdTimer(1, lastAd1 + COOLDOWN_TIME - now);
+            } else {
+                document.getElementById('adBtn1').innerText = "Watch Ad";
+                document.getElementById('adBtn1').disabled = false;
+            }
+
+            // Ad 2 Check
+            let lastAd2 = data.lastAd2Time || 0;
+            if (now - lastAd2 < COOLDOWN_TIME) {
+                startAdTimer(2, lastAd2 + COOLDOWN_TIME - now);
+            } else {
+                document.getElementById('adBtn2').innerText = "Watch Ad";
+                document.getElementById('adBtn2').disabled = false;
+            }
+        }
+
+        function watchAd(adNumber, rewardAmount) {
+            const btn = document.getElementById('adBtn' + adNumber);
+            if(btn.disabled) return;
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
+            btn.disabled = true;
+
+            // এখানে সিম্যুলেটেড ভিডিও অ্যাড প্লে হচ্ছে (৫ সেকেন্ড পর রিওয়ার্ড দিবে)
+            setTimeout(() => {
+                let now = Date.now();
+                userRef.once('value').then((snapshot) => {
+                    let data = snapshot.val() || { gp: 0 };
+                    let currentGp = data.gp !== undefined ? data.gp : (data.points || 0);
+                    let updateData = { gp: currentGp + rewardAmount, points: currentGp + rewardAmount };
+                    
+                    if(adNumber === 1) updateData.lastAd1Time = now;
+                    if(adNumber === 2) updateData.lastAd2Time = now;
+
+                    userRef.update(updateData).then(() => {
+                        tg.showAlert(`Ad watched successfully! +${rewardAmount} GP added.`);
+                        checkAdCooldowns(snapshot.val());
+                    });
+                });
+            }, 4000);
+        }
+
+        function startAdTimer(adNumber, timeLeft) {
+            const btn = document.getElementById('adBtn' + adNumber);
+            btn.disabled = true;
+
+            let interval = setInterval(() => {
+                timeLeft -= 1000;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    btn.innerText = "Watch Ad";
+                    btn.disabled = false;
+                } else {
+                    let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                    btn.innerText = `${hours}h ${minutes}m ${seconds}s`;
+                }
+            }, 1000);
+        }
+
+        // সোয়াইপ নেভিগেশন এফেক্ট
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
             let touchEndX = e.changedTouches[0].screenX;
             let diff = touchEndX - touchStartX;
             const container = document.getElementById('mainContainer');
-            const bottomNav = document.getElementById('bottomNav');
 
             if (Math.abs(diff) > 50) {
                 if (diff > 0) {
                     container.classList.add('page-slide-right');
-                    bottomNav.style.background = '#064e3b';
-                    setTimeout(() => { window.location.href = "index.html"; }, 250);
+                    setTimeout(() => { window.location.href = "game.html"; }, 250);
                 } else {
                     container.classList.add('page-slide-left');
-                    bottomNav.style.background = '#1e1b4b';
-                    setTimeout(() => { window.location.href = "ads.html"; }, 250);
+                    setTimeout(() => { window.location.href = "shop.html"; }, 250);
                 }
             }
         });
