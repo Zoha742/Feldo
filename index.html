@@ -118,7 +118,7 @@
         .sponsor-banner h3 { margin: 0 0 6px 0; font-size: 16px; color: #c084fc; }
         .sponsor-banner p { margin: 0; font-size: 12px; color: var(--text-muted); }
 
-        /* Notice Modal Popup Styling (English) */
+        /* Notice Modal Popup Styling (English) - Modified for Virtual Wardrobe/Collectible framing */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
         .notice-modal {
             display: none;
@@ -168,7 +168,7 @@
 </head>
 <body>
 
-    <!-- Notice Modal Popup (English for Adsgram Review) -->
+    <!-- Notice Modal Popup (Updated to Virtual Wardrobe / Collectibles framing) -->
     <div class="overlay" id="noticeOverlay"></div>
     <div class="notice-modal" id="noticeModal">
         <h3><i class="fa-solid fa-bullhorn" style="color: #c084fc;"></i> How to Play & Earn</h3>
@@ -176,7 +176,7 @@
             <li><strong>Complete Tasks:</strong> Complete daily tasks and watch ads to earn <strong>GP (Fuel)</strong> points.</li>
             <li><strong>Play Game:</strong> Use your GP points to play the drop mini-game.</li>
             <li><strong>Earn Gold:</strong> Catch items in the game to score and earn <strong>Gold Points</strong>.</li>
-            <li><strong>Shopping:</strong> Spend your earned Gold Points to buy exclusive items and dresses from the shop.</li>
+            <li><strong>Wardrobe:</strong> Spend your earned Gold Points to unlock exclusive virtual outfits and collectibles for your profile.</li>
         </ul>
         <button class="close-notice-btn" onclick="closeNoticeModal()">Got It, Let's Play!</button>
     </div>
@@ -197,7 +197,7 @@
             <div class="points-title">Your Balance</div>
             <div class="points-value">
                 <div class="currency-box" title="GP Points (Fuel)">⚡ <span id="gp-balance">0</span> GP</div>
-                <div class="currency-box" title="Gold Points (Shopping)">🪙 <span id="gold-balance">0</span> Gold</div>
+                <div class="currency-box" title="Gold Points (Wardrobe)">🪙 <span id="gold-balance">0</span> Gold</div>
             </div>
         </div>
 
@@ -216,7 +216,7 @@
             </a>
             <a href="shop.html" class="menu-item">
                 <div class="menu-icon" style="background: #f59e0b;"><i class="fa-solid fa-store"></i></div>
-                <div class="menu-label">Shop</div>
+                <div class="menu-label">Wardrobe</div>
             </a>
         </div>
 
@@ -227,11 +227,11 @@
         <div class="bonus-scroll" id="daily-bonus-container"></div>
 
         <div class="section-header">
-            <div class="section-title">Featured Dresses</div>
+            <div class="section-title">Featured Outfits</div>
             <a href="shop.html" style="font-size: 12px; color: #c084fc; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
-        <!-- ৪টি ভিন্ন স্টাইলের ড্রেস (সঠিক ও ভ্যালিড ইমেজ লিংক সহ) -->
+        <!-- ভার্চুয়াল কালেক্টিবল আউটফিট প্রিভিউ গ্রিড -->
         <div class="shop-preview-grid">
             <div class="shop-preview-card">
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Royal Floral Gown">
@@ -239,7 +239,7 @@
                     <h4 class="shop-preview-title">Royal Floral Gown</h4>
                     <div class="shop-preview-price">🪙 15,000 Gold</div>
                 </div>
-                <a href="shop.html" class="shop-preview-btn">Buy Now</a>
+                <a href="shop.html" class="shop-preview-btn">Unlock</a>
             </div>
             <div class="shop-preview-card">
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" class="shop-preview-img" alt="Classic Party Dress">
@@ -247,7 +247,7 @@
                     <h4 class="shop-preview-title">Classic Party Dress</h4>
                     <div class="shop-preview-price">🪙 20,000 Gold</div>
                 </div>
-                <a href="shop.html" class="shop-preview-btn">Buy Now</a>
+                <a href="shop.html" class="shop-preview-btn">Unlock</a>
             </div>
             <div class="shop-preview-card">
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/19_fazthb.webp" class="shop-preview-img" alt="Cyberpunk Streetwear">
@@ -255,7 +255,7 @@
                     <h4 class="shop-preview-title">Cyberpunk Streetwear</h4>
                     <div class="shop-preview-price">🪙 18,500 Gold</div>
                 </div>
-                <a href="shop.html" class="shop-preview-btn">Buy Now</a>
+                <a href="shop.html" class="shop-preview-btn">Unlock</a>
             </div>
             <div class="shop-preview-card">
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/16_ff8bo3.webp" class="shop-preview-img" alt="Elegance Velvet Suit">
@@ -263,7 +263,7 @@
                     <h4 class="shop-preview-title">Elegance Velvet Suit</h4>
                     <div class="shop-preview-price">🪙 25,000 Gold</div>
                 </div>
-                <a href="shop.html" class="shop-preview-btn">Buy Now</a>
+                <a href="shop.html" class="shop-preview-btn">Unlock</a>
             </div>
         </div>
 
@@ -350,7 +350,7 @@
                 let cardClass = "bonus-card" + (isActive ? " active" : "") + (isClaimed ? " claimed" : "");
 
                 container.innerHTML += `
-                    <div class="${cardClass}">
+                    <div class="${cardCardClass = cardClass}">
                         <div class="day">Day ${i}</div>
                         <div class="icon"><i class="${iconClass}"></i></div>
                         <div class="reward">+${rewards[i-1]} GP</div>
@@ -378,7 +378,7 @@
             });
         }
 
-        // ৬ ঘণ্টা পর পর (১২ ঘণ্টায় দুইবার) নোটিশ পপআপ দেখানোর লজিক
+        // ৬ ঘণ্টা পর পর নোটিশ পপআপ দেখানোর লজিক
         function checkAndShowNotice() {
             const SIX_HOURS = 6 * 60 * 60 * 1000;
             let lastShownTime = localStorage.getItem('feldo_notice_time_' + userId);
