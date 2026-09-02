@@ -70,7 +70,6 @@
         .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
         .user-id-badge { font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block; background: rgba(124, 58, 237, 0.15); padding: 1px 6px; border-radius: 6px; }
 
-        /* ব্যালেন্স ও স্ট্যাটস গ্রিড (GP এবং Gold Coin আলাদাভাবে সাজানো) */
         .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 16px; }
         .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; text-align: center; }
         .stat-card .stat-value { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: #fbbf24; }
@@ -95,11 +94,21 @@
         .menu-row-left { display: flex; align-items: center; gap: 14px; }
         .menu-row-icon { width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; }
 
-        .admin-row-item { 
-            background: linear-gradient(135deg, rgba(6, 78, 59, 0.4), rgba(2, 44, 34, 0.6)); 
-            border: 1px solid #22c55e; 
-            display: none; 
+        /* অ্যাডমিন দুটিকে এক লাইনে ছোট করার জন্য গ্রিড স্টাইল */
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; display: none; }
+        .admin-box-item {
+            background: linear-gradient(135deg, rgba(6, 78, 59, 0.4), rgba(2, 44, 34, 0.6));
+            border: 1px solid #22c55e;
+            border-radius: 14px;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #34d399;
+            transition: 0.2s;
         }
+        .admin-box-item:active { transform: scale(0.98); }
+        .admin-box-item i { font-size: 18px; margin-bottom: 4px; display: block; }
+        .admin-box-item h5 { margin: 0; font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
         .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card-bg); border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; padding: 14px 0 16px 0; box-sizing: border-box; z-index: 100; }
         .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 12px; font-weight: 600; cursor: pointer; flex: 1; transition: 0.2s; }
@@ -130,7 +139,6 @@
             </div>
         </div>
 
-        <!-- GP এবং Gold Coin ব্যালেন্স কার্ড -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-value">⚡ <span id="total-gp">0</span> GP</div>
@@ -172,29 +180,17 @@
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
             </a>
 
-            <!-- Admin Panel 1 -->
-            <a class="menu-row-item admin-row-item" id="admin-panel-btn" href="admin.html">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #059669;"><i class="fa-solid fa-user-shield"></i></div>
-                    <div class="menu-row-info">
-                        <h5 style="margin:0; font-size:13px; color:#34d399;">Admin Panel</h5>
-                        <p style="margin:0; font-size:11px; color:#a7f3d0;">Users, Boost, Withdraw & Notif</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color:#34d399;"></i>
-            </a>
-
-            <!-- Admin Panel 2 -->
-            <a class="menu-row-item admin-row-item" id="shop-admin-btn" href="shopadmin.html">
-                <div class="menu-row-left">
-                    <div class="menu-row-icon" style="background: #047857;"><i class="fa-solid fa-store"></i></div>
-                    <div class="menu-row-info">
-                        <h5 style="margin:0; font-size:13px; color:#34d399;">Shop Orders Admin</h5>
-                        <p style="margin:0; font-size:11px; color:#a7f3d0;">Manage orders, phone & address</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right" style="color:#34d399;"></i>
-            </a>
+            <!-- এক লাইনে দুটি ছোট অ্যাডমিন অপশন -->
+            <div class="admin-grid" id="adminGridContainer">
+                <a class="admin-box-item" href="admin.html">
+                    <i class="fa-solid fa-user-shield"></i>
+                    <h5>Admin Panel</h5>
+                </a>
+                <a class="admin-box-item" href="shopadmin.html">
+                    <i class="fa-solid fa-store"></i>
+                    <h5>Shop Admin</h5>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -240,11 +236,9 @@
         }
 
         if (userId === ADMIN_USER_ID) {
-            document.getElementById('admin-panel-btn').style.display = "flex";
-            document.getElementById('shop-admin-btn').style.display = "flex";
+            document.getElementById('adminGridContainer').style.display = "grid";
         }
 
-        // ফায়ারবেস থেকে GP এবং Gold পয়েন্ট রিয়েল-টাইম ফেচ করা
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
             if(data) {
@@ -317,3 +311,4 @@
     </script>
 </body>
 </html>
+```[cite: 10]
