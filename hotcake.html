@@ -6,6 +6,7 @@
     <title>Feldo - Hotcake Mining</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --bg-color: #0b0f19;
@@ -14,7 +15,12 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+            --orange-btn: linear-gradient(135deg, #f59e0b, #d97706);
+            --green-btn: linear-gradient(135deg, #10b981, #059669);
+            --blue-btn: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            --modal-bg: #0b132b;
         }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
@@ -25,12 +31,18 @@
             justify-content: center;
             overflow-x: hidden;
         }
+
         .container {
             width: 100%;
             max-width: 480px;
             padding: 16px;
             box-sizing: border-box;
+            transition: transform 0.3s ease, opacity 0.3s ease;
         }
+
+        .page-slide-left { transform: translateX(-100px); opacity: 0; }
+        .page-slide-right { transform: translateX(100px); opacity: 0; }
+
         .hotcake-header {
             background: var(--primary-gradient);
             border-radius: 16px;
@@ -43,31 +55,164 @@
         .hotcake-header h2 { margin: 0 0 6px 0; font-size: 20px; color: #fff; }
         .hotcake-header p { margin: 0; font-size: 12px; opacity: 0.9; }
 
-        .rig-card {
+        .hotcake-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .hotcake-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 16px;
-            margin-bottom: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .card-top {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .coin-icon {
+            width: 48px; height: 48px;
+            background: rgba(124, 58, 237, 0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fbbf24;
+            font-size: 22px;
+            border: 1.5px solid #fbbf24;
+            flex-shrink: 0;
+        }
+
+        .coin-info h4 { margin: 0 0 3px 0; font-size: 16px; font-weight: 700; color: #fff; }
+        .coin-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
+
+        .card-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 11px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            color: #fff;
             transition: 0.2s;
         }
-        .rig-card:hover { border-color: #7c3aed; }
-        .rig-info { display: flex; align-items: center; gap: 12px; }
-        .rig-icon { width: 45px; height: 45px; background: rgba(124, 58, 237, 0.15); color: #c084fc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .rig-details h4 { margin: 0 0 4px 0; font-size: 15px; font-weight: 700; color: #fff; }
-        .rig-details p { margin: 0; font-size: 11px; color: #94a3b8; }
+        .claim-btn {
+            background: var(--orange-btn);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+        .claim-btn:disabled {
+            background: #334155;
+            color: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        .claim-btn:active { transform: scale(0.97); }
+
+        .boost-action-btn {
+            background: var(--green-btn);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        .boost-action-btn.active {
+            background: var(--blue-btn);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Modal Popups */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--modal-bg);
+            border: 2px solid #7c3aed;
+            border-radius: 22px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            z-index: 1001;
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.3);
+        }
+        .modal h3 { margin: 0 0 8px 0; font-size: 18px; color: #fbbf24; font-weight: 800; }
+        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
         
-        .rig-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-        .claim-btn { background: #f59e0b; color: #000; border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; transition: 0.2s; }
-        .claim-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; }
-        .boost-btn { background: #10b981; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-        .boost-btn:hover { opacity: 0.9; }
+        .modal-btn {
+            background: #111c38;
+            border: 1px solid #2a3b68;
+            color: white;
+            padding: 12px;
+            border-radius: 12px;
+            width: 100%;
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .modal-btn:hover { background: #1e293b; border-color: #7c3aed; }
+        
+        .uid-box {
+            background: #050a14;
+            border: 1px dashed #fbbf24;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #fbbf24;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .copy-uid-btn { background: #fbbf24; color: #000; border: none; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
+        
+        .input-label { text-align: left; font-size: 11px; color: #c084fc; margin-bottom: 4px; font-weight: 600; }
+        
+        .form-input {
+            width: 100%;
+            background: #050a14;
+            border: 1px solid #2a3b68;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 12px;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+            outline: none;
+        }
+
+        input[type="file"] { color: #94a3b8; background: #050a14; }
+        input[type="file"]::file-selector-button {
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; margin-right: 8px;
+        }
+
+        .btn-submit-proof {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff; border: none; width: 100%; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+        .cancel-text { color: #ef4444; font-size: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; display: inline-block; }
 
         /* বটম নেভিগেশন বার */
-        .bottom-nav { 
+        .bottom-nav {
             position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
             width: 100%; max-width: 480px; background: var(--card-bg); 
             border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; 
@@ -81,62 +226,56 @@
 </head>
 <body>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <div class="hotcake-header">
             <h2>🔥 HOTCAKE RIGS</h2>
             <p>Active Hotcake Rigs (12 Hours Interval)</p>
         </div>
 
-        <div id="rigs-container">
-            <!-- Rig 1: Bitcoin -->
-            <div class="rig-card">
-                <div class="rig-info">
-                    <div class="rig-icon" style="color: #f7931a;"><i class="fa-brands fa-bitcoin"></i></div>
-                    <div class="rig-details">
-                        <h4>Bitcoin (BTC)</h4>
-                        <p>Normal: 50 GP | Boosted: 500 GP</p>
-                    </div>
-                </div>
-                <div class="rig-actions">
-                    <button id="claimBtn_btc" class="claim-btn" onclick="claimRig('btc', 50)">Claim 50 GP</button>
-                    <button class="boost-btn" onclick="boostRig('Bitcoin', 2.5)">Boost ($2.5)</button>
-                </div>
-            </div>
-
-            <!-- Rig 2: Binance -->
-            <div class="rig-card">
-                <div class="rig-info">
-                    <div class="rig-icon" style="color: #f3ba2f;"><i class="fa-solid fa-coins"></i></div>
-                    <div class="rig-details">
-                        <h4>Binance (BNB)</h4>
-                        <p>Normal: 50 GP | Boosted: 500 GP</p>
-                    </div>
-                </div>
-                <div class="rig-actions">
-                    <button id="claimBtn_bnb" class="claim-btn" onclick="claimRig('bnb', 50)">Claim 50 GP</button>
-                    <button class="boost-btn" onclick="boostRig('Binance', 2.5)">Boost ($2.5)</button>
-                </div>
-            </div>
-
-            <!-- Rig 3: Gram Token -->
-            <div class="rig-card">
-                <div class="rig-info">
-                    <div class="rig-icon" style="color: #0088cc;"><i class="fa-solid fa-gem"></i></div>
-                    <div class="rig-details">
-                        <h4>Gram Token (GRAM)</h4>
-                        <p>Normal: 50 GP | Boosted: 500 GP</p>
-                    </div>
-                </div>
-                <div class="rig-actions">
-                    <button id="claimBtn_gram" class="claim-btn" onclick="claimRig('gram', 50)">Claim 50 GP</button>
-                    <button class="boost-btn" onclick="boostRig('Gram Token', 2.5)">Boost ($2.5)</button>
-                </div>
-            </div>
+        <div class="hotcake-list" id="hotcakes-container">
+            <!-- Dynamic Hotcake Rigs -->
         </div>
     </div>
 
+    <!-- Overlay & Modals -->
+    <div class="overlay" id="overlay" onclick="closeModals()"></div>
+
+    <!-- Modal 1: Select Payment Method -->
+    <div class="modal" id="paymentMethodModal">
+        <h3>Boost <span id="modal-coin-name">Coin</span> ($2.5)</h3>
+        <p>Choose your preferred payment method to boost Hotcake speed for 15 days.</p>
+        <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
+            <i class="fa-solid fa-wallet" style="color: #f59e0b; font-size: 18px;"></i> Binance Pay
+        </button>
+        <button class="modal-btn" onclick="openProofModal('Bitget Wallet', '521132367')">
+            <i class="fa-solid fa-shield-halved" style="color: #38bdf8; font-size: 18px;"></i> Bitget Wallet
+        </button>
+        <span class="cancel-text" onclick="closeModals()">Cancel</span>
+    </div>
+
+    <!-- Modal 2: Submit Proof -->
+    <div class="modal" id="proofModal">
+        <h3 id="proof-title">Payment Proof</h3>
+        <p>Copy admin UID to pay, then check your Telegram User ID and upload screenshot.</p>
+        
+        <div class="uid-box">
+            <span id="admin-uid-text">UID - 9950270208</span>
+            <button class="copy-uid-btn" onclick="copyAdminUid()">Copy</button>
+        </div>
+
+        <div class="input-label">Telegram User ID:</div>
+        <input type="text" id="user-tg-id" class="form-input" readonly style="color: #fbbf24; font-weight: bold;">
+
+        <div class="input-label">Upload Payment Proof / Screenshot:</div>
+        <input type="file" id="proof-file" class="form-input" accept="image/*">
+
+        <button class="btn-submit-proof" onclick="submitBoostProof()">Submit Proof</button>
+        <br>
+        <span class="cancel-text" onclick="closeModals()">Cancel</span>
+    </div>
+
     <!-- সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার -->
-    <div class="bottom-nav">
+    <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
@@ -144,9 +283,9 @@
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBeekTPKMLpOhBH_fMB3eIqWgGy8APQFa8",
@@ -158,6 +297,7 @@
             appId: "1:442359961958:web:815606d4836a66003d50a7",
             measurementId: "G-XNQSP1R3JR"
         };
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
@@ -166,70 +306,166 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id.toString() : "7757851056";
+        let userName = user ? (user.first_name || "User") : "User";
         let userRef = db.ref('users/' + userId);
 
-        const COOLDOWN = 12 * 60 * 60 * 1000; // ১২ ঘণ্টা কুলডাউন
+        const COOLDOWN_TIME = 12 * 60 * 60 * 1000; // ১২ ঘণ্টা কুলডাউন
 
-        userRef.on('value', snap => {
-            let data = snap.val() || {};
-            checkRigCooldown('btc', data.lastClaim_btc);
-            checkRigCooldown('bnb', data.lastClaim_bnb);
-            checkRigCooldown('gram', data.lastClaim_gram);
+        let hotcakes = [
+            { id: 'btc', name: 'Bitcoin (BTC)', icon: 'fa-bitcoin-sign', normalGp: 50, boostedGp: 500 },
+            { id: 'bnb', name: 'Binance (BNB)', icon: 'fa-coins', normalGp: 50, boostedGp: 500 },
+            { id: 'gram', name: 'Gram Token (GRAM)', icon: 'fa-gem', normalGp: 50, boostedGp: 500 },
+            { id: 'avax', name: 'Avalanche (AVAX)', icon: 'fa-fire', normalGp: 50, boostedGp: 500 },
+            { id: 'sol', name: 'Solana (SOL)', icon: 'fa-bolt', normalGp: 50, boostedGp: 500 },
+            { id: 'doge', name: 'Dogecoin (DOGE)', icon: 'fa-dog', normalGp: 50, boostedGp: 500 }
+        ];
+
+        let userData = {};
+        let selectedHotcakeId = "";
+        let selectedMethod = "";
+        let currentAdminUid = "";
+
+        userRef.on('value', (snapshot) => {
+            userData = snapshot.val() || {};
+            renderHotcakes();
         });
 
-        function claimRig(rigName, amount) {
+        function renderHotcakes() {
+            const container = document.getElementById('hotcakes-container');
+            container.innerHTML = '';
+            let currentTime = Date.now();
+            let boosts = userData.boosts || {};
+
+            hotcakes.forEach(item => {
+                let isBoosted = false;
+                let rewardGp = item.normalGp;
+                let boostBtnText = "Boost ($2.5)";
+                let boostBtnClass = "action-btn boost-action-btn";
+
+                if (boosts[item.id] && boosts[item.id].expireTime > currentTime) {
+                    isBoosted = true;
+                    rewardGp = item.boostedGp;
+                    boostBtnText = "Boosted (Active)";
+                    boostBtnClass = "action-btn boost-action-btn active";
+                }
+
+                // কুলডাউন চেক লজিক
+                let lastClaim = userData['lastClaim_' + item.id] || 0;
+                let timeLeft = (lastClaim + COOLDOWN_TIME) - currentTime;
+                let claimBtnDisabled = false;
+                let claimBtnText = `Claim ${rewardGp} GP`;
+
+                if (timeLeft > 0) {
+                    claimBtnDisabled = true;
+                    let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+                    claimBtnText = `${hours}h ${minutes}m ${seconds}s`;
+                }
+
+                container.innerHTML += `
+                    <div class="hotcake-card">
+                        <div class="card-top">
+                            <div class="coin-icon"><i class="fa-solid ${item.icon}"></i></div>
+                            <div class="coin-info">
+                                <h4>${item.name}</h4>
+                                <p>Normal: ${item.normalGp} GP | Boosted: ${item.boostedGp} GP ($2.5 / 15 Days)</p>
+                            </div>
+                        </div>
+                        <div class="card-buttons">
+                            <button id="claimBtn_${item.id}" class="action-btn claim-btn" ${claimBtnDisabled ? 'disabled' : ''} onclick="claimReward('${item.id}', ${rewardGp})">${claimBtnText}</button>
+                            <button class="${boostBtnClass}" onclick="openPaymentModal('${item.id}', '${item.name}')">${boostBtnText}</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function claimReward(id, gp) {
             let now = Date.now();
-            userRef.once('value').then(snap => {
-                let data = snap.val() || {};
-                let currentGp = data.gp !== undefined ? data.gp : (data.points || 0);
-                
+            userRef.once('value').then((snapshot) => {
+                let data = snapshot.val() || {};
+                let currentPoints = data.points !== undefined ? data.points : (data.gp || 0);
+                let newPoints = currentPoints + gp;
+
                 let updateData = {
-                    gp: currentGp + amount,
-                    points: currentGp + amount
+                    points: newPoints,
+                    gp: newPoints
                 };
-                updateData['lastClaim_' + rigName] = now;
+                updateData['lastClaim_' + id] = now;
 
                 userRef.update(updateData).then(() => {
-                    tg.showAlert(`🎉 Successfully claimed +${amount} GP from ${rigName.toUpperCase()} Rig!`);
+                    tg.showAlert(`🎉 Successfully claimed ${gp} GP!`);
                 });
             });
         }
 
-        function checkRigCooldown(rigName, lastClaimTime) {
-            let btn = document.getElementById('claimBtn_' + rigName);
-            if (!lastClaimTime) {
-                btn.innerText = "Claim 50 GP";
-                btn.disabled = false;
+        // রিয়েল-টাইম কাউন্টডাউন টাইমার প্রতি ১ সেকেন্ডে আপডেট করার জন্য
+        setInterval(() => {
+            if (document.getElementById('hotcakes-container')) {
+                renderHotcakes();
+            }
+        }, 1000);
+
+        function openPaymentModal(hotcakeId, hotcakeName) {
+            selectedHotcakeId = hotcakeId;
+            document.getElementById('modal-coin-name').innerText = hotcakeName;
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('paymentMethodModal').style.display = 'block';
+        }
+
+        function openProofModal(method, adminUid) {
+            selectedMethod = method;
+            currentAdminUid = adminUid;
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            
+            document.getElementById('proof-title').innerText = `${method} Boost Proof`;
+            document.getElementById('admin-uid-text').innerText = `UID - ${adminUid}`;
+            document.getElementById('user-tg-id').value = userId;
+            document.getElementById('proof-file').value = "";
+
+            document.getElementById('proofModal').style.display = 'block';
+        }
+
+        function copyAdminUid() {
+            navigator.clipboard.writeText(currentAdminUid).then(() => {
+                tg.showAlert(`Admin UID copied: ${currentAdminUid}`);
+            });
+        }
+
+        function submitBoostProof() {
+            let fileInput = document.getElementById('proof-file');
+            if (fileInput.files.length === 0) {
+                tg.showAlert("Please upload payment proof screenshot!");
                 return;
             }
 
-            let now = Date.now();
-            let timeLeft = (lastClaimTime + COOLDOWN) - now;
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+            reader.onloadend = function() {
+                let base64Image = reader.result;
 
-            if (timeLeft <= 0) {
-                btn.innerText = "Claim 50 GP";
-                btn.disabled = false;
-            } else {
-                btn.disabled = true;
-                let hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                let minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                let seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-                btn.innerText = `${hours}h ${minutes}m ${seconds}s`;
-            }
+                let boostRequest = {
+                    userId: userId,
+                    userName: userName,
+                    method: selectedMethod,
+                    screenshot: base64Image,
+                    status: true,
+                    timestamp: Date.now()
+                };
+
+                db.ref(`users/${userId}/pending_boosts/${selectedHotcakeId}`).set(boostRequest).then(() => {
+                    closeModals();
+                    tg.showAlert("Boost payment proof submitted successfully! Admin will review and activate your boost.");
+                });
+            };
+            reader.readAsDataURL(file);
         }
 
-        // প্রতি ১ সেকেন্ডে টাইমার আপডেট করার জন্য ইন্টারভ্যাল
-        setInterval(() => {
-            userRef.once('value').then(snap => {
-                let data = snap.val() || {};
-                checkRigCooldown('btc', data.lastClaim_btc);
-                checkRigCooldown('bnb', data.lastClaim_bnb);
-                checkRigCooldown('gram', data.lastClaim_gram);
-            });
-        }, 1000);
-
-        function boostRig(rigTitle, priceUsd) {
-            tg.showAlert(`🚀 Boost feature for ${rigTitle} (${priceUsd}$) is coming soon!`);
+        function closeModals() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            document.getElementById('proofModal').style.display = 'none';
         }
     </script>
 </body>
