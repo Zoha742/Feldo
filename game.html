@@ -187,11 +187,11 @@
     <div class="modal" id="rulesModal">
         <h3>🎮 Game Rules</h3>
         <ul>
-            <li>First <strong>2 plays every day are FREE!</strong>[cite: 10]</li>
-            <li>After free plays, you can play up to <strong>5 times</strong> using <strong>50 GP (Fuel)</strong> per play[cite: 10].</li>
-            <li>Catch Gold (🪙 +10), Stars (⭐️ +20), and Diamonds (💎 +50)![cite: 10]</li>
-            <li>Catch <strong>Freeze (❄️)</strong> to slow down falling items.[cite: 10]</li>
-            <li>Avoid Bombs (💣 -10 points). Time limit: <strong>15 seconds</strong>![cite: 10]</li>
+            <li>First <strong>2 plays every day are FREE!</strong></li>
+            <li>After free plays, you can play up to <strong>5 times</strong> using <strong>50 GP (Fuel)</strong> per play.</li>
+            <li>Catch Gold (🪙 +2), Stars (⭐️ +5), and Diamonds (💎 +5)!</li>
+            <li>Catch <strong>Freeze (❄️)</strong> to slow down falling items.</li>
+            <li>Avoid Bombs (💣 -2 points). Time limit: <strong>15 seconds</strong>!</li>
         </ul>
         <button class="close-modal-btn" onclick="closeRulesModal()">Got It</button>
     </div>
@@ -268,7 +268,6 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
-        // হাই-ডিফেনশন ডিসপ্লের জন্য ক্যানভাস স্কেলিং অপ্টিমাইজেশন (ল্যাগ দূর করতে)
         canvas.width = 360;
         canvas.height = 420;
 
@@ -297,9 +296,8 @@
             if (freePlaysLeft > 0) {
                 cost = 0;
             } else if (paidPlaysLeft > 0) {
-                cost = 50;
+                cost = 50;[cite: 7]
                 if (userGp < 50) {
-                    // অপর্যাপ্ত GP হলে অ্যালার্ট দেখানোর পর ক্লোজ করলে ইউজারকে Task অপশনে নিয়ে যাওয়া হবে
                     tg.showAlert("❌ Insufficient GP Fuel! You need 50 GP to play.", () => {
                         window.location.href = 'task.html';
                     });
@@ -359,14 +357,14 @@
             let rand = Math.random();
             let type = "coin"; 
             let text = "🪙";
-            let points = 10;
+            let points = 2; // গোল্ড কয়েন পয়েন্ট ২ করা হলো
 
             if (rand < 0.15) {
-                type = "bomb"; text = "💣"; points = -10;
+                type = "bomb"; text = "💣"; points = -2; // বম্ব পয়েন্ট -২ করা হলো
             } else if (rand < 0.35) {
-                type = "star"; text = "⭐️"; points = 20;
+                type = "star"; text = "⭐️"; points = 5; // স্টার পয়েন্ট ৫ করা হলো
             } else if (rand < 0.45) {
-                type = "diamond"; text = "💎"; points = 50;
+                type = "diamond"; text = "💎"; points = 5; // ডায়মন্ড পয়েন্ট ৫ করা হলো
             } else if (rand < 0.53) {
                 type = "freeze"; text = "❄️"; points = 0;
             }
