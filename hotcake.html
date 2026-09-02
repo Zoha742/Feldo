@@ -148,17 +148,17 @@
             box-shadow: 0 15px 40px rgba(124, 58, 237, 0.3);
         }
         .modal h3 { margin: 0 0 8px 0; font-size: 18px; color: #fbbf24; font-weight: 800; }
-        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
+        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4; }
         
         .modal-btn {
             background: #111c38;
             border: 1px solid #2a3b68;
             color: white;
-            padding: 12px;
-            border-radius: 12px;
+            padding: 10px;
+            border-radius: 10px;
             width: 100%;
-            margin-bottom: 10px;
-            font-size: 13px;
+            margin-bottom: 8px;
+            font-size: 12px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -167,19 +167,43 @@
         }
         .modal-btn:hover { background: #1e293b; border-color: #7c3aed; }
         
-        .wallet-info-box {
+        .uid-box {
             background: #050a14;
             border: 1px dashed #fbbf24;
-            padding: 12px;
+            padding: 10px;
             border-radius: 10px;
-            font-size: 13px;
+            font-size: 12px;
             color: #fbbf24;
             font-weight: bold;
-            margin-bottom: 16px;
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+        .copy-uid-btn { background: #fbbf24; color: #000; border: none; padding: 5px 10px; border-radius: 6px; font-size: 10px; font-weight: bold; cursor: pointer; }
+        
+        .input-label { text-align: left; font-size: 11px; color: #c084fc; margin-bottom: 4px; font-weight: 600; }
+        
+        .form-input {
+            width: 100%;
+            background: #050a14;
+            border: 1px solid #2a3b68;
+            padding: 10px;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 12px;
+            box-sizing: border-box;
+            margin-bottom: 14px;
+            outline: none;
         }
 
-        .btn-pay-wallet {
+        input[type="file"] { color: #94a3b8; background: #050a14; }
+        input[type="file"]::file-selector-button {
+            background: linear-gradient(135deg, #7c3aed, #4c1d95);
+            color: white; border: none; padding: 6px 12px; border-radius: 6px; font-weight: 700; cursor: pointer; margin-right: 8px;
+        }
+
+        .btn-submit-proof {
             background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff; border: none; width: 100%; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
@@ -215,32 +239,51 @@
     <!-- Overlay & Modals -->
     <div class="overlay" id="overlay" onclick="closeModals()"></div>
 
-    <!-- Modal 1: Select Boost Plan (6 Different Items with Date & Price) -->
+    <!-- Modal 1: Select Boost Plan (6 Days Options)[cite: 8] -->
     <div class="modal" id="boostPlanModal">
-        <h3>Boost <span id="modal-item-name">Hotcake</span></h3>
+        <h3>Boost <span id="modal-item-name">Service</span></h3>
         <p>Select your boost plan:</p>
         
-        <button class="modal-btn" onclick="confirmWalletBoost('5 Days Plan', 2)"><span>📅 5 Days Boost</span> <b style="color:#fbbf24">$2</b></button>
-        <button class="modal-btn" onclick="confirmWalletBoost('10 Days Plan', 5)"><span>📅 10 Days Boost</span> <b style="color:#fbbf24">$5</b></button>
-        <button class="modal-btn" onclick="confirmWalletBoost('15 Days Plan', 8)"><span>📅 15 Days Boost</span> <b style="color:#fbbf24">$8</b></button>
-        <button class="modal-btn" onclick="confirmWalletBoost('20 Days Plan', 10)"><span>📅 20 Days Boost</span> <b style="color:#fbbf24">$10</b></button>
-        <button class="modal-btn" onclick="confirmWalletBoost('25 Days Plan', 15)"><span>📅 25 Days Boost</span> <b style="color:#fbbf24">$15</b></button>
-        <button class="modal-btn" onclick="confirmWalletBoost('30 Days Plan', 20)"><span>📅 30 Days Boost</span> <b style="color:#fbbf24">$20</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan('5 Days', 2)"><span>📅 5 Days Boost</span> <b style="color:#fbbf24">$2</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan('10 Days', 5)"><span>📅 10 Days Boost</span> <b style="color:#fbbf24">$5</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan('15 Days', 8)"><span>📅 15 Days Boost</span> <b style="color:#fbbf24">$8</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan('20 Days', 10)"><span>📅 20 Days Boost</span> <b style="color:#fbbf24">$10</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan('25 Days', 15)"><span>📅 25 Days Boost</span> <b style="color:#fbbf24">$15</b></button>
+        <button class="modal-btn" onclick="selectBoostPlan('30 Days', 20)"><span>📅 30 Days Boost</span> <b style="color:#fbbf24">$20</b></button>
 
         <span class="cancel-text" onclick="closeModals()">Cancel</span>
     </div>
 
-    <!-- Modal 2: Wallet Payment Confirmation -->
-    <div class="modal" id="walletPayModal">
-        <h3>Wallet Payment</h3>
-        <p>You are about to boost <b id="pay-item-name" style="color:#fff"></b> for <b id="pay-plan-name" style="color:#fbbf24"></b>.</p>
+    <!-- Modal 2: Select Payment Method -->
+    <div class="modal" id="paymentMethodModal">
+        <h3>Payment for <span id="pay-plan-title">Plan</span></h3>
+        <p>Choose your preferred payment method:</p>
+        <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
+            <i class="fa-solid fa-wallet" style="color: #f59e0b; font-size: 18px;"></i> Binance Pay
+        </button>
+        <button class="modal-btn" onclick="openProofModal('Bitget Wallet', '521132367')">
+            <i class="fa-solid fa-shield-halved" style="color: #38bdf8; font-size: 18px;"></i> Bitget Wallet
+        </button>
+        <span class="cancel-text" onclick="closeModals()">Cancel</span>
+    </div>
+
+    <!-- Modal 3: Submit Proof -->
+    <div class="modal" id="proofModal">
+        <h3 id="proof-title">Payment Proof</h3>
+        <p>Copy admin UID to pay, then check your Telegram User ID and upload screenshot.</p>
         
-        <div class="wallet-info-box">
-            Amount to Pay: <span id="pay-amount" style="color:#fff;">$0</span><br>
-            Your Wallet Balance: <span id="user-wallet-bal" style="color:#22c55e;">$0</span>
+        <div class="uid-box">
+            <span id="admin-uid-text">UID - 9950270208</span>
+            <button class="copy-uid-btn" onclick="copyAdminUid()">Copy</button>
         </div>
 
-        <button class="btn-pay-wallet" onclick="executeWalletPayment()">Pay from Wallet & Boost</button>
+        <div class="input-label">Telegram User ID:</div>
+        <input type="text" id="user-tg-id" class="form-input" readonly style="color: #fbbf24; font-weight: bold;">
+
+        <div class="input-label">Upload Payment Proof / Screenshot:</div>
+        <input type="file" id="proof-file" class="form-input" accept="image/*">
+
+        <button class="btn-submit-proof" onclick="submitBoostProof()">Submit Proof</button>
         <br>
         <span class="cancel-text" onclick="closeModals()">Cancel</span>
     </div>
@@ -277,24 +320,28 @@
 
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id.toString() : "7757851056";
+        let userName = user ? (user.first_name || "User") : "User";
         let userRef = db.ref('users/' + userId);
 
         const COOLDOWN_TIME = 12 * 60 * 60 * 1000; // ১২ ঘণ্টা কুলডাউন
 
-        // ৬টি সম্পূর্ণ আলাদা Hotcake আইটেম (কোনো Rig নেই)
+        // ৬টি আলাদা সার্ভিস আইটেম (আইকন ও নাম আপডেট করা)
         let hotcakes = [
-            { id: 'item1', name: 'Hotcake Alpha', icon: 'fa-fire', normalGp: 50, boostedGp: 500, date: '15 Days', price: '$2.5' },
-            { id: 'item2', name: 'Hotcake Beta', icon: 'fa-bolt', normalGp: 50, boostedGp: 500, date: '10 Days', price: '$5' },
-            { id: 'item3', name: 'Hotcake Gamma', icon: 'fa-gem', normalGp: 50, boostedGp: 500, date: '15 Days', price: '$8' },
-            { id: 'item4', name: 'Hotcake Delta', icon: 'fa-coins', normalGp: 50, boostedGp: 500, date: '20 Days', price: '$10' },
-            { id: 'item5', name: 'Hotcake Omega', icon: 'fa-shield-halved', normalGp: 50, boostedGp: 500, date: '25 Days', price: '$15' },
-            { id: 'item6', name: 'Hotcake Zeta', icon: 'fa-rocket', normalGp: 50, boostedGp: 500, date: '30 Days', price: '$20' }
+            { id: 'service1', name: 'Hotcake Alpha', icon: 'fa-fire', normalGp: 50, boostedGp: 500 },
+            { id: 'service2', name: 'Hotcake Beta', icon: 'fa-bolt', normalGp: 50, boostedGp: 500 },
+            { id: 'service3', name: 'Hotcake Gamma', icon: 'fa-gem', normalGp: 50, boostedGp: 500 },
+            { id: 'service4', name: 'Hotcake Delta', icon: 'fa-coins', normalGp: 50, boostedGp: 500 },
+            { id: 'service5', name: 'Hotcake Omega', icon: 'fa-shield-halved', normalGp: 50, boostedGp: 500 },
+            { id: 'service6', name: 'Hotcake Zeta', icon: 'fa-rocket', normalGp: 50, boostedGp: 500 }
         ];
 
         let userData = {};
-        let selectedHotcakeId = "";
-        let selectedPlanName = "";
-        let selectedPriceUsd = 0;
+        let selectedServiceId = "";
+        let selectedServiceName = "";
+        let selectedPlan = "";
+        let selectedPrice = "";
+        let selectedMethod = "";
+        let currentAdminUid = "";
 
         userRef.on('value', (snapshot) => {
             userData = snapshot.val() || {};
@@ -309,7 +356,7 @@
 
             hotcakes.forEach(item => {
                 let rewardGp = item.normalGp;
-                let boostBtnText = `Boost (${item.price})`;
+                let boostBtnText = "Boost Service";
                 let boostBtnClass = "action-btn boost-action-btn";
 
                 if (boosts[item.id] && boosts[item.id].expireTime > currentTime) {
@@ -337,7 +384,7 @@
                             <div class="coin-icon"><i class="fa-solid ${item.icon}"></i></div>
                             <div class="coin-info">
                                 <h4>${item.name}</h4>
-                                <p>Normal: ${item.normalGp} GP | Boosted: ${item.boostedGp} GP<br><b>Duration:</b> ${item.date} | <b>Price:</b> ${item.price}</p>
+                                <p>Normal: ${item.normalGp} GP | Boosted: ${item.boostedGp} GP</p>
                             </div>
                         </div>
                         <div class="card-buttons">
@@ -374,55 +421,81 @@
             }
         }, 1000);
 
-        function openBoostPlanModal(hotcakeId, hotcakeName) {
-            selectedHotcakeId = hotcakeId;
-            document.getElementById('modal-item-name').innerText = hotcakeName;
+        function openBoostPlanModal(serviceId, serviceName) {
+            selectedServiceId = serviceId;
+            selectedServiceName = serviceName;
+            document.getElementById('modal-item-name').innerText = serviceName;
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('boostPlanModal').style.display = 'block';
         }
 
-        function confirmWalletBoost(planName, priceUsd) {
-            selectedPlanName = planName;
-            selectedPriceUsd = priceUsd;
-
-            let itemName = hotcakes.find(h => h.id === selectedHotcakeId).name;
-            let userWalletBalance = userData.wallet_usd || 0; // ইউজারের ওয়ালেট ডলার ব্যালেন্স
-
-            document.getElementById('pay-item-name').innerText = itemName;
-            document.getElementById('pay-plan-name').innerText = planName;
-            document.getElementById('pay-amount').innerText = `$${priceUsd}`;
-            document.getElementById('user-wallet-bal').innerText = `$${userWalletBalance}`;
-
+        function selectBoostPlan(plan, price) {
+            selectedPlan = plan;
+            selectedPrice = `$${price}`;
             document.getElementById('boostPlanModal').style.display = 'none';
-            document.getElementById('walletPayModal').style.display = 'block';
+
+            document.getElementById('pay-plan-title').innerText = `${selectedServiceName} (${plan} - ${selectedPrice})`;
+            document.getElementById('paymentMethodModal').style.display = 'block';
         }
 
-        function executeWalletPayment() {
-            let userWalletBalance = userData.wallet_usd || 0;
+        function openProofModal(method, adminUid) {
+            selectedMethod = method;
+            currentAdminUid = adminUid;
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            
+            document.getElementById('proof-title').innerText = `${method} Proof (${selectedPlan})`;
+            document.getElementById('admin-uid-text').innerText = `UID - ${adminUid}`;
+            document.getElementById('user-tg-id').value = userId;
+            document.getElementById('proof-file').value = "";
 
-            if (userWalletBalance < selectedPriceUsd) {
-                tg.showAlert("❌ Insufficient Wallet Balance! Please add funds to your wallet.");
+            document.getElementById('proofModal').style.display = 'block';
+        }
+
+        function copyAdminUid() {
+            navigator.clipboard.writeText(currentAdminUid).then(() => {
+                tg.showAlert(`Admin UID copied: ${currentAdminUid}`);
+            });
+        }
+
+        function submitBoostProof() {
+            let fileInput = document.getElementById('proof-file');
+            if (fileInput.files.length === 0) {
+                tg.showAlert("Please upload payment proof screenshot!");
                 return;
             }
 
-            let newBalance = userWalletBalance - selectedPriceUsd;
-            let expireTime = Date.now() + (15 * 24 * 60 * 60 * 1000); // ১৫ দিনের বুস্ট মেয়াদ
+            let file = fileInput.files[0];
+            let reader = new FileReader();
+            reader.onloadend = function() {
+                let base64Image = reader.result;
 
-            let boostUpdate = {
-                wallet_usd: newBalance
+                // অ্যাডমিনের কাছে সার্ভিস এবং কত দিনের জন্য বুস্ট নিচ্ছে তা চলে যাবে
+                let boostRequest = {
+                    userId: userId,
+                    userName: userName,
+                    serviceId: selectedServiceId,
+                    serviceName: selectedServiceName,
+                    duration: selectedPlan,
+                    price: selectedPrice,
+                    method: selectedMethod,
+                    screenshot: base64Image,
+                    status: "Pending",
+                    timestamp: Date.now()
+                };
+
+                db.ref(`users/${userId}/pending_boosts/${selectedServiceId}`).set(boostRequest).then(() => {
+                    closeModals();
+                    tg.showAlert("Boost payment proof submitted successfully! Admin will review and activate your service.");
+                });
             };
-            boostUpdate[`boosts/${selectedHotcakeId}/expireTime`] = expireTime;
-
-            userRef.update(boostUpdate).then(() => {
-                closeModals();
-                tg.showAlert(`🎉 Successfully boosted using Wallet! Enjoy enhanced earnings.`);
-            });
+            reader.readAsDataURL(file);
         }
 
         function closeModals() {
             document.getElementById('overlay').style.display = 'none';
             document.getElementById('boostPlanModal').style.display = 'none';
-            document.getElementById('walletPayModal').style.display = 'none';
+            document.getElementById('paymentMethodModal').style.display = 'none';
+            document.getElementById('proofModal').style.display = 'none';
         }
     </script>
 </body>
