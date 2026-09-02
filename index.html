@@ -118,7 +118,7 @@
         .sponsor-banner h3 { margin: 0 0 6px 0; font-size: 16px; color: #c084fc; }
         .sponsor-banner p { margin: 0; font-size: 12px; color: var(--text-muted); }
 
-        /* পপআপ নোটিফিকেশন স্টাইল */
+        /* English Notice Modal Styling */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
         .notice-modal {
             display: none;
@@ -168,15 +168,15 @@
 </head>
 <body>
 
-    <!-- নোটিফিকেশন পপআপ মোডাল -->
+    <!-- English Notice Modal for Adsgram Review -->
     <div class="overlay" id="noticeOverlay"></div>
     <div class="notice-modal" id="noticeModal">
         <h3><i class="fa-solid fa-bullhorn" style="color: #c084fc;"></i> How to Play & Earn</h3>
         <ul>
-            <li><strong>Task Complete:</strong> টাস্ক পূরণ করে প্রথমে <strong>GP (Fuel)</strong> পয়েন্ট অর্জন করুন[cite: 7]।</li>
-            <li><strong>Play Game:</strong> আবশ্যিকভাবে গেম খেলার জন্য GP পয়েন্ট খরচ করতে হবে[cite: 7]।</li>
-            <li><strong>Earn Gold:</strong> গেম খেলে হাই স্কোর করে শপিং করার জন্য <strong>Gold Point</strong> আর্ন করুন[cite: 7]।</li>
-            <li><strong>Shopping:</strong> অর্জিত গোল্ড পয়েন্ট দিয়ে শপ থেকে আকর্ষণীয় ড্রেস বা আইটেম কিনতে পারবেন[cite: 7]।</li>
+            <li><strong>Complete Tasks:</strong> Complete daily tasks and watch ads to earn <strong>GP (Fuel)</strong> points.</li>
+            <li><strong>Play Game:</strong> Use your GP points to play the drop mini-game.</li>
+            <li><strong>Earn Gold:</strong> Catch items in the game to score and earn <strong>Gold Points</strong>.</li>
+            <li><strong>Shopping:</strong> Spend your earned Gold Points to buy exclusive items and dresses from the shop.</li>
         </ul>
         <button class="close-notice-btn" onclick="closeNoticeModal()">Got It, Let's Play!</button>
     </div>
@@ -395,7 +395,6 @@
             localStorage.setItem('feldo_notice_time_' + userId, Date.now());
         }
 
-        // পেজ লোড হওয়ার পর নোটিফিকেশন চেক করা
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(checkAndShowNotice, 1000);
         });
