@@ -279,6 +279,7 @@
         let isFrozen = false;
         let freezeTimeout = null;
 
+        // রুলস মোডাল ওপেন এবং ক্লোজ করার ফাংশন দুটি যোগ করা হলো
         function openRulesModal() {
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('rulesModal').style.display = 'block';
@@ -296,7 +297,7 @@
             if (freePlaysLeft > 0) {
                 cost = 0;
             } else if (paidPlaysLeft > 0) {
-                cost = 50;[cite: 7]
+                cost = 50;
                 if (userGp < 50) {
                     tg.showAlert("❌ Insufficient GP Fuel! You need 50 GP to play.", () => {
                         window.location.href = 'task.html';
@@ -357,14 +358,14 @@
             let rand = Math.random();
             let type = "coin"; 
             let text = "🪙";
-            let points = 2; // গোল্ড কয়েন পয়েন্ট ২ করা হলো
+            let points = 2; 
 
             if (rand < 0.15) {
-                type = "bomb"; text = "💣"; points = -2; // বম্ব পয়েন্ট -২ করা হলো
+                type = "bomb"; text = "💣"; points = -2; 
             } else if (rand < 0.35) {
-                type = "star"; text = "⭐️"; points = 5; // স্টার পয়েন্ট ৫ করা হলো
+                type = "star"; text = "⭐️"; points = 5; 
             } else if (rand < 0.45) {
-                type = "diamond"; text = "💎"; points = 5; // ডায়মন্ড পয়েন্ট ৫ করা হলো
+                type = "diamond"; text = "💎"; points = 5; 
             } else if (rand < 0.53) {
                 type = "freeze"; text = "❄️"; points = 0;
             }
