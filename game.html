@@ -14,6 +14,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --primary-gradient: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+            --modal-bg: #0b132b;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -44,9 +45,21 @@
             justify-content: space-between;
             align-items: center;
         }
-        .balance-info { display: flex; gap: 8px; font-size: 11px; font-weight: 700; }
+        .balance-info { display: flex; gap: 8px; font-size: 11px; font-weight: 700; align-items: center; }
         .bal-pill { background: rgba(255,255,255,0.15); padding: 4px 8px; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px; }
         
+        .rules-btn-header {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            backdrop-filter: blur(4px);
+        }
+
         .score-timer-bar {
             display: flex;
             justify-content: space-between;
@@ -61,11 +74,11 @@
         .score-box { color: #fbbf24; }
         .timer-box { color: #f43f5e; }
 
-        /* গেম ক্যানভাস এরিয়া */
+        /* গেম ক্যানভাস এরিয়া (বড় করা হয়েছে) */
         .game-canvas-wrapper {
             position: relative;
             width: 100%;
-            height: 350px;
+            height: 420px;
             background: #070913;
             border: 2px solid var(--card-border);
             border-radius: 16px;
@@ -88,29 +101,51 @@
             background: #7c3aed;
             color: #fff;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 12px;
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
             transition: 0.2s;
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+            width: 100%;
         }
         .action-btn:hover { background: #6d28d9; }
         .action-btn:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
 
-        .rules-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 14px;
+        /* Modal Popups for Rules */
+        .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--modal-bg);
+            border: 2px solid #7c3aed;
+            border-radius: 22px;
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            z-index: 1001;
+            box-sizing: border-box;
             text-align: left;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 16px;
+            box-shadow: 0 15px 40px rgba(124, 58, 237, 0.3);
         }
-        .rules-card h4 { margin: 0 0 6px 0; color: #fff; font-size: 13px; }
-        .rules-card ul { margin: 0; padding-left: 16px; }
+        .modal h3 { margin: 0 0 12px 0; font-size: 18px; color: #fbbf24; font-weight: 800; text-align: center; }
+        .modal ul { margin: 0; padding-left: 18px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+        .modal ul li { margin-bottom: 8px; }
+        .close-modal-btn {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+            margin-top: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
 
         /* বটম নেভিগেশন বার */
         .bottom-nav { 
@@ -128,12 +163,12 @@
 <body>
 
     <div class="container">
-        <!-- ওপরের হেডার যেখানে GP এবং Gold ব্যালেন্স শো করবে -->
+        <!-- ওপরের হেডার যেখানে ব্যালেন্স এবং রুলস বাটন রয়েছে -->
         <div class="game-header">
             <h2 style="font-size: 15px; margin: 0;">⚡ Feldo Game</h2>
             <div class="balance-info">
+                <button class="rules-btn-header" onclick="openRulesModal()"><i class="fa-solid fa-circle-question"></i> Rules</button>
                 <div class="bal-pill" title="GP Balance">⚡ <span id="topGp">0</span> GP</div>
-                <div class="bal-pill" title="Gold Balance">🪙 <span id="topGold">0</span> Gold</div>
             </div>
         </div>
 
@@ -147,18 +182,22 @@
         </div>
 
         <div class="game-controls">
-            <button id="startBtn" class="action-btn" onclick="startGame()">Play Game (-20 GP)</button>
+            <button id="startBtn" class="action-btn" onclick="startGame()">Play Game (Free)</button>
         </div>
+    </div>
 
-        <div class="rules-card">
-            <h4>🎮 How to Play:</h4>
-            <ul>
-                <li>Playing costs <strong>20 GP (Fuel)</strong>.</li>
-                <li>Catch Gold (🪙 +10), Stars (⭐️ +20), and Diamonds (💎 +50)!</li>
-                <li>Catch <strong>Freeze (❄️)</strong> to slow down falling items.</li>
-                <li>Avoid Bombs (💣 -10 points). Time limit: <strong>15 seconds</strong>!</li>
-            </ul>
-        </div>
+    <!-- Rules Modal Popup -->
+    <div class="overlay" id="overlay" onclick="closeRulesModal()"></div>
+    <div class="modal" id="rulesModal">
+        <h3>🎮 Game Rules</h3>
+        <ul>
+            <li>First <strong>2 plays every day are FREE!</strong>[cite: 10]</li>
+            <li>After free plays, you can play up to <strong>5 times</strong> using <strong>50 GP (Fuel)</strong> per play[cite: 10].</li>
+            <li>Catch Gold (🪙 +10), Stars (⭐️ +20), and Diamonds (💎 +50)![cite: 10]</li>
+            <li>Catch <strong>Freeze (❄️)</strong> to slow down falling items.[cite: 10]</li>
+            <li>Avoid Bombs (💣 -10 points). Time limit: <strong>15 seconds</strong>![cite: 10]</li>
+        </ul>
+        <button class="close-modal-btn" onclick="closeRulesModal()">Got It</button>
     </div>
 
     <!-- সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার -->
@@ -196,22 +235,49 @@
 
         let userGp = 0;
         let userGold = 0;
+        let freePlaysLeft = 2;
+        let paidPlaysLeft = 5;
+        let lastPlayDate = "";
 
-        // ফায়ারবেস থেকে রিয়েল-টাইম ব্যালেন্স আপডেট
+        // ফায়ারবেস থেকে রিয়েল-টাইম ব্যালেন্স ও প্লে কাউন্ট চেক
         userRef.on('value', snap => {
             let data = snap.val() || {};
             userGp = data.gp !== undefined ? data.gp : (data.points || 0);
             userGold = data.gold !== undefined ? data.gold : 0;
+            
+            let today = new Date().toDateString();
+            if (data.lastPlayDate !== today) {
+                freePlaysLeft = 2;
+                paidPlaysLeft = 5;
+                userRef.update({ lastPlayDate: today, freePlaysLeft: 2, paidPlaysLeft: 5 });
+            } else {
+                freePlaysLeft = data.freePlaysLeft !== undefined ? data.freePlaysLeft : 2;
+                paidPlaysLeft = data.paidPlaysLeft !== undefined ? data.paidPlaysLeft : 5;
+            }
 
             document.getElementById('topGp').innerText = userGp.toLocaleString();
-            document.getElementById('topGold').innerText = userGold.toLocaleString();
+            updatePlayButtonText();
         });
+
+        function updatePlayButtonText() {
+            let btn = document.getElementById('startBtn');
+            if (freePlaysLeft > 0) {
+                btn.innerText = `Play Game (${freePlaysLeft} Free Left)`;
+                btn.disabled = false;
+            } else if (paidPlaysLeft > 0) {
+                btn.innerText = `Play Game (-50 GP) [${paidPlaysLeft} Left]`;
+                btn.disabled = false;
+            } else {
+                btn.innerText = `Daily Play Limit Reached`;
+                btn.disabled = true;
+            }
+        }
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
         canvas.width = 360;
-        canvas.height = 350;
+        canvas.height = 420;
 
         let gameRunning = false;
         let score = 0;
@@ -221,15 +287,52 @@
         let isFrozen = false;
         let freezeTimeout = null;
 
+        function openRulesModal() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('rulesModal').style.display = 'block';
+        }
+
+        function closeRulesModal() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('rulesModal').style.display = 'none';
+        }
+
         function startGame() {
-            if (userGp < 20) {
-                tg.showAlert("❌ Insufficient GP Fuel! Complete tasks or claim hotcake to get GP.");
+            let cost = 0;
+            let today = new Date().toDateString();
+
+            if (freePlaysLeft > 0) {
+                cost = 0;
+            } else if (paidPlaysLeft > 0) {
+                cost = 50;
+                if (userGp < 50) {
+                    tg.showAlert("❌ Insufficient GP Fuel! You need 50 GP to play.");
+                    return;
+                }
+            } else {
+                tg.showAlert("❌ Daily play limit reached!");
                 return;
             }
 
-            // ২০ GP কেটে নেওয়া হলো
-            userGp -= 20;
-            userRef.update({ gp: userGp, points: userGp }).then(() => {
+            let newGp = userGp - cost;
+            let newFreePlays = freePlaysLeft;
+            let newPaidPlays = paidPlaysLeft;
+
+            if (freePlaysLeft > 0) {
+                newFreePlays--;
+            } else {
+                newPaidPlays--;
+            }
+
+            userRef.update({ 
+                gp: newGp, 
+                points: newGp, 
+                freePlaysLeft: newFreePlays,
+                paidPlaysLeft: newPaidPlays,
+                lastPlayDate: today
+            }).then(() => {
+                freePlaysLeft = newFreePlays;
+                paidPlaysLeft = newPaidPlays;
                 gameRunning = true;
                 score = 0;
                 items = [];
@@ -260,7 +363,7 @@
         function spawnItem() {
             if (!gameRunning) return;
             let rand = Math.random();
-            let type = "coin"; // 🪙 Default
+            let type = "coin"; 
             let text = "🪙";
             let points = 10;
 
@@ -279,7 +382,7 @@
             items.push({
                 x: Math.random() * (canvas.width - 30) + 15,
                 y: -20,
-                speed: (Math.random() * 2 + 2) * speedMultiplier,
+                speed: (Math.random() * 2 + 2.5) * speedMultiplier,
                 type: type,
                 text: text,
                 points: points
@@ -316,11 +419,11 @@
             for (let i = items.length - 1; i >= 0; i--) {
                 let item = items[i];
                 let dist = Math.hypot(clickX - item.x, clickY - item.y);
-                if (dist < 32) {
+                if (dist < 35) {
                     if (item.type === "freeze") {
                         isFrozen = true;
                         if (freezeTimeout) clearTimeout(freezeTimeout);
-                        freezeTimeout = setTimeout(() => { isFrozen = false; }, 3000); // ৩ সেকেন্ডের জন্য স্লো হবে
+                        freezeTimeout = setTimeout(() => { isFrozen = false; }, 3000); 
                     } else {
                         score = Math.max(0, score + item.points);
                         document.getElementById('currentScore').innerText = score;
@@ -337,7 +440,6 @@
             clearInterval(countdownTimer);
             cancelAnimationFrame(gameInterval);
 
-            // গেম শেষে অর্জিত পয়েন্ট Gold Points হিসেবে সেভ করা
             userRef.once('value').then(snap => {
                 let data = snap.val() || {};
                 let currentGold = data.gold !== undefined ? data.gold : 0;
@@ -345,8 +447,7 @@
 
                 userRef.update({ gold: newGold }).then(() => {
                     tg.showAlert(`🎉 Time's up! You earned 🪙 ${score} Gold Points.`);
-                    document.getElementById('startBtn').disabled = false;
-                    document.getElementById('startBtn').innerText = "Play Game (-20 GP)";
+                    updatePlayButtonText();
                 });
             });
         }
