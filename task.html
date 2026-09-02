@@ -176,11 +176,11 @@
         </div>
     </div>
 
+    <!-- বটম নেভিগেশন বার থেকে Hotcake অপশন বাদ দেওয়া হয়েছে -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
         <a class="nav-item active" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
@@ -254,7 +254,6 @@
 
             if (adController) {
                 adController.show().then((result) => {
-                    // অ্যাড সফলভাবে দেখার পর রিওয়ার্ড প্রদান
                     let now = Date.now();
                     let currentGp = userData.gp !== undefined ? userData.gp : (userData.points || 0);
                     
@@ -270,7 +269,6 @@
                     tg.showAlert("❌ Ad could not be loaded or was skipped.");
                 });
             } else {
-                // ব্রাউজার বা টেস্ট মোডের জন্য ফলব্যাক
                 let now = Date.now();
                 let currentGp = userData.gp !== undefined ? userData.gp : (userData.points || 0);
                 
@@ -363,6 +361,8 @@
             }, 10000);
         }
 
+        function completeTaskAndRestart(channelUsername) {}
+
         function completeTaskAndReward(channelUsername) {
             let currentGp = userData.gp !== undefined ? userData.gp : (userData.points || 0);
             let newGp = currentGp + 5;
@@ -385,7 +385,7 @@
             renderChannelTasks();
         }, 1000);
 
-        // সোয়াইপ নেভিগেশন ফিক্সড
+        // সোয়াইপ নেভিগেশন আপডেট করা হয়েছে (হটকেক বাদ দিয়ে শুধু গেম ও প্রোফাইলের মধ্যে সোয়াইপ)
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
@@ -399,7 +399,7 @@
                     setTimeout(() => { window.location.href = "game.html"; }, 250);
                 } else {
                     container.classList.add('page-slide-left');
-                    setTimeout(() => { window.location.href = "hotcake.html"; }, 250);
+                    setTimeout(() => { window.location.href = "profile.html"; }, 250);
                 }
             }
         });
