@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feldo - E-Commerce Shop</title>
+    <title>Feldo - Virtual Wardrobe Shop</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -16,7 +16,7 @@
         /* শপ ক্যাটাগরি নেভিগেশন বার */
         .shop-nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scrollbar-width: none; }
         .shop-nav::-webkit-scrollbar { display: none; }
-        .cat-btn { background: #131c2e; border: 1px solid #2a1b4e; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; color: #94a3b8; }
+        .cat-btn { background: #131c2e; border: 1px solid #2a1b4e; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; color: #94a3b8; }
         .cat-btn.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
 
         .dress-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
@@ -48,17 +48,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h3>🛍️ Feldo Store</h3>
+            <h3>✨ Virtual Wardrobe</h3>
             <div class="balance-badge" id="shopBalance">0 Gold</div>
         </div>
 
-        <!-- শপ ক্যাটাগরি নেভিগেশন বার -->
+        <!-- শপ ক্যাটাগরি নেভিগেশন বার (শুধু ভার্চুয়াল কসমেটিকস ও ড্রেস) -->
         <div class="shop-nav">
-            <button class="cat-btn active" onclick="filterCategory('All', this)">All Items</button>
-            <button class="cat-btn" onclick="filterCategory('Dress', this)">👗 Female Dresses</button>
-            <button class="cat-btn" onclick="filterCategory('Boys', this)">👕 Boys Dress</button>
-            <button class="cat-btn" onclick="filterCategory('Phone', this)">📱 Smartphones</button>
-            <button class="cat-btn" onclick="filterCategory('Gadget', this)">🎧 Gadgets</button>
+            <button class="cat-btn active" onclick="filterCategory('All', this)">All Outfits</button>
+            <button class="cat-btn" onclick="filterCategory('Dress', this)">👗 Female Wardrobe</button>
+            <button class="cat-btn" onclick="filterCategory('Boys', this)">👕 Boys Wardrobe</button>
         </div>
 
         <!-- প্রোডাক্ট গ্রিড কন্টেইনার -->
@@ -113,7 +111,7 @@
             }
         });
 
-        // শপের আইটেমগুলো (প্রাইস 15k এবং 20k Gold Point)
+        // শপের ভার্চুয়াল অ্যাভাটার আইটেমগুলো (কসমেটিকস ও ওয়ার্ডরোব ড্রেস)
         const storeItems = [
             { name: "Royal Floral Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp", hasSize: true },
             { name: "Classic Party Dress", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp", hasSize: true },
@@ -140,18 +138,10 @@
             { name: "Chic Designer Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/23_exv5bf.webp", hasSize: true },
             { name: "Elite Collection Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/15_vgqlvi.webp", hasSize: true },
             
-            // Boys Dress
+            // Boys Wardrobe Items
             { name: "Formal Blazer Suit", cat: "Boys", price: 15000, img: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=300", hasSize: true },
             { name: "Casual Hoodie & Jeans", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300", hasSize: true },
-            { name: "Executive 3-Piece Suit", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300", hasSize: true },
-
-            // Smartphones
-            { name: "iPhone 15 Pro Max", cat: "Phone", price: 120000, img: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=300", hasSize: false },
-            { name: "Samsung Galaxy S24 Ultra", cat: "Phone", price: 110000, img: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=300", hasSize: false },
-
-            // Gadgets
-            { name: "Wireless Smart Watch", cat: "Gadget", price: 25000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300", hasSize: false },
-            { name: "Bluetooth Bass Headphone", cat: "Gadget", price: 15000, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300", hasSize: false }
+            { name: "Executive 3-Piece Suit", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300", hasSize: true }
         ];
 
         let selectedSizes = {};
@@ -172,13 +162,13 @@
 
                 dressGrid.innerHTML += `
                     <div class="dress-card">
-                        <img src="${item.img}" class="dress-img" alt="Product" onclick="openZoomModal('${item.img}')" title="Click to zoom image">
+                        <img src="${item.img}" class="dress-img" alt="Virtual Item" onclick="openZoomModal('${item.img}')" title="Click to zoom">
                         <div>
                             <h4 class="dress-title">${item.name}</h4>
                             <div class="dress-price">🪙 ${item.price.toLocaleString()} Gold</div>
                             ${sizeHtml}
                         </div>
-                        <button class="buy-btn" onclick="confirmOrder('${item.name}', ${item.price}, ${index}, ${item.hasSize})">Buy Now</button>
+                        <button class="buy-btn" onclick="confirmUnlock('${item.name}', ${item.price}, ${index}, ${item.hasSize})">Unlock Outfit</button>
                     </div>
                 `;
             });
@@ -214,45 +204,37 @@
             document.getElementById('imageModal').style.display = 'none';
         }
 
-        function confirmOrder(itemName, price, itemId, hasSize) {
+        function confirmUnlock(itemName, price, itemId, hasSize) {
             let itemNameFinal = itemName;
             if (hasSize) {
                 let chosenSize = selectedSizes[itemId];
                 if (!chosenSize) {
-                    tg.showAlert("⚠️ Please select a size (S, M, L, XL) first!");
+                    tg.showAlert("⚠️ Please select an avatar fit size (S, M, L, XL) first!");
                     return;
                 }
-                itemNameFinal = `${itemName} [Size: ${chosenSize}]`;
+                itemNameFinal = `${itemName} [Fit: ${chosenSize}]`;
             }
 
             db.ref('users/' + userId).once('value', snapshot => {
                 let uData = snapshot.val() || {};
-                let addressData = uData.shipping_address || uData.address || localStorage.getItem('shipping_address');
-                
-                if (!addressData) {
-                    tg.showAlert("⚠️ Please set your Home Shipping Address first before placing an order!");
-                    setTimeout(() => {
-                        window.location.href = "address.html";
-                    }, 1200);
-                    return;
-                }
 
                 if (userGold >= price) {
                     let newGold = userGold - price;
 
                     db.ref('users/' + userId).update({ gold: newGold }).then(() => {
-                        let orderData = {
+                        let unlockData = {
                             userId: userId,
                             userName: username,
                             itemName: itemNameFinal,
                             price: price,
-                            status: "Pending",
+                            type: "Virtual Wardrobe Unlock",
                             timestamp: Date.now()
                         };
 
-                        db.ref('shop_orders').push(orderData);
-                        db.ref('users/' + userId + '/orders').push(orderData).then(() => {
-                            tg.showAlert(`🎉 Order Confirmed! "${itemNameFinal}" ordered successfully. Waiting for admin approval.`);
+                        // ভার্চুয়াল আইটেম আনলক হিসেবে সেভ হবে, কোনো শিপিং বা ফিজিক্যাল অর্ডারের ঝামেলা নেই
+                        db.ref('virtual_wardrobe_unlocks').push(unlockData);
+                        db.ref('users/' + userId + '/wardrobe').push(unlockData).then(() => {
+                            tg.showAlert(`🎉 Success! "${itemNameFinal}" added to your virtual wardrobe.`);
                         });
                     });
                 } else {
