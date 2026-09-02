@@ -22,12 +22,10 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 110px 0; /* নেভিগেশন বারের নিচে পর্যাপ্ত জায়গা রাখার জন্য প্যাডিং বাড়ানো হলো */
+            padding: 0 0 100px 0;
             display: flex;
             justify-content: center;
-            box-sizing: border-box;
-            overscroll-behavior-y: none;
-            -webkit-overflow-scrolling: touch;
+            overflow-x: hidden;
             transition: opacity 0.3s ease, transform 0.3s ease;
             opacity: 1;
             transform: translateX(0);
@@ -48,7 +46,6 @@
             padding: 16px;
             display: flex; align-items: center; justify-content: space-between;
             margin-bottom: 16px;
-            transition: 0.3s ease;
         }
         .profile-card.verified { 
             border: 2px solid #7c3aed; 
@@ -110,24 +107,25 @@
         .admin-box-item i { font-size: 18px; margin-bottom: 4px; display: block; }
         .admin-box-item h5 { margin: 0; font-size: 11px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* ফিক্সড বটম নেভিগেশন বার যা সবসময় স্ক্রিনের নিচে থাকবে */
+        /* অন্যান্য পেজের মতো নিখুঁত বটম নেভিগেশন বার */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
-            left: 0; 
-            right: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
             width: 100%; 
+            max-width: 480px; 
             background: var(--card-bg); 
             border-top: 1px solid var(--card-border); 
             display: flex; 
             justify-content: space-around; 
-            padding: 12px 0 16px 0; 
+            padding: 12px 0 14px 0; 
             box-sizing: border-box; 
-            z-index: 999; 
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+            z-index: 100; 
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
         }
-        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; transition: 0.2s; }
-        .nav-item.active { color: #c084fc; }
+        .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; transition: color 0.2s, transform 0.2s; }
+        .nav-item.active { color: #c084fc; transform: translateY(-2px); }
         .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
     </style>
 </head>
@@ -282,7 +280,7 @@
                     ordersArray.push(orderData);
                 });
 
-                    ordersArray.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+                ordersArray.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
                 ordersArray.forEach(order => {
                     let statusColor = '#f59e0b';
