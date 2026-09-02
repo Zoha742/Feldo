@@ -22,15 +22,18 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 100px 0;
+            padding: 0;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             overflow-x: hidden;
+            position: relative;
         }
         .container {
             width: 100%;
             max-width: 480px;
             padding: 16px;
+            padding-bottom: 110px;
             box-sizing: border-box;
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
@@ -98,7 +101,6 @@
         .task-start-btn { background: #7c3aed; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .task-start-btn:disabled { background: #475569; cursor: not-allowed; }
         
-        /* ডান পাশে সবুজ রঙের Done ব্যাজ ডিজাইন */
         .done-badge {
             background: linear-gradient(135deg, #10b981, #059669);
             color: #fff;
@@ -112,7 +114,6 @@
             box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
         }
 
-        /* বাম পাশে কাউন্টডাউন টাইমার ডিজাইন */
         .timer-display {
             font-size: 10px;
             font-weight: 700;
@@ -122,13 +123,22 @@
             gap: 3px;
         }
 
-        /* সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার */
+        /* ফিক্সড বটম নেভিগেশন বার যাতে উপরে না ওঠে */
         .bottom-nav { 
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); 
-            width: 100%; max-width: 480px; background: var(--card-bg); 
-            border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; 
-            padding: 12px 0 14px 0; box-sizing: border-box; z-index: 100; 
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            position: fixed; 
+            bottom: 0; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 100%; 
+            max-width: 480px; 
+            background: var(--card-bg); 
+            border-top: 1px solid var(--card-border); 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 12px 0 16px 0; 
+            box-sizing: border-box; 
+            z-index: 9999; 
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
         }
         .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; transition: color 0.2s, transform 0.2s; }
         .nav-item.active { color: #c084fc; transform: translateY(-2px); }
@@ -145,7 +155,6 @@
             <p>Watch ad & join channels to collect GP for gaming</p>
         </div>
 
-        <!-- ১ টি ভিডিও অ্যাড সেকশন (১২ ঘণ্টা কুলডাউন সহ) -->
         <div class="section-title"><i class="fa-solid fa-play-circle"></i> Rewarded Video Ad</div>
         
         <div class="ad-task-card">
@@ -159,7 +168,6 @@
             <button id="adBtn1" class="ad-action-btn" onclick="watchAd(50)">Watch Ad</button>
         </div>
 
-        <!-- টেলিগ্রাম চ্যানেল টাস্ক লিস্ট (মোট ২০টি কার্ড) -->
         <div class="section-title"><i class="fa-brands fa-telegram"></i> Telegram Channel Tasks</div>
         
         <div class="task-grid" id="dynamicTaskGrid">
@@ -167,7 +175,6 @@
         </div>
     </div>
 
-    <!-- সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
@@ -207,7 +214,7 @@
         ];
 
         let userData = {};
-        const INTERVAL_12H = 12 * 60 * 60 * 1000; // ১২ ঘণ্টা মিলিসেকেন্ডে
+        const INTERVAL_12H = 12 * 60 * 60 * 1000;
 
         userRef.on('value', (snapshot) => {
             userData = snapshot.val() || {};
@@ -219,7 +226,6 @@
             renderChannelTasks();
         }
 
-        // অ্যাড রেন্ডার ও ১২ ঘণ্টা কুলডাউন চেক
         function renderAds() {
             let btn = document.getElementById('adBtn1');
             let lastAdTime = userData.lastAdTime || 0;
@@ -259,7 +265,6 @@
             }, 4000);
         }
 
-        // চ্যানেল টাস্ক রেন্ডারিং লজিক (একসাথে ২০টি কার্ড দেখাবে)
         function renderChannelTasks() {
             const grid = document.getElementById('dynamicTaskGrid');
             grid.innerHTML = ''; 
@@ -290,7 +295,6 @@
                     }
                 }
 
-                // একবারে ২০টি কার্ড রেন্ডার করা
                 if (visibleCount < 20) {
                     visibleCount++;
 
@@ -335,7 +339,6 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Wait 10s';
             btn.disabled = true;
 
-            // ১০ সেকেন্ড পর পয়েন্ট যোগ হবে এবং বামে টাইমার ও ডানে সবুজ "Done" ব্যাজ শো করবে
             setTimeout(() => {
                 completeTaskAndReward(channelUsername);
             }, 10000);
@@ -358,13 +361,12 @@
             });
         }
 
-        // প্রতি ১ সেকেন্ডে অ্যাড এবং চ্যানেল কুলডাউন টাইমার আপডেট করার জন্য
         setInterval(() => {
             renderAds();
             renderChannelTasks();
         }, 1000);
 
-        // সোয়াইপ নেভিগেশন এফেক্ট
+        // সোয়াইপ নেভিগেশন ফিক্সড (ডানে সোয়াইপ করলে Game এবং বামে সোয়াইপ করলে Hotcake এ যাবে)
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
@@ -378,7 +380,7 @@
                     setTimeout(() => { window.location.href = "game.html"; }, 250);
                 } else {
                     container.classList.add('page-slide-left');
-                    setTimeout(() => { window.location.href = "shop.html"; }, 250);
+                    setTimeout(() => { window.location.href = "hotcake.html"; }, 250);
                 }
             }
         });
