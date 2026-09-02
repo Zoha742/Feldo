@@ -196,11 +196,11 @@
         <button class="close-modal-btn" onclick="closeRulesModal()">Got It</button>
     </div>
 
+    <!-- বটম নেভিগেশন বার থেকে Hotcake অপশন বাদ দেওয়া হয়েছে -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item active" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
@@ -279,7 +279,6 @@
         let isFrozen = false;
         let freezeTimeout = null;
 
-        // রুলস মোডাল ওপেন এবং ক্লোজ করার ফাংশন দুটি যোগ করা হলো
         function openRulesModal() {
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('rulesModal').style.display = 'block';
