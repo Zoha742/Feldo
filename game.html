@@ -36,22 +36,36 @@
         .game-header {
             background: var(--primary-gradient);
             border-radius: 16px;
-            padding: 16px;
+            padding: 14px;
             color: #fff;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             box-shadow: 0 10px 25px -5px rgba(124, 58, 237, 0.4);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        .game-header h2 { margin: 0; font-size: 18px; }
-        .score-box { font-size: 14px; font-weight: 700; background: rgba(255,255,255,0.15); padding: 6px 12px; border-radius: 10px; color: #fbbf24; }
+        .balance-info { display: flex; gap: 8px; font-size: 11px; font-weight: 700; }
+        .bal-pill { background: rgba(255,255,255,0.15); padding: 4px 8px; border-radius: 8px; display: inline-flex; align-items: center; gap: 4px; }
+        
+        .score-timer-bar {
+            display: flex;
+            justify-content: space-between;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 10px 16px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .score-box { color: #fbbf24; }
+        .timer-box { color: #f43f5e; }
 
         /* গেম ক্যানভাস এরিয়া */
         .game-canvas-wrapper {
             position: relative;
             width: 100%;
-            height: 380px;
+            height: 350px;
             background: #070913;
             border: 2px solid var(--card-border);
             border-radius: 16px;
@@ -114,9 +128,18 @@
 <body>
 
     <div class="container">
+        <!-- ওপরের হেডার যেখানে GP এবং Gold ব্যালেন্স শো করবে -->
         <div class="game-header">
-            <h2>⚡ Feldo Drop Game</h2>
-            <div class="score-box">Gold: <span id="currentScore">0</span></div>
+            <h2 style="font-size: 15px; margin: 0;">⚡ Feldo Game</h2>
+            <div class="balance-info">
+                <div class="bal-pill" title="GP Balance">⚡ <span id="topGp">0</span> GP</div>
+                <div class="bal-pill" title="Gold Balance">🪙 <span id="topGold">0</span> Gold</div>
+            </div>
+        </div>
+
+        <div class="score-timer-bar">
+            <div class="score-box">Earned Gold: <span id="currentScore">0</span></div>
+            <div class="timer-box">⏳ Time: <span id="timeLeft">15</span>s</div>
         </div>
 
         <div class="game-canvas-wrapper">
@@ -130,10 +153,10 @@
         <div class="rules-card">
             <h4>🎮 How to Play:</h4>
             <ul>
-                <li>Playing costs <strong>20 GP (Fuel)</strong> from your balance.</li>
-                <li>Tap falling Gold Coins to catch and earn points!</li>
-                <li>Avoid red bomb items, or you will lose points.</li>
-                <li>Earned Gold Points can be used in the <strong>Shop</strong>!</li>
+                <li>Playing costs <strong>20 GP (Fuel)</strong>.</li>
+                <li>Catch Gold (🪙 +10), Stars (⭐️ +20), and Diamonds (💎 +50)!</li>
+                <li>Catch <strong>Freeze (❄️)</strong> to slow down falling items.</li>
+                <li>Avoid Bombs (💣 -10 points). Time limit: <strong>15 seconds</strong>!</li>
             </ul>
         </div>
     </div>
@@ -174,22 +197,29 @@
         let userGp = 0;
         let userGold = 0;
 
+        // ফায়ারবেস থেকে রিয়েল-টাইম ব্যালেন্স আপডেট
         userRef.on('value', snap => {
             let data = snap.val() || {};
             userGp = data.gp !== undefined ? data.gp : (data.points || 0);
             userGold = data.gold !== undefined ? data.gold : 0;
+
+            document.getElementById('topGp').innerText = userGp.toLocaleString();
+            document.getElementById('topGold').innerText = userGold.toLocaleString();
         });
 
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
         canvas.width = 360;
-        canvas.height = 380;
+        canvas.height = 350;
 
         let gameRunning = false;
         let score = 0;
         let items = [];
-        let gameInterval, itemSpawner;
+        let gameInterval, itemSpawner, countdownTimer;
+        let timeLeftSec = 15;
+        let isFrozen = false;
+        let freezeTimeout = null;
 
         function startGame() {
             if (userGp < 20) {
@@ -203,31 +233,56 @@
                 gameRunning = true;
                 score = 0;
                 items = [];
+                timeLeftSec = 15;
+                isFrozen = false;
+
                 document.getElementById('currentScore').innerText = score;
+                document.getElementById('timeLeft').innerText = timeLeftSec;
                 document.getElementById('startBtn').disabled = true;
                 document.getElementById('startBtn').innerText = "Game Running...";
 
-                // আইটেম স্পন করা (ওপর থেকে নিচে পড়া)
-                itemSpawner = setInterval(spawnItem, 500);
+                // আইটেম স্পন করা
+                itemSpawner = setInterval(spawnItem, 450);
                 gameInterval = requestAnimationFrame(updateGame);
 
-                // ৩০ সেকেন্ড পর গেম শেষ হবে
-                setTimeout(() => {
-                    endGame();
-                }, 30000);
+                // ১৫ সেকেন্ডের টাইমার কাউন্টডাউন
+                countdownTimer = setInterval(() => {
+                    timeLeftSec--;
+                    document.getElementById('timeLeft').innerText = timeLeftSec;
+                    if (timeLeftSec <= 0) {
+                        clearInterval(countdownTimer);
+                        endGame();
+                    }
+                }, 1000);
             });
         }
 
         function spawnItem() {
             if (!gameRunning) return;
-            let isBomb = Math.random() < 0.2; // ২০% চান্স বোমা আসার
+            let rand = Math.random();
+            let type = "coin"; // 🪙 Default
+            let text = "🪙";
+            let points = 10;
+
+            if (rand < 0.15) {
+                type = "bomb"; text = "💣"; points = -10;
+            } else if (rand < 0.35) {
+                type = "star"; text = "⭐️"; points = 20;
+            } else if (rand < 0.45) {
+                type = "diamond"; text = "💎"; points = 50;
+            } else if (rand < 0.53) {
+                type = "freeze"; text = "❄️"; points = 0;
+            }
+
+            let speedMultiplier = isFrozen ? 0.4 : 1.0;
+
             items.push({
                 x: Math.random() * (canvas.width - 30) + 15,
                 y: -20,
-                radius: 16,
-                speed: Math.random() * 2 + 2,
-                isBomb: isBomb,
-                text: isBomb ? "💣" : "🪙"
+                speed: (Math.random() * 2 + 2) * speedMultiplier,
+                type: type,
+                text: text,
+                points: points
             });
         }
 
@@ -236,7 +291,6 @@
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // আইটেমগুলোর পজিশন আপডেট ও ড্র করা
             for (let i = items.length - 1; i >= 0; i--) {
                 let item = items[i];
                 item.y += item.speed;
@@ -244,7 +298,6 @@
                 ctx.font = "24px Arial";
                 ctx.fillText(item.text, item.x - 12, item.y + 8);
 
-                // ক্যানভাস থেকে বাইরে চলে গেলে রিমুভ করা
                 if (item.y > canvas.height + 20) {
                     items.splice(i, 1);
                 }
@@ -253,7 +306,7 @@
             gameInterval = requestAnimationFrame(updateGame);
         }
 
-        // টাচ বা ক্লিক করে কয়েন ধরা (Catching items)
+        // টাচ বা ক্লিক করে আইটেম ধরা
         canvas.addEventListener('pointerdown', (e) => {
             if (!gameRunning) return;
             const rect = canvas.getBoundingClientRect();
@@ -263,13 +316,15 @@
             for (let i = items.length - 1; i >= 0; i--) {
                 let item = items[i];
                 let dist = Math.hypot(clickX - item.x, clickY - item.y);
-                if (dist < 30) {
-                    if (item.isBomb) {
-                        score = Math.max(0, score - 5); // বোমা ধরলে ৫ পয়েন্ট কাটবে
+                if (dist < 32) {
+                    if (item.type === "freeze") {
+                        isFrozen = true;
+                        if (freezeTimeout) clearTimeout(freezeTimeout);
+                        freezeTimeout = setTimeout(() => { isFrozen = false; }, 3000); // ৩ সেকেন্ডের জন্য স্লো হবে
                     } else {
-                        score += 10; // কয়েন ধরলে ১০ পয়েন্ট যোগ হবে
+                        score = Math.max(0, score + item.points);
+                        document.getElementById('currentScore').innerText = score;
                     }
-                    document.getElementById('currentScore').innerText = score;
                     items.splice(i, 1);
                     break;
                 }
@@ -279,6 +334,7 @@
         function endGame() {
             gameRunning = false;
             clearInterval(itemSpawner);
+            clearInterval(countdownTimer);
             cancelAnimationFrame(gameInterval);
 
             // গেম শেষে অর্জিত পয়েন্ট Gold Points হিসেবে সেভ করা
@@ -288,7 +344,7 @@
                 let newGold = currentGold + score;
 
                 userRef.update({ gold: newGold }).then(() => {
-                    tg.showAlert(`🎉 Game Over! You earned 🪙 ${score} Gold Points.`);
+                    tg.showAlert(`🎉 Time's up! You earned 🪙 ${score} Gold Points.`);
                     document.getElementById('startBtn').disabled = false;
                     document.getElementById('startBtn').innerText = "Play Game (-20 GP)";
                 });
