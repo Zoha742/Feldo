@@ -136,7 +136,7 @@
             <button id="adBtn1" class="ad-action-btn" onclick="watchAd(50)">Watch Ad</button>
         </div>
 
-        <!-- টেলিগ্রাম চ্যানেল টাস্ক লিস্ট (রিসাইকেল সিস্টেম সহ) -->
+        <!-- টেলিগ্রাম চ্যানেল টাস্ক লিস্ট -->
         <div class="section-title"><i class="fa-brands fa-telegram"></i> Telegram Channel Tasks</div>
         
         <div class="task-grid" id="dynamicTaskGrid">
@@ -236,13 +236,13 @@
             }, 4000);
         }
 
-        // চ্যানেল টাস্ক এবং ১২ ঘণ্টা রিসাইকেল সিস্টেম
+        // চ্যানেল টাস্ক রেন্ডারিং লজিক (কমপ্লিট হলে সাথে সাথে সরবে না, ১২ ঘণ্টা পর সরবে এবং নতুন আসবে)
         function renderChannelTasks() {
             const grid = document.getElementById('dynamicTaskGrid');
             grid.innerHTML = ''; 
 
             let currentTime = Date.now();
-            let completedChannels = userData.completedChannels || {}; // { channelName: timestamp }
+            let completedChannels = userData.completedChannels || {}; 
 
             let visibleCount = 0;
 
@@ -251,36 +251,46 @@
                 let completionData = completedChannels[channelName];
 
                 let isCompleted = false;
+                let finishTime = 0;
+
                 if (completionData) {
-                    let finishTime = completionData.timestamp || 0;
-                    // যদি ১২ ঘণ্টা পার না হয়ে থাকে, তবে কার্ড হাইড থাকবে
+                    finishTime = completionData.timestamp || 0;
                     if (currentTime - finishTime < INTERVAL_12H) {
-                        isCompleted = true;
+                        isCompleted = true; // ১২ ঘণ্টা পার হয়নি, তাই লিস্টে থাকবে কিন্তু Completed দেখাবে
                     }
                 }
 
-                // যদি কমপ্লিট করা না থাকে, তবে ডিসপ্লেতে দেখাবো (সর্বোচ্চ ৬-৮টি কার্ড একসাথে)
-                if (!isCompleted && visibleCount < 6) {
+                // আমরা একবারে ৬টি কার্ড দেখাবো (যেগুলো এখনো ১২ ঘণ্টা পার হয়ে পুরোপুরি মুছে যায়নি)
+                if (visibleCount < 6) {
                     visibleCount++;
+
+                    let btnHtml = `<button id="btn-${channelName}" class="task-start-btn" onclick="startTask('${channelName}')">Join</button>`;
+                    let statusStyle = "";
+
+                    if (isCompleted) {
+                        btnHtml = `<button class="task-start-btn completed" disabled>Completed ✅</button>`;
+                        statusStyle = "opacity: 0.8;";
+                    }
+
                     grid.innerHTML += `
-                    <div class="task-grid-card" id="card-${channelName}">
+                    <div class="task-grid-card" id="card-${channelName}" style="${statusStyle}">
                         <div class="task-grid-top">
                             <div class="task-grid-icon"><i class="fa-brands fa-telegram"></i></div>
                             <div class="task-grid-info">
                                 <h4>@${channelName}</h4>
-                                <p>Join & earn</p>
+                                <p>${isCompleted ? 'Done (Refreshes in 12h)' : 'Join & earn'}</p>
                             </div>
                         </div>
                         <div class="task-grid-bottom">
                             <div class="task-grid-reward"><i class="fa-solid fa-coins"></i> +5 GP</div>
-                            <button id="btn-${channelName}" class="task-start-btn" onclick="startTask('${channelName}')">Join</button>
+                            ${btnHtml}
                         </div>
                     </div>`;
                 }
             }
 
             if (visibleCount === 0) {
-                grid.innerHTML = `<div class="loading-text">No tasks available right now. Check back after 12 hours for recycled tasks!</div>`;
+                grid.innerHTML = `<div class="loading-text">No tasks available right now.</div>`;
             }
         }
 
@@ -293,7 +303,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Wait 10s';
             btn.disabled = true;
 
-            // ১০ সেকেন্ড পর কমপ্লিট দেখাবে এবং পয়েন্ট যোগ হবে
+            // ১০ সেকেন্ড পর পয়েন্ট যোগ হবে এবং বাটন "Completed ✅" হয়ে যাবে (কিন্তু কার্ড স্ক্রিন থেকে সরবে না)
             setTimeout(() => {
                 completeTaskAndReward(channelUsername, btn);
             }, 10000);
@@ -313,12 +323,8 @@
             }).then(() => {
                 btn.innerHTML = 'Completed ✅';
                 btn.classList.add('completed');
+                btn.disabled = true;
                 tg.showAlert(`Task completed! +5 GP added.`);
-                
-                // লিস্ট থেকে কার্ডটি সরিয়ে দেওয়া (রিসাইকেল সিস্টেমের অংশ)
-                setTimeout(() => {
-                    renderChannelTasks();
-                }, 1000);
             });
         }
 
