@@ -89,7 +89,7 @@
         }
 
         .coin-info h4 { margin: 0 0 3px 0; font-size: 16px; font-weight: 700; color: #fff; }
-        .coin-info p { margin: 0; font-size: 11px; color: var(--text-muted); }
+        .coin-info p { margin: 0; font-size: 11px; color: var(--text-muted); line-height: 1.4; }
 
         .card-buttons {
             display: grid;
@@ -243,7 +243,7 @@
     <!-- Modal 1: Select Payment Method -->
     <div class="modal" id="paymentMethodModal">
         <h3>Boost <span id="modal-coin-name">Service</span></h3>
-        <p>Choose your preferred payment method to boost this service.</p>
+        <p>Choose your preferred payment method to boost this item.</p>
         <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
             <i class="fa-solid fa-wallet" style="color: #f59e0b; font-size: 18px;"></i> Binance Pay
         </button>
@@ -311,13 +311,14 @@
 
         const COOLDOWN_TIME = 12 * 60 * 60 * 1000; // ১২ ঘণ্টা কুলডাউন
 
+        // ৬টি আলাদা হটকেক আইটেম (দিন এবং প্রাইস সহ)
         let hotcakes = [
-            { id: 'service1', name: 'Hotcake Alpha', icon: 'fa-fire', normalGp: 50, boostedGp: 500 },
-            { id: 'service2', name: 'Hotcake Beta', icon: 'fa-bolt', normalGp: 50, boostedGp: 500 },
-            { id: 'service3', name: 'Hotcake Gamma', icon: 'fa-gem', normalGp: 50, boostedGp: 500 },
-            { id: 'service4', name: 'Hotcake Delta', icon: 'fa-coins', normalGp: 50, boostedGp: 500 },
-            { id: 'service5', name: 'Hotcake Omega', icon: 'fa-shield-halved', normalGp: 50, boostedGp: 500 },
-            { id: 'service6', name: 'Hotcake Zeta', icon: 'fa-rocket', normalGp: 50, boostedGp: 500 }
+            { id: 'item1', name: 'Hotcake Alpha', icon: 'fa-fire', normalGp: 50, boostedGp: 500, duration: '15 Days', price: '$2.5' },
+            { id: 'item2', name: 'Hotcake Beta', icon: 'fa-bolt', normalGp: 50, boostedGp: 500, duration: '10 Days', price: '$5' },
+            { id: 'item3', name: 'Hotcake Gamma', icon: 'fa-gem', normalGp: 50, boostedGp: 500, duration: '15 Days', price: '$8' },
+            { id: 'item4', name: 'Hotcake Delta', icon: 'fa-coins', normalGp: 50, boostedGp: 500, duration: '20 Days', price: '$10' },
+            { id: 'item5', name: 'Hotcake Omega', icon: 'fa-shield-halved', normalGp: 50, boostedGp: 500, duration: '25 Days', price: '$15' },
+            { id: 'item6', name: 'Hotcake Zeta', icon: 'fa-rocket', normalGp: 50, boostedGp: 500, duration: '30 Days', price: '$20' }
         ];
 
         let userData = {};
@@ -339,7 +340,7 @@
 
             hotcakes.forEach(item => {
                 let rewardGp = item.normalGp;
-                let boostBtnText = "Boost Service";
+                let boostBtnText = "Boost"; // শুধু Boost নাম রাখা হয়েছে
                 let boostBtnClass = "action-btn boost-action-btn";
 
                 if (boosts[item.id] && boosts[item.id].expireTime > currentTime) {
@@ -367,12 +368,12 @@
                             <div class="coin-icon"><i class="fa-solid ${item.icon}"></i></div>
                             <div class="coin-info">
                                 <h4>${item.name}</h4>
-                                <p>Normal: ${item.normalGp} GP | Boosted: ${item.boostedGp} GP</p>
+                                <p>Normal: ${item.normalGp} GP | Boosted: ${item.boostedGp} GP<br><b style="color:#fbbf24">${item.duration} | ${item.price}</b></p>
                             </div>
                         </div>
                         <div class="card-buttons">
                             <button id="claimBtn_${item.id}" class="action-btn claim-btn" ${claimBtnDisabled ? 'disabled' : ''} onclick="claimReward('${item.id}', ${rewardGp})">${claimBtnText}</button>
-                            <button class="${boostBtnClass}" onclick="openPaymentModal('${item.id}', '${item.name}')">${boostBtnText}</button>
+                            <button class="${boostBtnClass}" onclick="openPaymentModal('${item.id}', '${item.name}', '${item.duration}', '${item.price}')">${boostBtnText}</button>
                         </div>
                     </div>
                 `;
@@ -404,10 +405,16 @@
             }
         }, 1000);
 
-        function openPaymentModal(hotcakeId, hotcakeName) {
+        let selectedDuration = "";
+        let selectedPrice = "";
+
+        function openPaymentModal(hotcakeId, hotcakeName, duration, price) {
             selectedHotcakeId = hotcakeId;
             selectedHotcakeName = hotcakeName;
-            document.getElementById('modal-coin-name').innerText = hotcakeName;
+            selectedDuration = duration;
+            selectedPrice = price;
+
+            document.getElementById('modal-coin-name').innerText = `${hotcakeName} (${duration} - ${price})`;
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('paymentMethodModal').style.display = 'block';
         }
@@ -417,7 +424,7 @@
             currentAdminUid = adminUid;
             document.getElementById('paymentMethodModal').style.display = 'none';
             
-            document.getElementById('proof-title').innerText = `${method} Boost Proof (${selectedHotcakeName})`;
+            document.getElementById('proof-title').innerText = `${method} Proof (${selectedHotcakeName})`;
             document.getElementById('admin-uid-text').innerText = `UID - ${adminUid}`;
             document.getElementById('user-tg-id').value = userId;
             document.getElementById('proof-file').value = "";
@@ -443,11 +450,14 @@
             reader.onloadend = function() {
                 let base64Image = reader.result;
 
+                // অ্যাডমিনের কাছে সরাসরি রিকোয়েস্ট চলে যাবে এবং ইউজার কোন সার্ভিস, কত দিন এবং কত টাকায় বুস্ট নিচ্ছে তা দেখা যাবে
                 let boostRequest = {
                     userId: userId,
                     userName: userName,
                     serviceId: selectedHotcakeId,
                     serviceName: selectedHotcakeName,
+                    duration: selectedDuration,
+                    price: selectedPrice,
                     method: selectedMethod,
                     screenshot: base64Image,
                     status: "Pending",
