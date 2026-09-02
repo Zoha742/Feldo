@@ -73,26 +73,6 @@
             <div id="admin-notif-list" style="max-height: 250px; overflow-y: auto; margin-top: 10px;"><small>Loading...</small></div>
         </div>
 
-        <div class="card" style="border-color: var(--purple);">
-            <h4><i class="fas fa-handshake" style="color:var(--purple);"></i> GP Sale Requests</h4>
-            <div id="agent-req-list" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--orange);">
-            <h4><i class="fas fa-wallet" style="color:var(--orange);"></i> Mining Boost Proofs</h4>
-            <div id="boost-req-list" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--green);">
-            <h4><i class="fas fa-id-card" style="color:var(--green);"></i> ID Verified Proofs</h4>
-            <div id="agent-pay-req-list" style="max-height: 200px; overflow-y: auto; margin-top: 10px;">Loading...</div>
-        </div>
-
-        <div class="card" style="border-color: var(--blue);">
-            <h4><i class="fas fa-money-bill-transfer" style="color:var(--blue);"></i> Withdraw Requests</h4>
-            <div id="wd-list">Loading withdrawals...</div>
-        </div>
-
         <div class="card">
             <h4><i class="fas fa-user-shield"></i> User Search & Management</h4>
             <input type="text" id="user-search" class="input-box" placeholder="Search ID or Name..." oninput="filterUsers()">
@@ -151,8 +131,6 @@
 
         function initAdmin() {
             loadAdminNotifications();
-            loadBoostRequests();
-            loadIdVerifiedProofs();
 
             db.ref('users').on('value', snap => {
                 let count = snap.numChildren();
@@ -187,81 +165,6 @@
                 document.getElementById('user-list').innerHTML = html || "No users found.";
             });
 
-            db.ref('sell_requests').on('value', snap => {
-                let html = "";
-                snap.forEach(c => {
-                    let req = c.val();
-                    if(req.status === "Pending") {
-                        html += `<div class="list-item">
-                            <b>${req.userName || 'User'}</b> - ${req.amount} GP
-                            <div class="grid" style="margin-top:5px;">
-                                <button class="btn btn-green" onclick="db.ref('sell_requests/${c.key}').update({status:'Approved'}); db.ref('users/${req.userId}').update({isVerified:true})">Approve</button>
-                                <button class="btn btn-red" onclick="db.ref('sell_requests/${c.key}').update({status:'Rejected'})">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('agent-req-list').innerHTML = html || "No pending requests.";
-            });
-
-            db.ref('withdraw_requests').on('value', snap => {
-                let html = "";
-                snap.forEach(c => {
-                    let r = c.val();
-                    if(r.status === 'pending') {
-                        html += `<div class="list-item">
-                            <b>ID: ${r.userId} - ${r.amount} GP</b><br><small>${r.method} | ${r.address || r.number}</small>
-                            <div class="grid" style="margin-top:5px;">
-                                <button class="btn btn-green" onclick="updateWD('${c.key}', 'approved', '${r.userId}', ${r.amount})">Accept</button>
-                                <button class="btn btn-red" onclick="updateWD('${c.key}', 'rejected', '${r.userId}', ${r.amount})">Reject</button>
-                            </div>
-                        </div>`;
-                    }
-                });
-                document.getElementById('wd-list').innerHTML = html || "No pending withdraws.";
-            });
-        }
-
-        function loadBoostRequests() {
-            db.ref('pending_boosts').on('value', snap => {
-                let html = "";
-                if (snap.exists()) {
-                    snap.forEach(c => {
-                        let req = c.val();
-                        if (req.status === 'Pending' || !req.status) {
-                            html += `<div class="list-item">
-                                <b>User ID: ${req.userId}</b><br><small>Boost: ${req.amount || 0}</small>
-                                <div class="grid" style="margin-top:5px;">
-                                    <button class="btn btn-green" onclick="db.ref('pending_boosts/${c.key}').update({status:'Approved'}); db.ref('users/${req.userId}/boosts').transaction(b=>(b||0)+${req.amount||0})">Approve</button>
-                                    <button class="btn btn-red" onclick="db.ref('pending_boosts/${c.key}').update({status:'Rejected'})">Reject</button>
-                                </div>
-                            </div>`;
-                        }
-                    });
-                    document.getElementById('boost-req-list').innerHTML = html || "No pending boosts.";
-                }
-            });
-        }
-
-        function loadIdVerifiedProofs() {
-            db.ref('pending_agent_pay').on('value', snap => {
-                let html = "";
-                if (snap.exists()) {
-                    snap.forEach(c => {
-                        let req = c.val();
-                        if (req.status === 'Pending' || !req.status) {
-                            html += `<div class="list-item">
-                                <b>User ID: ${req.userId}</b><br><small>${req.details || 'Proof'}</small>
-                                <div class="grid" style="margin-top:5px;">
-                                    <button class="btn btn-green" onclick="db.ref('pending_agent_pay/${c.key}').update({status:'Approved'}); db.ref('users/${req.userId}').update({isVerified:true})">Verify</button>
-                                    <button class="btn btn-red" onclick="db.ref('pending_agent_pay/${c.key}').update({status:'Rejected'})">Reject</button>
-                                </div>
-                            </div>`;
-                        }
-                    });
-                    document.getElementById('agent-pay-req-list').innerHTML = html || "No pending ID proofs.";
-                }
-            });
         }
 
         function saveOrSendNotification(type) {
@@ -312,15 +215,6 @@
         function toggleBan() {
             let ns = !window.targetBanned;
             db.ref('users/' + window.targetU + '/banned').set(ns).then(() => { alert(ns ? "Banned!" : "Unbanned!"); closeModal(); });
-        }
-
-        function updateWD(key, status, uid, amt) {
-            db.ref('withdraw_requests/' + key).update({ status }).then(() => {
-                if(status === 'rejected') {
-                    db.ref('users/' + uid).transaction(u => { if(u){u.gp=(u.gp||0)+amt; u.points=(u.points||0)+amt;} return u; });
-                }
-                alert("Withdraw updated!");
-            });
         }
 
         function filterUsers() {
