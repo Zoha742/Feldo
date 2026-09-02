@@ -118,7 +118,7 @@
         .sponsor-banner h3 { margin: 0 0 6px 0; font-size: 16px; color: #c084fc; }
         .sponsor-banner p { margin: 0; font-size: 12px; color: var(--text-muted); }
 
-        /* Notice Modal Popup Styling (English) - Modified for Virtual Wardrobe/Collectible framing */
+        /* Notice Modal Popup Styling (English) */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
         .notice-modal {
             display: none;
@@ -168,7 +168,7 @@
 </head>
 <body>
 
-    <!-- Notice Modal Popup (Updated to Virtual Wardrobe / Collectibles framing) -->
+    <!-- Notice Modal Popup (Updated for Virtual Wardrobe & Collectibles) -->
     <div class="overlay" id="noticeOverlay"></div>
     <div class="notice-modal" id="noticeModal">
         <h3><i class="fa-solid fa-bullhorn" style="color: #c084fc;"></i> How to Play & Earn</h3>
@@ -231,7 +231,6 @@
             <a href="shop.html" style="font-size: 12px; color: #c084fc; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
-        <!-- ভার্চুয়াল কালেক্টিবল আউটফিট প্রিভিউ গ্রিড -->
         <div class="shop-preview-grid">
             <div class="shop-preview-card">
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Royal Floral Gown">
@@ -273,11 +272,11 @@
         </div>
     </div>
 
+    <!-- বটম নেভিগেশন বার থেকে Hotcake অপশন বাদ দেওয়া হয়েছে -->
     <div class="bottom-nav" id="bottomNav">
         <a class="nav-item active" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
@@ -350,7 +349,7 @@
                 let cardClass = "bonus-card" + (isActive ? " active" : "") + (isClaimed ? " claimed" : "");
 
                 container.innerHTML += `
-                    <div class="${cardCardClass = cardClass}">
+                    <div class="${cardClass}">
                         <div class="day">Day ${i}</div>
                         <div class="icon"><i class="${iconClass}"></i></div>
                         <div class="reward">+${rewards[i-1]} GP</div>
