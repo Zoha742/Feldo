@@ -92,7 +92,6 @@
         .username-text { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
         .user-id-badge { font-size: 11px; color: #c084fc; font-weight: 650; cursor: pointer; display: inline-block; background: rgba(124, 58, 237, 0.15); padding: 1px 6px; border-radius: 6px; }
 
-        /* প্রিমিয়াম ব্যাজ স্টাইল (নামের পাশে শো করবে) */
         .premium-badge-tag {
             background: linear-gradient(135deg, #f59e0b, #ec4899);
             color: #fff;
@@ -110,6 +109,19 @@
         .stat-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; text-align: center; }
         .stat-card .stat-value { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: #fbbf24; }
         .stat-card .stat-label { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+
+        .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 16px; margin-bottom: 16px; }
+        
+        .collection-item-box { 
+            background: #0b0f19; 
+            border: 1px solid var(--card-border); 
+            padding: 10px 12px; 
+            border-radius: 10px; 
+            margin-bottom: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
 
         .menu-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
         .menu-row-item { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: var(--text-main); transition: 0.2s; cursor: pointer; }
@@ -198,6 +210,14 @@
             <div class="stat-card">
                 <div class="stat-value">🪙 <span id="total-gold">0</span> Gold</div>
                 <div class="stat-label">Shopping Coins (Gold)</div>
+            </div>
+        </div>
+
+        <!-- ভার্চুয়াল ওয়ার্ডরোব কালেকশন সেকশন (অর্ডার বা শিপিং স্ট্যাটাস ছাড়া) -->
+        <div class="card">
+            <h4 style="margin: 0 0 8px 0; font-size: 13px; color: #fff;"><i class="fa-solid fa-shirt" style="color: #c084fc;"></i> My Wardrobe Collection</h4>
+            <div id="my-collection-list" style="max-height: 180px; overflow-y: auto;">
+                <small style="color: var(--text-muted);">Loading your wardrobe items...</small>
             </div>
         </div>
 
@@ -293,7 +313,7 @@
             document.getElementById('adminGridContainer').style.display = "grid";
         }
 
-        // ফায়ারবেস থেকে ভেরিফাইড স্ট্যাটাস চেক করে প্রিমিয়াম লুক ও ব্যাজ একটিভ করা
+        // ফায়ারবেস থেকে ভেরিফাইড স্ট্যাটাস ও ব্যালেন্স চেক করা
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
             if(data) {
@@ -312,6 +332,37 @@
                     document.getElementById('verifiedBadgeIcon').style.display = 'none';
                     document.getElementById('premiumBadgeTag').style.display = 'none';
                 }
+            }
+        });
+
+        // ফায়ারবেস থেকে ইউজারের আনলক করা ভার্চুয়াল ওয়ার্ডরোব আইটেমগুলো লোড করা (কোনো অর্ডার স্ট্যাটাস বা শিপিং নেই)
+        db.ref('users/' + userId + '/wardrobe').on('value', snap => {
+            let container = document.getElementById('my-collection-list');
+            let html = "";
+            if (snap.exists()) {
+                let itemsArray = [];
+                snap.forEach(child => {
+                    itemsArray.push(child.val());
+                });
+
+                itemsArray.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                itemsArray.forEach(item => {
+                    let unlockDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'N/A';
+
+                    html += `
+                        <div class="collection-item-box">
+                            <div>
+                                <b style="font-size: 12px; color: #fff;"><i class="fa-solid fa-hanger" style="color: #c084fc;"></i> ${item.itemName}</b><br>
+                                <span style="color: #94a3b8; font-size: 10px;">Unlocked on: ${unlockDate}</span>
+                            </div>
+                            <span style="font-size: 10px; font-weight: bold; color: #22c55e; background: rgba(34, 197, 94, 0.15); padding: 3px 8px; border-radius: 6px;">Owned 👑</span>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                container.innerHTML = `<small style="color: var(--text-muted);">No items in your wardrobe yet. Visit shop to unlock!</small>`;
             }
         });
 
