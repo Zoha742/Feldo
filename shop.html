@@ -3,51 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyCen - E-Commerce Shop</title>
+    <title>Feldo - E-Commerce Shop</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #f8fafc; color: #0f172a; margin: 0; padding: 0 0 80px 0; display: flex; justify-content: center; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background-color: #0b0f19; color: #f8fafc; margin: 0; padding: 0 0 80px 0; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .balance-badge { background: #fef08a; color: #854d0e; padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; }
+        .header h3 { color: #fff; margin: 0; }
+        .balance-badge { background: rgba(254, 240, 138, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 13px; }
         
         /* শপ ক্যাটাগরি নেভিগেশন বার */
         .shop-nav { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scrollbar-width: none; }
         .shop-nav::-webkit-scrollbar { display: none; }
-        .cat-btn { background: #fff; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; color: #64748b; }
-        .cat-btn.active { background: #ec4899; color: #fff; border-color: #ec4899; }
+        .cat-btn { background: #131c2e; border: 1px solid #2a1b4e; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; color: #94a3b8; }
+        .cat-btn.active { background: #7c3aed; color: #fff; border-color: #7c3aed; }
 
         .dress-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-        .dress-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
-        .dress-img { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; background: #e2e8f0; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
+        .dress-card { background: #131c2e; border: 1px solid #2a1b4e; border-radius: 14px; padding: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
+        .dress-img { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; background: #0b0f19; margin-bottom: 8px; cursor: pointer; transition: 0.2s; }
         .dress-img:hover { opacity: 0.9; }
-        .dress-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; }
-        .dress-price { font-size: 12px; font-weight: 700; color: #eab308; margin-bottom: 8px; }
+        .dress-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .dress-price { font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 8px; }
         
         .size-box { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
-        .size-btn { background: #f1f5f9; border: 1px solid #cbd5e1; padding: 3px 6px; font-size: 10px; border-radius: 4px; cursor: pointer; font-weight: 600; }
-        .size-btn.selected { background: #ec4899; color: #fff; border-color: #ec4899; }
+        .size-btn { background: #0b0f19; border: 1px solid #2a1b4e; color: #94a3b8; padding: 3px 6px; font-size: 10px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .size-btn.selected { background: #7c3aed; color: #fff; border-color: #7c3aed; }
 
-        .buy-btn { background: #ec4899; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; }
+        .buy-btn { background: #7c3aed; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s; }
+        .buy-btn:hover { background: #6d28d9; }
 
-        /* ইমেজ জুম মডাল (Image Zoom Modal View) */
+        /* ইমেজ জুম মডাল */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal img { max-width: 100%; max-height: 80vh; border-radius: 12px; object-fit: contain; box-shadow: 0 4px 25px rgba(0,0,0,0.5); }
         .close-modal { position: absolute; top: 20px; right: 25px; color: #fff; font-size: 28px; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         
         /* মেইন বটম নেভিগেশন */
-        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
-        .nav-item { text-align: center; color: #64748b; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; cursor: pointer; }
-        .nav-item.active { color: #ec4899; }
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: #131c2e; border-top: 1px solid #2a1b4e; display: flex; justify-content: space-around; padding: 12px 0; z-index: 100; }
+        .nav-item { text-align: center; color: #94a3b8; text-decoration: none; font-size: 11px; font-weight: 600; flex: 1; cursor: pointer; }
+        .nav-item.active { color: #c084fc; }
         .nav-item i { font-size: 18px; display: block; margin-bottom: 4px; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h3>🛍️ HeyCen Store</h3>
-            <div class="balance-badge" id="shopBalance">0 GP</div>
+            <h3>🛍️ Feldo Store</h3>
+            <div class="balance-badge" id="shopBalance">0 Gold</div>
         </div>
 
         <!-- শপ ক্যাটাগরি নেভিগেশন বার -->
@@ -72,8 +74,8 @@
     <!-- বটম নেভিগেশন বার -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html"><i class="fa-solid fa-house"></i>Home</a>
+        <a class="nav-item" href="game.html"><i class="fa-solid fa-gamepad"></i>Game</a>
         <a class="nav-item" href="task.html"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item active" href="shop.html"><i class="fa-solid fa-store"></i>Shop</a>
         <a class="nav-item" href="hotcake.html"><i class="fa-solid fa-hammer"></i>Hotcake</a>
         <a class="nav-item" href="profile.html"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
@@ -100,58 +102,56 @@
         let user = tg.initDataUnsafe.user;
         let userId = user ? user.id.toString() : "7757851056";
         let username = user ? (user.first_name || "User") : "User";
-        let userPoints = 0;
+        let userGold = 0;
 
-        // ফায়ারবেস থেকে ইউজারের রিয়েল GP ব্যালেন্স লোড করা
+        // ফায়ারবেস থেকে ইউজারের রিয়েল Gold ব্যালেন্স লোড করা
         db.ref('users/' + userId).on('value', snap => {
             let data = snap.val();
             if(data) {
-                userPoints = data.points !== undefined ? data.points : (data.gp || 0);
-                document.getElementById('shopBalance').innerText = userPoints.toLocaleString() + " GP";
+                userGold = data.gold !== undefined ? data.gold : 0;
+                document.getElementById('shopBalance').innerText = userGold.toLocaleString() + " Gold";
             }
         });
 
-        // সমস্ত প্রোডাক্ট ও ক্লাউডিনারি ড্রেস লিস্ট
+        // শপের আইটেমগুলো (প্রাইস 15k এবং 20k Gold Point)
         const storeItems = [
-            { name: "Royal Floral Gown", cat: "Dress", price: 12000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp", hasSize: true },
-            { name: "Classic Party Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp", hasSize: true },
-            { name: "Elegance Evening Wear", cat: "Dress", price: 18000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/7_zz8gga.webp", hasSize: true },
-            { name: "Casual Denim Outfit", cat: "Dress", price: 10000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/1_ufizyp.webp", hasSize: true },
-            { name: "Summer Breeze Gown", cat: "Dress", price: 13000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/3_tm4w9f.webp", hasSize: true },
-            { name: "Chic Party Frock", cat: "Dress", price: 16000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/5_lphyur.webp", hasSize: true },
-            { name: "Modern Denim Style", cat: "Dress", price: 11000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/6_a7nrjj.webp", hasSize: true },
-            { name: "Velvet Night Outfit", cat: "Dress", price: 19000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/9_pyynus.webp", hasSize: true },
-            { name: "Designer Casual Wear", cat: "Dress", price: 9500, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/8_rnhjh5.webp", hasSize: true },
-            { name: "Luxury Party Gown", cat: "Dress", price: 21000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/10_l7enmg.webp", hasSize: true },
-            { name: "Graceful Maxi Dress", cat: "Dress", price: 14000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/19_fazthb.webp", hasSize: true },
-            { name: "Stylish Evening Look", cat: "Dress", price: 17500, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/16_ff8bo3.webp", hasSize: true },
-            { name: "Premium Party Dress", cat: "Dress", price: 22000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/11_nmuqvi.webp", hasSize: true },
-            { name: "Trend Setter Denim", cat: "Dress", price: 12500, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/17_nevt22.webp", hasSize: true },
-            { name: "Royal Blue Gown", cat: "Dress", price: 19500, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/21_g8xdy3.webp", hasSize: true },
-            { name: "Classic Evening Style", cat: "Dress", price: 16500, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/18_vtbuam.webp", hasSize: true },
-            { name: "Modest Casual Fit", cat: "Dress", price: 10500, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/12_lxoxkk.webp", hasSize: true },
-            { name: "Special Event Gown", cat: "Dress", price: 23000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/14_vv3edn.webp", hasSize: true },
-            { name: "Vibrant Party Frock", cat: "Dress", price: 18500, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/13_j1iqqj.webp", hasSize: true },
-            { name: "Urban Denim Wear", cat: "Dress", price: 11500, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/20_nl0iqq.webp", hasSize: true },
-            { name: "Exquisite Evening Gown", cat: "Dress", price: 25000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/22_ostfn4.webp", hasSize: true },
-            { name: "Daily Casual Set", cat: "Dress", price: 9000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/24_pbzdij.webp", hasSize: true },
-            { name: "Chic Designer Dress", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/23_exv5bf.webp", hasSize: true },
-            { name: "Elite Collection Gown", cat: "Dress", price: 24000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/15_vgqlvi.webp", hasSize: true },
+            { name: "Royal Floral Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp", hasSize: true },
+            { name: "Classic Party Dress", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp", hasSize: true },
+            { name: "Elegance Evening Wear", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/7_zz8gga.webp", hasSize: true },
+            { name: "Casual Denim Outfit", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/1_ufizyp.webp", hasSize: true },
+            { name: "Summer Breeze Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/3_tm4w9f.webp", hasSize: true },
+            { name: "Chic Party Frock", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/5_lphyur.webp", hasSize: true },
+            { name: "Modern Denim Style", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/6_a7nrjj.webp", hasSize: true },
+            { name: "Velvet Night Outfit", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/9_pyynus.webp", hasSize: true },
+            { name: "Designer Casual Wear", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/8_rnhjh5.webp", hasSize: true },
+            { name: "Luxury Party Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/10_l7enmg.webp", hasSize: true },
+            { name: "Graceful Maxi Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/19_fazthb.webp", hasSize: true },
+            { name: "Stylish Evening Look", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/16_ff8bo3.webp", hasSize: true },
+            { name: "Premium Party Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/11_nmuqvi.webp", hasSize: true },
+            { name: "Trend Setter Denim", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/17_nevt22.webp", hasSize: true },
+            { name: "Royal Blue Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/21_g8xdy3.webp", hasSize: true },
+            { name: "Classic Evening Style", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/18_vtbuam.webp", hasSize: true },
+            { name: "Modest Casual Fit", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/12_lxoxkk.webp", hasSize: true },
+            { name: "Special Event Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/14_vv3edn.webp", hasSize: true },
+            { name: "Vibrant Party Frock", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/13_j1iqqj.webp", hasSize: true },
+            { name: "Urban Denim Wear", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/20_nl0iqq.webp", hasSize: true },
+            { name: "Exquisite Evening Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/22_ostfn4.webp", hasSize: true },
+            { name: "Daily Casual Set", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/24_pbzdij.webp", hasSize: true },
+            { name: "Chic Designer Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/23_exv5bf.webp", hasSize: true },
+            { name: "Elite Collection Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/15_vgqlvi.webp", hasSize: true },
             
             // Boys Dress
             { name: "Formal Blazer Suit", cat: "Boys", price: 15000, img: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=300", hasSize: true },
-            { name: "Casual Hoodie & Jeans", cat: "Boys", price: 10000, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300", hasSize: true },
-            { name: "Executive 3-Piece Suit", cat: "Boys", price: 22000, img: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300", hasSize: true },
+            { name: "Casual Hoodie & Jeans", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300", hasSize: true },
+            { name: "Executive 3-Piece Suit", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300", hasSize: true },
 
             // Smartphones
             { name: "iPhone 15 Pro Max", cat: "Phone", price: 120000, img: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=300", hasSize: false },
             { name: "Samsung Galaxy S24 Ultra", cat: "Phone", price: 110000, img: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=300", hasSize: false },
-            { name: "Google Pixel 8 Pro", cat: "Phone", price: 85000, img: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300", hasSize: false },
 
             // Gadgets
             { name: "Wireless Smart Watch", cat: "Gadget", price: 25000, img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300", hasSize: false },
-            { name: "Bluetooth Bass Headphone", cat: "Gadget", price: 8500, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300", hasSize: false },
-            { name: "Gaming TWS Earbuds", cat: "Gadget", price: 4500, img: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=300", hasSize: false }
+            { name: "Bluetooth Bass Headphone", cat: "Gadget", price: 15000, img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300", hasSize: false }
         ];
 
         let selectedSizes = {};
@@ -168,14 +168,14 @@
                         <button class="size-btn" onclick="selectSize(${index}, 'L', this)">L</button>
                         <button class="size-btn" onclick="selectSize(${index}, 'XL', this)">XL</button>
                     </div>
-                ` : `<div style="font-size: 10px; color: #64748b; margin-bottom: 8px;">Standard Variant</div>`;
+                ` : `<div style="font-size: 10px; color: #94a3b8; margin-bottom: 8px;">Standard Variant</div>`;
 
                 dressGrid.innerHTML += `
                     <div class="dress-card">
                         <img src="${item.img}" class="dress-img" alt="Product" onclick="openZoomModal('${item.img}')" title="Click to zoom image">
                         <div>
                             <h4 class="dress-title">${item.name}</h4>
-                            <div class="dress-price">🪙 ${item.price.toLocaleString()} GP</div>
+                            <div class="dress-price">🪙 ${item.price.toLocaleString()} Gold</div>
                             ${sizeHtml}
                         </div>
                         <button class="buy-btn" onclick="confirmOrder('${item.name}', ${item.price}, ${index}, ${item.hasSize})">Buy Now</button>
@@ -237,10 +237,10 @@
                     return;
                 }
 
-                if (userPoints >= price) {
-                    let newPoints = userPoints - price;
+                if (userGold >= price) {
+                    let newGold = userGold - price;
 
-                    db.ref('users/' + userId).update({ points: newPoints, gp: newPoints }).then(() => {
+                    db.ref('users/' + userId).update({ gold: newGold }).then(() => {
                         let orderData = {
                             userId: userId,
                             userName: username,
@@ -250,16 +250,13 @@
                             timestamp: Date.now()
                         };
 
-                        // ১. মেইন অ্যাডমিন শপ অর্ডার লিস্টে পাঠানো
                         db.ref('shop_orders').push(orderData);
-
-                        // ২. ইউজারের নিজস্ব প্রোফাইল অর্ডার হিস্টরিতে সেভ করা
                         db.ref('users/' + userId + '/orders').push(orderData).then(() => {
                             tg.showAlert(`🎉 Order Confirmed! "${itemNameFinal}" ordered successfully. Waiting for admin approval.`);
                         });
                     });
                 } else {
-                    tg.showAlert("❌ Insufficient Gold Points! Complete tasks to earn more GP.");
+                    tg.showAlert("❌ Insufficient Gold Balance! Play games to earn more Gold Points.");
                 }
             });
         }
