@@ -82,12 +82,10 @@
         }
         .points-title { font-size: 13px; opacity: 0.9; margin-bottom: 8px; }
         
-        /* ব্যালেন্স লেআউট ফিক্সড করার জন্য ফ্লেক্স ও গ্যাপ অ্যাডজাস্ট করা হলো */
         .points-value { 
             display: flex; 
             gap: 10px; 
             align-items: center; 
-            margin-bottom: 12px; 
         }
         .currency-box { 
             font-size: 14px; 
@@ -101,9 +99,6 @@
             justify-content: center;
         }
         .currency-box span { font-size: 20px; font-weight: 800; }
-        
-        .history-btn { position: absolute; bottom: 16px; right: 16px; background: rgba(255, 255, 255, 0.2); border: none; color: #ffffff; padding: 6px 12px; border-radius: 10px; font-size: 11px; cursor: pointer; backdrop-filter: blur(5px); transition: 0.2s; }
-        .history-btn:hover { background: rgba(255, 255, 255, 0.3); }
         
         .quick-menu { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
         .menu-item { background: var(--card-bg); border: 1px solid var(--border-color); padding: 14px 6px; border-radius: 14px; text-align: center; cursor: pointer; text-decoration: none; color: var(--text-main); transition: transform 0.2s, background 0.2s; }
@@ -169,7 +164,6 @@
                 <div class="currency-box" title="GP Points (Fuel)">⚡ <span id="gp-balance">0</span> GP</div>
                 <div class="currency-box" title="Gold Points (Shopping)">🪙 <span id="gold-balance">0</span> Gold</div>
             </div>
-            <button class="history-btn" onclick="location.href='profile.html'"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
         </div>
 
         <div class="quick-menu">
@@ -202,9 +196,10 @@
             <a href="shop.html" style="font-size: 12px; color: #c084fc; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
+        <!-- ৪টি ভিন্ন স্টাইলের ড্রেস ডিসপ্লে করার গ্রিড -->
         <div class="shop-preview-grid">
             <div class="shop-preview-card">
-                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Dress">
+                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Royal Floral Gown">
                 <div>
                     <h4 class="shop-preview-title">Royal Floral Gown</h4>
                     <div class="shop-preview-price">🪙 15,000 Gold</div>
@@ -212,10 +207,26 @@
                 <a href="shop.html" class="shop-preview-btn">Buy Now</a>
             </div>
             <div class="shop-preview-card">
-                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" class="shop-preview-img" alt="Dress">
+                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" class="shop-preview-img" alt="Classic Party Dress">
                 <div>
                     <h4 class="shop-preview-title">Classic Party Dress</h4>
                     <div class="shop-preview-price">🪙 20,000 Gold</div>
+                </div>
+                <a href="shop.html" class="shop-preview-btn">Buy Now</a>
+            </div>
+            <div class="shop-preview-card">
+                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180135/1_abcxyz.webp" class="shop-preview-img" alt="Cyberpunk Streetwear">
+                <div>
+                    <h4 class="shop-preview-title">Cyberpunk Streetwear</h4>
+                    <div class="shop-preview-price">🪙 18,500 Gold</div>
+                </div>
+                <a href="shop.html" class="shop-preview-btn">Buy Now</a>
+            </div>
+            <div class="shop-preview-card">
+                <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180136/3_defuvw.webp" class="shop-preview-img" alt="Elegance Velvet Suit">
+                <div>
+                    <h4 class="shop-preview-title">Elegance Velvet Suit</h4>
+                    <div class="shop-preview-price">🪙 25,000 Gold</div>
                 </div>
                 <a href="shop.html" class="shop-preview-btn">Buy Now</a>
             </div>
