@@ -22,9 +22,10 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 0 0 110px 0;
-            display: flex;
-            justify-content: center;
+            padding: 0;
+            height: 100vh;
+            overflow-y: auto;
+            position: relative;
             box-sizing: border-box;
             overscroll-behavior-y: none;
             -webkit-overflow-scrolling: touch;
@@ -38,7 +39,15 @@
             transform: translateX(-20px);
         }
 
-        .container { width: 100%; max-width: 480px; padding: 16px; box-sizing: border-box; }
+        .container { 
+            width: 100%; 
+            max-width: 480px; 
+            padding: 16px; 
+            margin: 0 auto;
+            padding-bottom: 100px; 
+            box-sizing: border-box; 
+        }
+
         .top-header h1 { margin: 0 0 10px 0; font-size: 24px; color: #fff; }
         
         .profile-card {
@@ -123,16 +132,17 @@
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
-            left: 0; 
-            right: 0; 
+            left: 50%;
+            transform: translateX(-50%);
             width: 100%; 
+            max-width: 480px;
             background: var(--card-bg); 
             border-top: 1px solid var(--card-border); 
             display: flex; 
             justify-content: space-around; 
             padding: 12px 0 16px 0; 
             box-sizing: border-box; 
-            z-index: 999; 
+            z-index: 9999; 
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
         }
         .nav-item { text-align: center; color: var(--text-muted); text-decoration: none; font-size: 11px; font-weight: 600; cursor: pointer; flex: 1; transition: 0.2s; }
@@ -204,7 +214,6 @@
                 <i class="fa-solid fa-chevron-right" style="color:var(--text-muted);"></i>
             </a>
 
-            <!-- নতুন অপশন: Create Sponsor -->
             <div class="menu-row-item" onclick="tg.showAlert('Create Sponsor feature is coming soon!')" style="cursor: pointer;">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: #7c3aed;"><i class="fa-solid fa-bullhorn"></i></div>
@@ -216,7 +225,6 @@
                 <span class="coming-soon-badge">Soon</span>
             </div>
 
-            <!-- নতুন অপশন: Create Idea -->
             <div class="menu-row-item" onclick="tg.showAlert('Create Idea feature is coming soon!')" style="cursor: pointer;">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: #db2777;"><i class="fa-solid fa-lightbulb"></i></div>
