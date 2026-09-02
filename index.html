@@ -94,6 +94,16 @@
 
         .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .section-title { font-size: 16px; font-weight: 700; color: #c084fc; }
+        .streak-badge { font-size: 12px; color: #f97316; font-weight: 600; }
+        
+        .bonus-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 24px; scrollbar-width: none; }
+        .bonus-scroll::-webkit-scrollbar { display: none; }
+        .bonus-card { background: var(--card-bg); border: 1px solid var(--border-color); min-width: 65px; padding: 12px 6px; border-radius: 14px; text-align: center; flex-shrink: 0; }
+        .bonus-card.active { border-color: #8b5cf6; background: rgba(139, 92, 246, 0.25); }
+        .bonus-card.claimed { opacity: 0.5; background: #0b0f19; }
+        .bonus-card .day { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; font-weight: 600; }
+        .bonus-card .icon { font-size: 18px; margin-bottom: 6px; color: #22c55e; }
+        .bonus-card .reward { font-size: 11px; font-weight: 700; color: #fbbf24; }
         
         .shop-preview-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px; }
         .shop-preview-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; transition: 0.2s; }
@@ -108,7 +118,7 @@
         .sponsor-banner h3 { margin: 0 0 6px 0; font-size: 16px; color: #c084fc; }
         .sponsor-banner p { margin: 0; font-size: 12px; color: var(--text-muted); }
 
-        /* Notice Modal Popup Styling */
+        /* Notice Modal Popup Styling (English) */
         .overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; backdrop-filter: blur(6px); }
         .notice-modal {
             display: none;
@@ -158,7 +168,7 @@
 </head>
 <body>
 
-    <!-- Notice Modal Popup (English) -->
+    <!-- Notice Modal Popup (English for Adsgram Review) -->
     <div class="overlay" id="noticeOverlay"></div>
     <div class="notice-modal" id="noticeModal">
         <h3><i class="fa-solid fa-bullhorn" style="color: #c084fc;"></i> How to Play & Earn</h3>
@@ -192,21 +202,36 @@
         </div>
 
         <div class="quick-menu">
-            <a href="game.html" class="menu-item" style="grid-column: span 2;">
+            <div class="menu-item" onclick="claimDailyBonus()">
+                <div class="menu-icon" style="background: #8b5cf6;"><i class="fa-solid fa-calendar-check"></i></div>
+                <div class="menu-label">Check-in</div>
+            </div>
+            <a href="game.html" class="menu-item">
                 <div class="menu-icon" style="background: #ec4899;"><i class="fa-solid fa-gamepad"></i></div>
                 <div class="menu-label">Play Game</div>
             </a>
-            <a href="task.html" class="menu-item" style="grid-column: span 2;">
+            <a href="task.html" class="menu-item">
                 <div class="menu-icon" style="background: #22c55e;"><i class="fa-solid fa-list-check"></i></div>
                 <div class="menu-label">Tasks</div>
             </a>
+            <a href="shop.html" class="menu-item">
+                <div class="menu-icon" style="background: #f59e0b;"><i class="fa-solid fa-store"></i></div>
+                <div class="menu-label">Shop</div>
+            </a>
         </div>
+
+        <div class="section-header">
+            <div class="section-title">Daily Bonus</div>
+            <div class="streak-badge" id="streak-text"><i class="fa-solid fa-fire"></i> 1 Days Streak</div>
+        </div>
+        <div class="bonus-scroll" id="daily-bonus-container"></div>
 
         <div class="section-header">
             <div class="section-title">Featured Dresses</div>
             <a href="shop.html" style="font-size: 12px; color: #c084fc; text-decoration: none; font-weight: 600;">View All</a>
         </div>
 
+        <!-- ৪টি ভিন্ন স্টাইলের ড্রেস (সঠিক ও ভ্যালিড ইমেজ লিংক সহ) -->
         <div class="shop-preview-grid">
             <div class="shop-preview-card">
                 <img src="https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" class="shop-preview-img" alt="Royal Floral Gown">
@@ -287,7 +312,7 @@
         }
 
         let userRef = db.ref('users/' + userId);
-        let userData = { gp: 0, gold: 0 };
+        let userData = { gp: 0, gold: 0, streakDay: 1, lastCheckInDate: "" };
 
         userRef.on('value', (snapshot) => {
             let data = snapshot.val();
@@ -296,7 +321,7 @@
                 updateUI();
                 userRef.update({ name: username, username: username, lastSeen: Date.now() });
             } else {
-                userData = { gp: 100, gold: 0, name: username, username: username, lastSeen: Date.now() };
+                userData = { gp: 100, gold: 0, streakDay: 1, lastCheckInDate: "", name: username, username: username, lastSeen: Date.now() };
                 userRef.set(userData);
                 updateUI();
             }
@@ -308,6 +333,49 @@
 
             document.getElementById('gp-balance').innerText = gp.toLocaleString();
             document.getElementById('gold-balance').innerText = gold.toLocaleString();
+            document.getElementById('streak-text').innerHTML = `<i class="fa-solid fa-fire"></i> ${userData.streakDay || 1} Days Streak`;
+            renderDailyBonus();
+        }
+
+        function renderDailyBonus() {
+            const container = document.getElementById('daily-bonus-container');
+            container.innerHTML = '';
+            const rewards = [10, 15, 20, 25, 30, 35, 50];
+            let currentStreak = userData.streakDay || 1;
+            
+            for (let i = 1; i <= 7; i++) {
+                let isClaimed = i < currentStreak;
+                let isActive = i === currentStreak;
+                let iconClass = isClaimed ? "fa-solid fa-circle-check" : (i === 3 ? "fa-solid fa-gift" : "fa-solid fa-box-open");
+                let cardClass = "bonus-card" + (isActive ? " active" : "") + (isClaimed ? " claimed" : "");
+
+                container.innerHTML += `
+                    <div class="${cardClass}">
+                        <div class="day">Day ${i}</div>
+                        <div class="icon"><i class="${iconClass}"></i></div>
+                        <div class="reward">+${rewards[i-1]} GP</div>
+                    </div>
+                `;
+            }
+        }
+
+        function claimDailyBonus() {
+            let today = new Date().toDateString();
+            if (userData.lastCheckInDate === today) {
+                tg.showAlert('You have already claimed today!');
+                return;
+            }
+            const rewards = [10, 15, 20, 25, 30, 35, 50];
+            let rewardAmount = rewards[(userData.streakDay || 1) - 1] || 10;
+
+            let currentGp = userData.gp !== undefined ? userData.gp : (userData.points || 0);
+            userData.gp = currentGp + rewardAmount;
+            userData.lastCheckInDate = today;
+            userData.streakDay = (userData.streakDay || 1) < 7 ? (userData.streakDay || 1) + 1 : 1;
+
+            userRef.set(userData).then(() => {
+                tg.showAlert(`Claimed Daily Bonus! +${rewardAmount} GP added.`);
+            });
         }
 
         // ৬ ঘণ্টা পর পর (১২ ঘণ্টায় দুইবার) নোটিশ পপআপ দেখানোর লজিক
