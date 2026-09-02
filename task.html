@@ -98,18 +98,19 @@
         .task-start-btn { background: #7c3aed; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.3s; }
         .task-start-btn:disabled { background: #475569; cursor: not-allowed; }
         
-        /* ছোট কমপ্লিট ব্যাজ ডিজাইন */
+        /* প্রিমিয়াম এবং ছোট কমপ্লিট ব্যাজ ডিজাইন */
         .completed-badge {
-            background: #10b981;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: #fff;
-            width: 32px;
-            height: 32px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 11px;
             box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         /* সুসজ্জিত ৫টি অপশনসহ নেভিগেশন বার */
@@ -269,7 +270,7 @@
                 if (completionData) {
                     finishTime = completionData.timestamp || 0;
                     if (currentTime - finishTime < INTERVAL_12H) {
-                        isCompleted = true; // ১২ ঘণ্টা পার হয়নি, তাই লিস্টে থাকবে কিন্তু কমপ্লিট ব্যাজ দেখাবে
+                        isCompleted = true; // ১২ ঘণ্টা পার হয়নি, তাই লিস্টে থাকবে কিন্তু প্রিমিয়াম ছোট ব্যাজ দেখাবে
                     }
                 }
 
@@ -316,7 +317,7 @@
             btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Wait 10s';
             btn.disabled = true;
 
-            // ১০ সেকেন্ড পর পয়েন্ট যোগ হবে এবং বাটনটি সুন্দর কমপ্লিট ব্যাজে রূপান্তর হবে
+            // ১০ সেকেন্ড পর পয়েন্ট যোগ হবে এবং বাটনটি সুন্দর প্রিমিয়াম ছোট ব্যাজে রূপান্তর হবে
             setTimeout(() => {
                 completeTaskAndReward(channelUsername);
             }, 10000);
@@ -335,7 +336,7 @@
                 completedChannels: completedChannels
             }).then(() => {
                 tg.showAlert(`Task completed! +5 GP added.`);
-                renderChannelTasks(); // পেজ আপডেট করে ব্যাজ শো করা
+                renderChannelTasks(); // পেজ আপডেট করে ছোট প্রিমিয়াম ব্যাজ শো করা
             });
         }
 
