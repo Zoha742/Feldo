@@ -268,11 +268,11 @@
         </div>
     </div>
 
+    <!-- বটম নেভিগেশন বার থেকে Hotcake অপশন বাদ দেওয়া হয়েছে -->
     <div class="bottom-nav">
         <a class="nav-item" href="index.html" onclick="navigateWithAnimation(event, 'index.html')"><i class="fa-solid fa-house"></i>Home</a>
         <a class="nav-item" href="game.html" onclick="navigateWithAnimation(event, 'game.html')"><i class="fa-solid fa-gamepad"></i>Game</a>
         <a class="nav-item" href="task.html" onclick="navigateWithAnimation(event, 'task.html')"><i class="fa-solid fa-list-check"></i>Task</a>
-        <a class="nav-item" href="hotcake.html" onclick="navigateWithAnimation(event, 'hotcake.html')"><i class="fa-solid fa-hammer"></i>Hotcake</a> 
         <a class="nav-item active" href="profile.html" onclick="navigateWithAnimation(event, 'profile.html')"><i class="fa-solid fa-user"></i>Profile</a>
     </div>
 
@@ -335,7 +335,7 @@
             }
         });
 
-        // ফায়ারবেস থেকে ইউজারের আনলক করা ভার্চুয়াল ওয়ার্ডরোব আইটেমগুলো লোড করা (কোনো অর্ডার স্ট্যাটাস বা শিপিং নেই)
+        // ফায়ারবেস থেকে ইউজারের আনলক করা ভার্চুয়াল ওয়ার্ডরোব আইটেমগুলো লোড করা
         db.ref('users/' + userId + '/wardrobe').on('value', snap => {
             let container = document.getElementById('my-collection-list');
             let html = "";
