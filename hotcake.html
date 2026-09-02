@@ -148,22 +148,23 @@
             box-shadow: 0 15px 40px rgba(124, 58, 237, 0.3);
         }
         .modal h3 { margin: 0 0 8px 0; font-size: 18px; color: #fbbf24; font-weight: 800; }
-        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; line-height: 1.4; }
+        .modal p { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.4; }
         
         .modal-btn {
             background: #111c38;
             border: 1px solid #2a3b68;
             color: white;
-            padding: 10px;
-            border-radius: 10px;
+            padding: 12px;
+            border-radius: 12px;
             width: 100%;
-            margin-bottom: 8px;
-            font-size: 12px;
+            margin-bottom: 10px;
+            font-size: 13px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 10px;
         }
         .modal-btn:hover { background: #1e293b; border-color: #7c3aed; }
         
@@ -239,25 +240,10 @@
     <!-- Overlay & Modals -->
     <div class="overlay" id="overlay" onclick="closeModals()"></div>
 
-    <!-- Modal 1: Select Boost Plan (6 Days Options)[cite: 8] -->
-    <div class="modal" id="boostPlanModal">
-        <h3>Boost <span id="modal-item-name">Service</span></h3>
-        <p>Select your boost plan:</p>
-        
-        <button class="modal-btn" onclick="selectBoostPlan('5 Days', 2)"><span>📅 5 Days Boost</span> <b style="color:#fbbf24">$2</b></button>
-        <button class="modal-btn" onclick="selectBoostPlan('10 Days', 5)"><span>📅 10 Days Boost</span> <b style="color:#fbbf24">$5</b></button>
-        <button class="modal-btn" onclick="selectBoostPlan('15 Days', 8)"><span>📅 15 Days Boost</span> <b style="color:#fbbf24">$8</b></button>
-        <button class="modal-btn" onclick="selectBoostPlan('20 Days', 10)"><span>📅 20 Days Boost</span> <b style="color:#fbbf24">$10</b></button>
-        <button class="modal-btn" onclick="selectBoostPlan('25 Days', 15)"><span>📅 25 Days Boost</span> <b style="color:#fbbf24">$15</b></button>
-        <button class="modal-btn" onclick="selectBoostPlan('30 Days', 20)"><span>📅 30 Days Boost</span> <b style="color:#fbbf24">$20</b></button>
-
-        <span class="cancel-text" onclick="closeModals()">Cancel</span>
-    </div>
-
-    <!-- Modal 2: Select Payment Method -->
+    <!-- Modal 1: Select Payment Method -->
     <div class="modal" id="paymentMethodModal">
-        <h3>Payment for <span id="pay-plan-title">Plan</span></h3>
-        <p>Choose your preferred payment method:</p>
+        <h3>Boost <span id="modal-coin-name">Service</span></h3>
+        <p>Choose your preferred payment method to boost this service.</p>
         <button class="modal-btn" onclick="openProofModal('Binance Pay', '9950270208')">
             <i class="fa-solid fa-wallet" style="color: #f59e0b; font-size: 18px;"></i> Binance Pay
         </button>
@@ -267,7 +253,7 @@
         <span class="cancel-text" onclick="closeModals()">Cancel</span>
     </div>
 
-    <!-- Modal 3: Submit Proof -->
+    <!-- Modal 2: Submit Proof -->
     <div class="modal" id="proofModal">
         <h3 id="proof-title">Payment Proof</h3>
         <p>Copy admin UID to pay, then check your Telegram User ID and upload screenshot.</p>
@@ -325,7 +311,6 @@
 
         const COOLDOWN_TIME = 12 * 60 * 60 * 1000; // ১২ ঘণ্টা কুলডাউন
 
-        // ৬টি আলাদা সার্ভিস আইটেম (আইকন ও নাম আপডেট করা)
         let hotcakes = [
             { id: 'service1', name: 'Hotcake Alpha', icon: 'fa-fire', normalGp: 50, boostedGp: 500 },
             { id: 'service2', name: 'Hotcake Beta', icon: 'fa-bolt', normalGp: 50, boostedGp: 500 },
@@ -336,10 +321,8 @@
         ];
 
         let userData = {};
-        let selectedServiceId = "";
-        let selectedServiceName = "";
-        let selectedPlan = "";
-        let selectedPrice = "";
+        let selectedHotcakeId = "";
+        let selectedHotcakeName = "";
         let selectedMethod = "";
         let currentAdminUid = "";
 
@@ -389,7 +372,7 @@
                         </div>
                         <div class="card-buttons">
                             <button id="claimBtn_${item.id}" class="action-btn claim-btn" ${claimBtnDisabled ? 'disabled' : ''} onclick="claimReward('${item.id}', ${rewardGp})">${claimBtnText}</button>
-                            <button class="${boostBtnClass}" onclick="openBoostPlanModal('${item.id}', '${item.name}')">${boostBtnText}</button>
+                            <button class="${boostBtnClass}" onclick="openPaymentModal('${item.id}', '${item.name}')">${boostBtnText}</button>
                         </div>
                     </div>
                 `;
@@ -421,20 +404,11 @@
             }
         }, 1000);
 
-        function openBoostPlanModal(serviceId, serviceName) {
-            selectedServiceId = serviceId;
-            selectedServiceName = serviceName;
-            document.getElementById('modal-item-name').innerText = serviceName;
+        function openPaymentModal(hotcakeId, hotcakeName) {
+            selectedHotcakeId = hotcakeId;
+            selectedHotcakeName = hotcakeName;
+            document.getElementById('modal-coin-name').innerText = hotcakeName;
             document.getElementById('overlay').style.display = 'block';
-            document.getElementById('boostPlanModal').style.display = 'block';
-        }
-
-        function selectBoostPlan(plan, price) {
-            selectedPlan = plan;
-            selectedPrice = `$${price}`;
-            document.getElementById('boostPlanModal').style.display = 'none';
-
-            document.getElementById('pay-plan-title').innerText = `${selectedServiceName} (${plan} - ${selectedPrice})`;
             document.getElementById('paymentMethodModal').style.display = 'block';
         }
 
@@ -443,7 +417,7 @@
             currentAdminUid = adminUid;
             document.getElementById('paymentMethodModal').style.display = 'none';
             
-            document.getElementById('proof-title').innerText = `${method} Proof (${selectedPlan})`;
+            document.getElementById('proof-title').innerText = `${method} Boost Proof (${selectedHotcakeName})`;
             document.getElementById('admin-uid-text').innerText = `UID - ${adminUid}`;
             document.getElementById('user-tg-id').value = userId;
             document.getElementById('proof-file').value = "";
@@ -469,21 +443,18 @@
             reader.onloadend = function() {
                 let base64Image = reader.result;
 
-                // অ্যাডমিনের কাছে সার্ভিস এবং কত দিনের জন্য বুস্ট নিচ্ছে তা চলে যাবে
                 let boostRequest = {
                     userId: userId,
                     userName: userName,
-                    serviceId: selectedServiceId,
-                    serviceName: selectedServiceName,
-                    duration: selectedPlan,
-                    price: selectedPrice,
+                    serviceId: selectedHotcakeId,
+                    serviceName: selectedHotcakeName,
                     method: selectedMethod,
                     screenshot: base64Image,
                     status: "Pending",
                     timestamp: Date.now()
                 };
 
-                db.ref(`users/${userId}/pending_boosts/${selectedServiceId}`).set(boostRequest).then(() => {
+                db.ref(`users/${userId}/pending_boosts/${selectedHotcakeId}`).set(boostRequest).then(() => {
                     closeModals();
                     tg.showAlert("Boost payment proof submitted successfully! Admin will review and activate your service.");
                 });
@@ -493,7 +464,6 @@
 
         function closeModals() {
             document.getElementById('overlay').style.display = 'none';
-            document.getElementById('boostPlanModal').style.display = 'none';
             document.getElementById('paymentMethodModal').style.display = 'none';
             document.getElementById('proofModal').style.display = 'none';
         }
