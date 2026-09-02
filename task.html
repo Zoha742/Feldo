@@ -6,6 +6,8 @@
     <title>Feldo - Tasks</title>
     <!-- Telegram Web App Script -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Adsgram Rewarded Video SDK Script -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -123,7 +125,6 @@
             gap: 3px;
         }
 
-        /* ফিক্সড বটম নেভিগেশন বার যাতে উপরে না ওঠে */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
@@ -209,6 +210,9 @@
         let userId = user ? user.id.toString() : "7757851056";
         let userRef = db.ref('users/' + userId);
 
+        // Adsgram Rewarded Controller Initialize
+        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "45801", platform: "tg" }) : null;
+
         const channelList = [
             "Xoypo", "Xoyfo", "Xoyco", "Xoyvo", "Xoyqo", "Xoywo", "Ogeeu", "Foyko", "Royci", "Royqo", "Keoiv", "Keoiz", "Bivbo", "Mivbo", "Oviib", "Qeoil", "EoPay", "cyriv", "cypit", "Bypir", "cypij", "Cypia", "Psirt", "Wjstv", "Doyvi", "Foyvi", "Jtrtv", "Apsox", "Apgox", "Oamgo", "Cisot", "Orous", "Okous", "Oeous", "uoike", "Foike", "Doike", "Uniwo", "hizdo", "Eopse", "Risof", "Roiho", "Tebvi", "Coaic", "icoji", "Uaffi", "Xafbi", "Coijo", "Cexmo", "Pexmo", "Wopse", "tavfo", "Kavfo", "Oanlo", "Eamvo", "Oanvo", "oofti", "Foqro", "Foqxo", "Joivo", "Xijci", "Foyzo", "Foljo", "Fuuqo", "fusqo", "fuyqo", "tiqoo", "Qifoo", "Hoyqo", "Qelfo", "Qeljo", "Fnntv", "Jnntv", "Fnitv", "Fbntv", "Cbigo", "Eavno", "Eapno", "Foyqo", "Upbif", "Upbib", "Upbir", "Upbip", "Upbim", "Oesno", "Lanvo", "Yovki", "Oovki", "Uovki", "syfox", "Spyzo", "Vavfo", "Cavfo", "Eavdo", "Coixo", "Fovgi", "Tafvi", "Guzna", "Aovji", "Oelgo", "Yelfo", "Zoosy", "Zivfo", "Uesgo", "Ripfo", "Fovmi", "Wovti", "Jafki", "Dikto", "Joizo", "Uxdao", "Wxdao", "Movti", "Fovti", "Oafki", "Eafki", "Oafmi", "Uafmi", "Vafmi", "Eafmi", "Gigxe", "Eooti", "Eovmi", "Pafbi", "Livbo", "Dapbo", "Roiwo", "Foiqo", "Wigdo", "Diczo", "Oafvi", "Dijzo", "Kovmi", "Oubuy", "Jafvi", "Kafvi", "Cafvi", "Eapti", "Xafti", "Cekio", "Ualjo", "Ealjo", "Uofti", "Eofti", "Pofti", "Vunki", "dagpi", "Hagpi", "Eagpi", "Cagpi", "Zidme", "Relbo", "Eelvo", "Yelvo", "Ohous", "Opous", "Tewvi", "Epegi", "Uafti", "dysel", "dycel", "Oviwo", "Dojvi", "Fisdo", "Rirbo", "Uanbo", "Oamco", "Zisvo", "Oisvo", "Wisvo", "Oispo", "reljo", "uepax", "uevax", "aekax", "Cigzo", "Uevio", "Xikvi", "Oeyvi", "Ueyvi", "Qittoo", "ZilMal", "ZilXal", "XilXal", "BikNak", "BikVak", "BakVak", "XilMal", "Zilfal", "ZilSal", "XalXil", "XikMik", "XilMil", "XikXaq", "HakVak", "HakBak", "HikDik"
         ];
@@ -248,10 +252,25 @@
             let btn = document.getElementById('adBtn1');
             if(btn.disabled) return;
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Loading...';
-            btn.disabled = true;
-
-            setTimeout(() => {
+            if (adController) {
+                adController.show().then((result) => {
+                    // অ্যাড সফলভাবে দেখার পর রিওয়ার্ড প্রদান
+                    let now = Date.now();
+                    let currentGp = userData.gp !== undefined ? userData.gp : (userData.points || 0);
+                    
+                    userRef.update({ 
+                        gp: currentGp + rewardAmount, 
+                        points: currentGp + rewardAmount,
+                        lastAdTime: now
+                    }).then(() => {
+                        tg.showAlert(`Ad watched successfully! +${rewardAmount} GP added.`);
+                    });
+                }).catch((err) => {
+                    console.error("Adsgram error:", err);
+                    tg.showAlert("❌ Ad could not be loaded or was skipped.");
+                });
+            } else {
+                // ব্রাউজার বা টেস্ট মোডের জন্য ফলব্যাক
                 let now = Date.now();
                 let currentGp = userData.gp !== undefined ? userData.gp : (userData.points || 0);
                 
@@ -262,7 +281,7 @@
                 }).then(() => {
                     tg.showAlert(`Ad watched successfully! +${rewardAmount} GP added.`);
                 });
-            }, 4000);
+            }
         }
 
         function renderChannelTasks() {
@@ -366,7 +385,7 @@
             renderChannelTasks();
         }, 1000);
 
-        // সোয়াইপ নেভিগেশন ফিক্সড (ডানে সোয়াইপ করলে Game এবং বামে সোয়াইপ করলে Hotcake এ যাবে)
+        // সোয়াইপ নেভিগেশন ফিক্সড
         let touchStartX = 0;
         window.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
         window.addEventListener('touchend', e => {
