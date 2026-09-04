@@ -266,19 +266,10 @@
                     });
                 }).catch((err) => {
                     console.error("Adsgram error:", err);
-                    tg.showAlert("❌ Ad could not be loaded or was skipped.");
+                    tg.showAlert("❌ Ad could not be loaded or was skipped. No reward given.");
                 });
             } else {
-                let now = Date.now();
-                let currentGp = userData.gp !== undefined ? userData.gp : (userData.points || 0);
-                
-                userRef.update({ 
-                    gp: currentGp + rewardAmount, 
-                    points: currentGp + rewardAmount,
-                    lastAdTime: now
-                }).then(() => {
-                    tg.showAlert(`Ad watched successfully! +${rewardAmount} GP added.`);
-                });
+                tg.showAlert("❌ Ad is not available right now. Please try again later.");
             }
         }
 
