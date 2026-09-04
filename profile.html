@@ -139,25 +139,6 @@
             border: 1px solid rgba(245, 158, 11, 0.3);
         }
 
-        /* আপডেট করা সিঙ্গেল এডমিন প্যানেল বাটন স্টাইল */
-        .admin-box-container { display: none; margin-bottom: 10px; }
-        .admin-box-item {
-            background: linear-gradient(135deg, rgba(6, 78, 59, 0.4), rgba(2, 44, 34, 0.6));
-            border: 1px solid #22c55e;
-            border-radius: 14px;
-            padding: 12px;
-            text-align: center;
-            text-decoration: none;
-            color: #34d399;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s;
-        }
-        .admin-box-item:active { transform: scale(0.98); }
-        .admin-box-item i { font-size: 18px; }
-        .admin-box-item h5 { margin: 0; font-size: 13px; font-weight: 700; color: #fff; }
 
         .bottom-nav { 
             position: fixed; 
@@ -185,7 +166,7 @@
     <div class="container">
         <div class="top-header">
             <div>
-                <h1>Feldo Profile</h1>
+                <h1>Heyfo Profile</h1>
             </div>
         </div>
 
@@ -227,14 +208,6 @@
         </div>
 
         <div class="menu-list">
-            <!-- শপঅ্যাডমিন রিমুভ করে appboss.html নামের একক এডমিন প্যানেল বাটন যুক্ত করা হয়েছে -->
-            <div class="admin-box-container" id="adminContainer">
-                <a class="admin-box-item" href="appboss.html">
-                    <i class="fa-solid fa-user-shield"></i>
-                    <h5>Admin Panel</h5>
-                </a>
-            </div>
-
             <a class="menu-row-item" href="support.html">
                 <div class="menu-row-left">
                     <div class="menu-row-icon" style="background: #0891b2;"><i class="fa-solid fa-headset"></i></div>
@@ -301,7 +274,6 @@
         let userId = user ? user.id.toString() : "7757851056"; 
         let firstName = user ? (user.first_name || "User") : "User";
         let username = (user && user.username) ? `@${user.username}` : `@user`;
-        const ADMIN_USER_ID = "7757851056";
 
         document.getElementById('name-text').innerText = firstName;
         document.getElementById('profile-username').innerText = username;
@@ -309,10 +281,6 @@
 
         if (user && user.photo_url) {
             document.getElementById('user-avatar').src = user.photo_url;
-        }
-
-        if (userId === ADMIN_USER_ID) {
-            document.getElementById('adminContainer').style.display = "block";
         }
 
         // ফায়ারবেস থেকে ভেরিফাইড স্ট্যাটাস ও ব্যালেন্স চেক করা
