@@ -26,10 +26,6 @@
         .dress-title { font-size: 13px; font-weight: 600; margin: 0 0 4px 0; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .dress-price { font-size: 12px; font-weight: 700; color: #fbbf24; margin-bottom: 8px; }
         
-        .size-box { display: flex; justify-content: center; gap: 4px; margin-bottom: 8px; }
-        .size-btn { background: #0b0f19; border: 1px solid #2a1b4e; color: #94a3b8; padding: 3px 6px; font-size: 10px; border-radius: 4px; cursor: pointer; font-weight: 600; }
-        .size-btn.selected { background: #7c3aed; color: #fff; border-color: #7c3aed; }
-
         .buy-btn { background: #7c3aed; color: #fff; border: none; padding: 8px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s; }
         .buy-btn:hover { background: #6d28d9; }
 
@@ -112,62 +108,50 @@
 
         // শপের ভার্চুয়াল অ্যাভাটার আইটেমগুলো (কসমেটিকস ও ওয়ার্ডরোব ড্রেস)
         const storeItems = [
-            { name: "Royal Floral Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp", hasSize: true },
-            { name: "Classic Party Dress", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp", hasSize: true },
-            { name: "Elegance Evening Wear", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/7_zz8gga.webp", hasSize: true },
-            { name: "Casual Denim Outfit", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/1_ufizyp.webp", hasSize: true },
-            { name: "Summer Breeze Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/3_tm4w9f.webp", hasSize: true },
-            { name: "Chic Party Frock", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/5_lphyur.webp", hasSize: true },
-            { name: "Modern Denim Style", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/6_a7nrjj.webp", hasSize: true },
-            { name: "Velvet Night Outfit", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/9_pyynus.webp", hasSize: true },
-            { name: "Designer Casual Wear", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/8_rnhjh5.webp", hasSize: true },
-            { name: "Luxury Party Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/10_l7enmg.webp", hasSize: true },
-            { name: "Graceful Maxi Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/19_fazthb.webp", hasSize: true },
-            { name: "Stylish Evening Look", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/16_ff8bo3.webp", hasSize: true },
-            { name: "Premium Party Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/11_nmuqvi.webp", hasSize: true },
-            { name: "Trend Setter Denim", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/17_nevt22.webp", hasSize: true },
-            { name: "Royal Blue Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/21_g8xdy3.webp", hasSize: true },
-            { name: "Classic Evening Style", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/18_vtbuam.webp", hasSize: true },
-            { name: "Modest Casual Fit", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/12_lxoxkk.webp", hasSize: true },
-            { name: "Special Event Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/14_vv3edn.webp", hasSize: true },
-            { name: "Vibrant Party Frock", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/13_j1iqqj.webp", hasSize: true },
-            { name: "Urban Denim Wear", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/20_nl0iqq.webp", hasSize: true },
-            { name: "Exquisite Evening Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/22_ostfn4.webp", hasSize: true },
-            { name: "Daily Casual Set", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/24_pbzdij.webp", hasSize: true },
-            { name: "Chic Designer Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/23_exv5bf.webp", hasSize: true },
-            { name: "Elite Collection Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/15_vgqlvi.webp", hasSize: true },
+            { name: "Royal Floral Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/2_g6yybc.webp" },
+            { name: "Classic Party Dress", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/4_jwi1bs.webp" },
+            { name: "Elegance Evening Wear", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/7_zz8gga.webp" },
+            { name: "Casual Denim Outfit", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180133/1_ufizyp.webp" },
+            { name: "Summer Breeze Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/3_tm4w9f.webp" },
+            { name: "Chic Party Frock", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/5_lphyur.webp" },
+            { name: "Modern Denim Style", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/6_a7nrjj.webp" },
+            { name: "Velvet Night Outfit", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180132/9_pyynus.webp" },
+            { name: "Designer Casual Wear", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/8_rnhjh5.webp" },
+            { name: "Luxury Party Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/10_l7enmg.webp" },
+            { name: "Graceful Maxi Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/19_fazthb.webp" },
+            { name: "Stylish Evening Look", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/16_ff8bo3.webp" },
+            { name: "Premium Party Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/11_nmuqvi.webp" },
+            { name: "Trend Setter Denim", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180131/17_nevt22.webp" },
+            { name: "Royal Blue Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/21_g8xdy3.webp" },
+            { name: "Classic Evening Style", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/18_vtbuam.webp" },
+            { name: "Modest Casual Fit", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/12_lxoxkk.webp" },
+            { name: "Special Event Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/14_vv3edn.webp" },
+            { name: "Vibrant Party Frock", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180130/13_j1iqqj.webp" },
+            { name: "Urban Denim Wear", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/20_nl0iqq.webp" },
+            { name: "Exquisite Evening Gown", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/22_ostfn4.webp" },
+            { name: "Daily Casual Set", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/24_pbzdij.webp" },
+            { name: "Chic Designer Dress", cat: "Dress", price: 15000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/23_exv5bf.webp" },
+            { name: "Elite Collection Gown", cat: "Dress", price: 20000, img: "https://res.cloudinary.com/dyqegwdme/image/upload/v1788180129/15_vgqlvi.webp" },
             
             // Boys Wardrobe Items
-            { name: "Formal Blazer Suit", cat: "Boys", price: 15000, img: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=300", hasSize: true },
-            { name: "Casual Hoodie & Jeans", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300", hasSize: true },
-            { name: "Executive 3-Piece Suit", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300", hasSize: true }
+            { name: "Formal Blazer Suit", cat: "Boys", price: 15000, img: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?w=300" },
+            { name: "Casual Hoodie & Jeans", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=300" },
+            { name: "Executive 3-Piece Suit", cat: "Boys", price: 20000, img: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=300" }
         ];
-
-        let selectedSizes = {};
 
         function renderItems(list) {
             const dressGrid = document.getElementById('dressGrid');
             dressGrid.innerHTML = '';
             
             list.forEach((item, index) => {
-                let sizeHtml = item.hasSize ? `
-                    <div class="size-box" id="sizes_${index}">
-                        <button class="size-btn" onclick="selectSize(${index}, 'S', this)">S</button>
-                        <button class="size-btn" onclick="selectSize(${index}, 'M', this)">M</button>
-                        <button class="size-btn" onclick="selectSize(${index}, 'L', this)">L</button>
-                        <button class="size-btn" onclick="selectSize(${index}, 'XL', this)">XL</button>
-                    </div>
-                ` : `<div style="font-size: 10px; color: #94a3b8; margin-bottom: 8px;">Standard Variant</div>`;
-
                 dressGrid.innerHTML += `
                     <div class="dress-card">
                         <img src="${item.img}" class="dress-img" alt="Virtual Item" onclick="openZoomModal('${item.img}')" title="Click to zoom">
                         <div>
                             <h4 class="dress-title">${item.name}</h4>
                             <div class="dress-price">🪙 ${item.price.toLocaleString()} Gold</div>
-                            ${sizeHtml}
                         </div>
-                        <button class="buy-btn" onclick="confirmUnlock('${item.name}', ${item.price}, ${index}, ${item.hasSize})">Unlock Outfit</button>
+                        <button class="buy-btn" onclick="confirmUnlock('${item.name}', ${item.price}, ${index})">Unlock Outfit</button>
                     </div>
                 `;
             });
@@ -187,13 +171,6 @@
             }
         }
 
-        function selectSize(itemId, size, btn) {
-            selectedSizes[itemId] = size;
-            let parent = document.getElementById(`sizes_${itemId}`);
-            parent.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-        }
-
         function openZoomModal(imgSrc) {
             document.getElementById('zoomedImg').src = imgSrc;
             document.getElementById('imageModal').style.display = 'flex';
@@ -203,16 +180,8 @@
             document.getElementById('imageModal').style.display = 'none';
         }
 
-        function confirmUnlock(itemName, price, itemId, hasSize) {
+        function confirmUnlock(itemName, price, itemId) {
             let itemNameFinal = itemName;
-            if (hasSize) {
-                let chosenSize = selectedSizes[itemId];
-                if (!chosenSize) {
-                    tg.showAlert("⚠️ Please select an avatar fit size (S, M, L, XL) first!");
-                    return;
-                }
-                itemNameFinal = `${itemName} [Fit: ${chosenSize}]`;
-            }
 
             db.ref('users/' + userId).once('value', snapshot => {
                 let uData = snapshot.val() || {};
